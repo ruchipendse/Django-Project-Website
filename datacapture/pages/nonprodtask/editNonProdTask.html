@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block content_2 %}
+{% if not user.is_authenticated %}
+    <script>
+        window.location.href = "/";
+    </script>
+{% endif %}
+
+<h1>Electral Control Systems</h1>
+<h2>Non-Production Tasks:</h2>
+<div class = "parts"> 
+    <div class="splitleft">
+        <div class="centered">
+            <form name = "editForm" id = "editForm" action = "processNonProdTask"  method = "POST">
+                    {% csrf_token %} 
+                <input type = "hidden" id = "functionMode" name = "functionMode" value = "UNEDITED"/>
+                <table>
+                    <tr>
+                        <td><label id="labelscode" for = "scode" >Non-Prod Task Code</label></td>
+                        <td><input type = "text" name = "scode" id = "scode" 
+                                value = "{{selectedNonProdTask.id_code}}" required></td>
+                    </tr>
+                    <tr>
+                        <td><label id="labelsname" for = "sname" >Non-Prod Task  Name</label></td>
+                        <td><input type = "text" name = "sname" id = "sname"  
+                                value = "{{selectedNonProdTask.name}}" onchange = "markDirty();" required></td>
+                    </tr>
+                    <tr>
+                        <td><label id="labelsdesc" for = "sdesc" >Non-Prod Task  Description</label></td>
+                        <td><input type = "text" name = "sdesc" id = "sdesc"  
+                                value = "{{selectedNonProdTask.desc}}" onchange = "markDirty();" required></td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <input type="submit" id = "editnonprodtaskbtn" name = "editnonprodtaskbtn"  class="w3-button w3-blue" 
+                                                value="Submit" >
+                                    </td>
+                                    <td>
+                                        <input id = "cancelbtn" name = "cancelbtn" type="submit" class="w3-button w3-blue" 
+                                                onclick = "setCancel()" value="Cancel">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table> 
+            </form>
+        </div>
+    </div>
+    
+    <div class="splitright">
+        <div class="centered">
+        </div>
+    </div>
+</div>
+
+<script>
+    function markDirty(){
+        document.getElementById('functionMode').value = "EDITED";
+        document.getElementById('editnonprodtaskbtn').classList.remove('disabled');
+    }
+
+    function onDelBtnClicked(index){
+        deleteRow(index);
+        markDirty();
+    }
+
+    function setCancel(){
+        document.getElementById('scode').removeAttribute('required');
+        document.getElementById('sname').removeAttribute('required');
+        document.getElementById('sdesc').removeAttribute('required');
+        document.getElementById('editForm').removeAttribute("onsubmit")
+        document.getElementById('functionMode').value = "CANCEL";
+    }
+
+    /**
+        THIS METHOD INITAITES THE STATUS OF REQUIRED FIELDS ON USERS PAGE 
+    */
+    function init(){
+        document.getElementById('editnonprodtaskbtn').classList.add('disabled');
+        document.getElementById('scode').classList.add('disabled');
+    }
+
+    init();
+
+</script>
+{% endblock %}

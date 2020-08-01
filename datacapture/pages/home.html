@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content_2 %}
+<h1>Electral Devices</h1>
+<p>Welcome to time sheet management program of Electral Devices.</p>
+    {% if user.is_authenticated %}
+        <!--  ALREADY USER IS LOGGED IN -->
+        <H2>Hi {{user.first_name}} {{user.last_name}}, Please proceed to update the metadata</H2>
+        <!-- <H2>Hi {{user.first_name}} {{user.last_name}}, do you want to proceed for time sheet?</H2> -->
+        <!-- <a href="timesheet_new" class = "cta">Go to Time Sheets</a> -->
+    {% else %}
+        <!--  NO USER IS LOGGED IN -->
+        <!-- <a href="gototimesheet" class = "cta">Go to Time Sheets</a> -->
+        <p>Please login as a superuser.</p>
+    {% endif %}
+{% endblock %}
+{% block content_script_1 %}
+{% endblock %}

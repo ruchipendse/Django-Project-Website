@@ -1,0 +1,502 @@
+{% extends 'timesheet/timesheet_base.html' %}
+
+{% block content_meta %}
+    <meta id = "machinesForSetupJSONTag"        data = "{{machinesForSetupJSON}}" />
+    <meta id = "currentDateTag"                 data = "{{currentDate}}" />
+    <meta id = "allTimeSheetEntriesJSONTag"     data = "{{allTimeSheetEntriesJSON}}" />
+    <meta id = "partSetupMapJSONTag"            data = "{{partSetupMapJSON}}" />
+    
+{% endblock %}
+
+{% block content_main %}
+    {% if not user.is_authenticated %}
+        <script>
+            window.location.href = "/";
+        </script>
+    {% endif %}
+
+    <form name = "usersForm" action = "processRequest" method = "POST" onsubmit = "return isInputValid();">
+        {% csrf_token %} 
+        <input type = "hidden" id = "functionMode" name = "functionMode" value = "UNADDED"/>
+        <input type = "hidden" id = "pageready" name = "pageready" value = "FALSE"/>
+        <table id = "usertable"  width = 100% border = 0>
+            <tr>
+                <td>
+                    <div class = "tablesetupselect">
+                        <label for="timesheetdate">Date:</label>
+                    </div>
+                </td>
+                <td>
+                    <div class = "tablesetupselect">
+                        <input type="text" id="timesheetdate" name="timesheetdate"  style="min-width:50%;" onchange = "dateSelected();"  readonly="readonly">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td width = "15%">
+                    <div class = "tablesetupselect">
+                        <label>Part</label>
+                    </div>
+                </td>
+                <td>
+                    <div class = "tablesetupselect">
+                        <select id="partselect" name="partselect"  style="min-width:50%;" onchange="partSelected();">
+                            <!-- <option value="Select Option" selected>Select option</option> -->
+                            <!-- {% for part in allActiveParts %}
+                                <option value="{{part.id_code}}">{{part.id_code}} {{part.name}}</option>
+                            {% endfor %} -->
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class = "tablesetupselect">
+                        <label>Setup</label>
+                    </div>
+                </td>
+                <td>
+                    <div id = "selectsetupdiv" class = "tablesetupselect">
+                        <select id="setupselect" name="setupselect"  style="min-width:50%;" onchange="setupSelected();">
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class = "tablesetupselect">
+                        <label>Machine</label>
+                    </div>
+                </td>
+                <td>
+                    <div id = "selectmachinediv" class = "tablesetupselect">
+                        <select id="machineselect" name="machineselect"  style="min-width:50%;" onchange="machineSelected();">
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class = "tablesetupselect">
+                        <label for="timesheetstart">Start:</label>
+                    </div>
+                </td>
+                <td>
+                    <div class = "tablesetupselect">
+                        <input type="time" id="timesheetstart" name="timesheetstart"  style="min-width:50%;"  onchange = "timeStartSelected();">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class = "tablesetupselect">
+                        <label for="timesheetend">End:</label>
+                    </div>
+                </td>
+                <td>
+                    <div class = "tablesetupselect">
+                        <input type="time" id="timesheetend" name="timesheetend"  style="min-width:50%;"  onchange = "timeEndSelected();">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class = "tablesetupselect">
+                        <label for="timesheetqtyhandled">Quantity Handled:</label>
+                    </div>
+                </td>
+                <td>
+                    <div class = "tablesetupselect">
+                        <input type="number" id="timesheetqtyhandled" name="timesheetqtyhandled"  style="min-width:50%;" min="0" onfocusout = "qtyHandledSelected(this);">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class = "tablesetupselect">
+                        <label for="timesheetqtyrejected">Quantity Rejected:</label>
+                    </div>
+                </td>
+                <td>
+                    <div class = "tablesetupselect">
+                        <input type="number" id="timesheetqtyrejected" name="timesheetqtyrejected"  style="min-width:50%;" min="0"  onchange = "qtyRejectededSelected();">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" id = "newtimeentrybtn" name = "newtimeentrybtn"  
+                            class="w3-button w3-blue" value="Submit" onclick = "setMode('ADDED');">                           
+                </td>
+                <td>
+                    <input type="submit" id = "cancelbtn" name = "cancelbtn"  
+                            class="w3-button w3-blue" value="Cancel"  onclick = "setMode('CANCEL');">                           
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}
+{% block content_script_1 %}
+    <script>
+        function markDirty(){
+            if (document.getElementById('pageready').value == "TRUE"){
+                document.getElementById('newtimeentrybtn').classList.remove('disabled');
+            }
+        }
+
+        function setMode(currentMode){
+            document.getElementById('functionMode').value = currentMode;
+        }
+
+        function partSelected(){
+            populateSetupsForPart();
+            populateMachinesForSetup();
+            markDirty();
+        }
+
+        
+        function setupSelected(){
+            populateMachinesForSetup();
+            markDirty();
+        }
+
+        function populateSetupsForPart(){
+            defaultString                   = "Select Option";
+            var selectedPartTag            = document.getElementById('partselect');
+            var selectedPart               = selectedPartTag.value;
+
+            var selectSetupTag               = document.getElementById('setupselect');
+
+            while (selectSetupTag.hasChildNodes()) {  
+                selectSetupTag.removeChild(selectSetupTag.firstChild);
+            }
+
+            /** ADD "SELECT OPTION" OPTION "SELECTED"**/
+            var strLabel                    = "Select Option"
+
+            var optionTag                   = document.createElement('option');
+            var attValue                    = document.createAttribute('value');
+            attValue.value                  = strLabel;
+            optionTag.setAttributeNode(attValue);
+
+            var attSelect                   = document.createAttribute('selected');
+            attSelect.value                 = 'true';
+            optionTag.setAttributeNode(attSelect);
+            optionTag.innerHTML             = strLabel;
+            selectSetupTag.appendChild(optionTag);     
+
+            if (selectedPart != defaultString){
+    
+                var partsForUserJSON       = document.getElementById('partSetupMapJSONTag').getAttribute("data");
+                partsForUser                = JSON.parse(partsForUserJSON)
+
+                setupsForPart               = partsForUser[selectedPart]['setups']
+                for (setup_id in setupsForPart){
+                    var strLabel            = setup_id + ':' + setupsForPart[setup_id]['name']
+
+                    var optionTag           = document.createElement('option');
+                    var attValue            = document.createAttribute('value');
+                    attValue.value          = setup_id;
+                    optionTag.setAttributeNode(attValue); 
+                    optionTag.innerHTML     = strLabel;
+
+                    selectSetupTag.appendChild(optionTag);     
+                }
+            } else {
+                // Setup selection is invalid reset other dependencies
+            }
+        }
+                
+        function populateMachinesForSetup(){
+            defaultString                   = "Select Option";
+            var selectedSetupTag            = document.getElementById('setupselect');
+            var selectedSetup               = selectedSetupTag.value;
+            var selectMachineTag            = document.getElementById('machineselect');
+
+            while (selectMachineTag.hasChildNodes()) {  
+                selectMachineTag.removeChild(selectMachineTag.firstChild);
+            }
+
+            /** ADD "SELECT OPTION" OPTION "SELECTED"**/
+            var strLabel = "Select Option"
+
+            var optionTag                   = document.createElement('option');
+            var attValue                    = document.createAttribute('value');
+            attValue.value                  = strLabel;
+            optionTag.setAttributeNode(attValue);
+
+            var attSelect                   = document.createAttribute('selected');
+            attSelect.value                 = 'true';
+            optionTag.setAttributeNode(attSelect);
+            optionTag.innerHTML             = strLabel;
+            selectMachineTag.appendChild(optionTag);     
+
+            if (selectedSetup != defaultString){
+                var machinesForSetupJSON    = document.getElementById('machinesForSetupJSONTag').getAttribute("data");
+                machinesForSetups           = JSON.parse(machinesForSetupJSON)
+                machinesForSelectedSetup            = machinesForSetups[selectedSetup]['machines']
+
+                for (machine_id in machinesForSelectedSetup){
+                    var strLabel            = machine_id + ':' + machinesForSelectedSetup[machine_id]['name']
+
+                    var optionTag           = document.createElement('option');
+                    var attValue            = document.createAttribute('value');
+                    attValue.value          = machinesForSelectedSetup[machine_id]['id_code'];
+                    optionTag.setAttributeNode(attValue); 
+                    optionTag.innerHTML     = strLabel;
+
+                    selectMachineTag.appendChild(optionTag);     
+                }
+            } else {
+                // Setup selection is invalid reset other dependencies
+            }
+        }
+
+        function machineSelected(){
+            markDirty();
+        }
+
+        function dateSelected(){
+            markDirty();
+        }
+
+        function timeStartSelected(){
+            markDirty();
+        }
+
+        function timeEndSelected(){
+            markDirty();
+        }
+
+        function qtyHandledSelected(qtyhandled){
+            document.getElementById('timesheetqtyrejected').max = qtyhandled.value
+            markDirty();
+        }
+
+        function qtyRejectededSelected(){
+            qtyHandledMax = document.getElementById('timesheetqtyrejected').max;
+            markDirty();
+        }
+
+        function isInputValid(){
+            if (document.getElementById('functionMode').value == "CANCEL"){
+                return true;
+            }
+
+            var invalidVal                      = "Select Option"
+
+            var partVal                         = document.getElementById('partselect').value
+            if ( partVal == invalidVal || partVal == ""){
+                console.log('InValid Part')
+                return false;
+            }
+            var setupVal                        = document.getElementById('setupselect').value
+            if ( setupVal == invalidVal || setupVal == ""){
+                console.log('InValid Setup')
+                return false;
+            }
+            var machineVal                      = document.getElementById('machineselect').value
+            if ( machineVal == invalidVal || machineVal == ""){
+                console.log('InValid Machine')
+                return false;
+            }
+
+            var dateVal                         = document.getElementById('timesheetdate').value
+            if (!isDateValid(dateVal)){
+                return false;
+            }
+
+            var startTime                       = document.getElementById('timesheetstart').value
+            var endTime                         = document.getElementById('timesheetend').value
+            if (!validInterval(dateVal, startTime, endTime)){
+                return false;
+            }
+
+            return true;   // change later to true
+        }
+
+        function isDateValid(dateValue){
+            today                               = new Date();
+            dateParts                           = dateValue.split("-")
+
+            year                                = parseInt(dateParts[0]);
+            month                               = parseInt(dateParts[1]);
+            day                                 = parseInt(dateParts[2]);
+
+            dt1                                 = Date.UTC(year, month - 1, day);
+            dt2                                 = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+
+            diff                                = Math.floor((dt2 - dt1) /(1000 * 60 * 60 * 24));
+            if (diff < 0){
+                return false;
+            }
+            return true;
+        }
+
+        function validInterval(day, startTime, endTime){
+            var todayDate                   = new Date();
+            var today                       = new Date (todayDate.getFullYear(), 
+                                                        todayDate.getMonth(), 
+                                                        todayDate.getDate(), 
+                                                        todayDate.getHours(), 
+                                                        todayDate.getMinutes());
+            dateComp                        = 0;
+            year                            = day.split("-")[0];
+            month                           = day.split("-")[1] - 1;
+            dayOfMonth                      = day.split("-")[2];
+
+            startHours                      = startTime.split(":")[0];
+            startMins                       = startTime.split(":")[1];
+            var dateTimeStart               = new Date(year, month, dayOfMonth, startHours, startMins);
+
+            endHours                        = endTime.split(":")[0];
+            endMins                         = endTime.split(":")[1];
+            var dateTimeEnd                 = new Date(year, month, dayOfMonth, endHours, endMins);
+        
+            // MAKE A TIME OBJECT HERE FOR START AND END
+
+            if (dateTimeStart.getTime() >= today.getTime()){
+                // THIS CAN BE BASED ON MINIMUM ENTRY TIME DURATION
+                console.log('InValid start date-time')
+                return false;
+            }
+            if (dateTimeEnd.getTime() > today.getTime()){
+                // END TIME CAN BE CURRENT TIME
+                console.log('InValid end date-time')
+                return false;
+            }
+            if (dateTimeStart.getTime() >= dateTimeEnd.getTime()){
+                console.log('InValid Time Interval')
+                return false;
+            }
+
+            var allTimeSheetEntriesJSON         = document.getElementById('allTimeSheetEntriesJSONTag').getAttribute("data");
+            allTimeSheetEntries                 = JSON.parse(allTimeSheetEntriesJSON)
+
+            intervalStart = stringToTime(startTime);
+            intervalEnd = stringToTime(endTime);
+            no_entries = allTimeSheetEntries.length
+
+            if (no_entries > 0){
+                first_start     = stringToTime(allTimeSheetEntries[0][0]);
+                first_end       = stringToTime(allTimeSheetEntries[0][1]);
+                last_start     = stringToTime(allTimeSheetEntries[no_entries - 1][0]);
+                last_end       = stringToTime(allTimeSheetEntries[no_entries - 1][1]);
+                if (intervalStart < first_start){
+                    // before first
+                    if (intervalEnd > first_start){
+                        console.log('ITS FIRST ENTRY WITH OVERLAP');
+                        return false;
+                    } else {
+                        console.log('ITS FIRST ENTRY');
+                        return true; // overlap with first one
+                    }
+                } 
+                
+                if (intervalStart > last_start){
+                    // after last
+                    if (intervalStart < last_end){
+                        console.log('ITS LAST ENTRY WITH OVERLAP');
+                        return false; // overlap with last
+                    } else {
+                        console.log('ITS LAST ENTRY');
+                        return true; // its last entry
+                    }
+                }
+
+                try {
+                    index = no_entries - 1;
+                    notFound = true;
+                    var currentStartTime;
+                    while (index > -1 && notFound){
+                        currentStartTimeEntryStr        = allTimeSheetEntries[index][0];
+                        currentStartTime                = stringToTime(allTimeSheetEntries[index][0]);
+                        currentEndTime                  = stringToTime(allTimeSheetEntries[index][1]);
+                        notFound = intervalStart <  currentStartTime;
+                        index -= 1;
+                    }
+
+                    entry_before_start     = stringToTime(allTimeSheetEntries[index+1][0]);
+                    entry_before_end     = stringToTime(allTimeSheetEntries[index+1][1]);
+                    entry_after_start     = stringToTime(allTimeSheetEntries[index+2][0]);
+                    entry_after_end     = stringToTime(allTimeSheetEntries[index+2][1]);
+                    if (intervalStart < entry_before_end){
+                        console.log('ITS IN OVERLAP WITH PREVIOUS ENTRY');
+                        return false;
+                    } 
+
+                    if (intervalEnd > entry_after_start){
+                        console.log('ITS OVERLAP WITH NEXT ENTRY');
+                        return false;
+                    } 
+                    console.log('ITS VALID IN BETWEEN ENTRY');
+                } catch (error){
+                    alert ('Error: ' + error);
+                }
+
+            } else {
+                console.log('NO ENTRIES');
+                return true;
+            }
+            return true;
+        }
+
+        function stringToTime(timeAsString, ){
+            hours               = timeAsString.split(":")[0];
+            mins                = timeAsString.split(":")[1];
+            var time            = new Date(0, 0, 0, hours, mins).getTime();
+            return time;
+        }
+
+        function init(){
+            document.getElementById('newtimeentrybtn').classList.add('disabled');
+            defaultString                       = "Select Option";
+            var partsForUserJSON               = document.getElementById('partSetupMapJSONTag').getAttribute("data");
+            partsForUser                       = JSON.parse(partsForUserJSON)
+            var selectPartTag                  = document.getElementById('partselect');
+
+            // ADD SELECT OPTION TEXT
+            var optionTag                       = document.createElement('option');
+            var attValue                        = document.createAttribute('value');
+            attValue.value                      = defaultString;
+            optionTag.setAttributeNode(attValue); 
+            var attSelected                     = document.createAttribute('selected');
+            attSelected.value                   = 'true';
+            optionTag.setAttributeNode(attSelected); 
+            optionTag.innerHTML                 = defaultString;
+
+            selectPartTag.appendChild(optionTag);     
+
+            for (part_id in partsForUser){
+                var strLabel                    = part_id + ":" + partsForUser[part_id]['name']
+                var optionTag                   = document.createElement('option');
+                var attValue                    = document.createAttribute('value');
+                attValue.value                  = part_id;
+                optionTag.setAttributeNode(attValue); 
+                optionTag.innerHTML             = strLabel;
+                selectPartTag.appendChild(optionTag);     
+            }
+            populateSetupsForPart();
+            populateMachinesForSetup();
+
+            var today                           = new Date();
+            var currentDate                     = document.getElementById('currentDateTag').getAttribute("data");
+            document.getElementById('timesheetdate').value = currentDate;
+            curHours                            = today.getHours();
+            curMins                             = today.getMinutes();
+            if (curMins < 10){
+                curMins                         = "0" + curMins;
+            }
+            if (curHours < 10){
+                curHours                        = "0" + curHours;
+            }
+            currentTime                         = curHours + ":" +curMins;
+
+            document.getElementById("timesheetstart").value     = currentTime;
+            document.getElementById('timesheetend').value       = currentTime;
+            document.getElementById('pageready').value          = "TRUE";
+        }
+
+        init();
+    </script>
+{% endblock %}

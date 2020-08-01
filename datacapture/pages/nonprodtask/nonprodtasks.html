@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block content_2 %}
+    {% if not user.is_authenticated %}
+        <script>
+            window.location.href = "/";
+        </script>
+    {% endif %}
+    <meta id="nonprodtasksListJsondata" data="{{nonprodtasksListJson}}" />
+    
+    <h1>Electral Control Systems</h1>
+    <h2>Non production Tasks:</h2>
+
+    <div class = "parts"> 
+
+        <div class="splitleft">
+            <div class="centered">
+                <form name = "nonprodtasksForm" action = "processNonProdTask" method = "POST">
+                    {% csrf_token %} 
+                    <table id = "nonprodtasktable"  width = 95% border = 1>
+                        <tr>
+                            <th  width="20%">Non-prod task ID</th>
+                            <th  width="auto">Non-prod task name</th>
+                            <th  width="5%"></th>
+                        </tr>
+                        {% for nps in nonprodtasks %}
+                        <tr>
+                            <td>{{nps.id_code}}</td>
+                            <td>{{nps.name}}</td>
+                            <td><input type = "radio" value = "{{nps.id_code}}" id = "editNonprodTask{{nps.id_code}}" name = "editNonprodTask" 
+                                class = "selected" 
+                                onchange= 
+                                "nonprodtaskSelected('{{nps.id_code}}');">
+                                </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    <div id = "buttondiv" align = "right">
+
+                        <input type = "hidden" id = "selectedNonProdTask" name = "selectedNonProdTask" value = "NO_NONPROD_TASK"/>
+                        <input type = "hidden" id = "functionMode" name = "functionMode" value = "ADD"/>
+                        <table>
+                            <tr>
+                                <td>
+                                    <input type="submit" id = "addNonprodTaskButton" class="w3-button w3-blue" value=" New "
+                                            onclick = "setFunctionMode('ADD')">
+                                </td>
+                                <td>
+                                    <input type="submit" id = "editNonprodTaskButton" class="w3-button w3-blue" value="Edit"
+                                            onclick = "setFunctionMode('EDIT')">
+                                </td>
+                                <td>
+                                    <input type="submit" id = "deleteNonprodTaskButton" class="w3-button w3-blue" value="Delete"
+                                            onclick = "setFunctionMode('DELETE')">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+      
+        <div class="splitright">
+            <div class="centered">
+                <table>
+                    <tr>
+                        <td><label id="labelscode" for = "scode" disabled>Non-prod Task Code</label></td>
+                        <td><input type = "text" name = "scode" id = "scode" disabled></td>
+                    </tr>
+                    <tr>
+                        <td><label id="labelsname" for = "sname" >Non-prod Task Name</label></td>
+                        <td><input type = "text" name = "sname" id = "sname" disabled></td>
+                    </tr>
+                    <tr>
+                        <td><label id="labelsdesc" for = "sdesc" >Non-prod Task Description</label></td>
+                        <td><input type = "text" name = "sdesc" id = "sdesc" disabled></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><label id="labelsops" for = "sdesc" disable ></label></td>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+<script>
+
+    function setFunctionMode(fMode){
+        document.getElementById('functionMode').value =  fMode;
+    }
+
+    function nonprodtaskSelected(st){
+        document.getElementById('editNonprodTaskButton').classList.remove('disabled');
+        document.getElementById('deleteNonprodTaskButton').classList.remove('disabled');
+        document.forms["nonprodtasksForm"]['selectedNonProdTask'].value = st;
+        var nonprodtasksListJson = document.getElementById('nonprodtasksListJsondata').getAttribute("data");
+        var nonprodtasksList = JSON.parse(nonprodtasksListJson);
+        document.getElementById('scode').setAttribute('value', nonprodtasksList[st]['id_code'])
+        document.getElementById('sname').setAttribute('value', nonprodtasksList[st]['name'])
+        document.getElementById('sdesc').setAttribute('value', nonprodtasksList[st]['desc'])
+    }
+
+    /**
+        THIS METHOD INITAITES THE STATUS OF REQUIRED FIELDS ON USERS PAGE 
+    */
+    function init(){
+        document.getElementById('editNonprodTaskButton').classList.add('disabled');
+        document.getElementById('deleteNonprodTaskButton').classList.add('disabled');
+    }
+
+    init();
+</script>
+{% endblock %}

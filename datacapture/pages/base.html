@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel = "stylesheet" href = "{% static 'css/main.css' %}">
+        <link rel = "stylesheet" href = "https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <title>Electral Devices</title>
+    </head>
+    <body>
+        <aside>
+            <figure>
+                <div id="avatar"></div>
+                <figcaption>Electral Devices</figcaption>
+            </figure>
+            <img src = "{% static 'images/menu1.jpg' %}">
+            {% if user.is_authenticated %}
+                {% if user.is_staff %}
+                <!-- AUTHENTICATED AND STAFF-->
+                <nav>
+                        <ul>
+                            <li><a href = "/">Home</a></li>
+                            <li><a href = "users">Users</a></li>
+                            <li><a href = "nonprodtasks">Non-prod Tasks</a></li>
+                            <li><a href = "setups">Setups/ Processes</a></li>
+                            <li><a href = "machines">Machines</a></li>
+                            <li><a href = "parts">Parts</a></li>
+                        </ul>
+                    </nav>
+                    <div id = "login">
+                        <form action = "adminLogout" method = "POST">
+                            {% csrf_token %} 
+                            <div id = "logindata">
+                                <table>
+                                    <tr>
+                                        <td><input type = "submit" value="Logout" class = "bta"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                {% else %}
+                <!-- AUTHENTICATED BY NOT STAFF-->
+                <nav>
+                    <ul class = disabled>
+                        <li><a href = "/">Home</a></li>
+                        <li><a href = "users">Users</a></li>
+                        <!-- <li><a href = "operations">Operations</a></li> -->
+                        <li><a href = "setups">Setups/ Processes</a></li>
+                        <li><a href = "machines">Machines</a></li>
+                        <li><a href = "parts">Parts</a></li>
+                    </ul>
+                </nav>
+                <div id = "login">
+                    <form action = "adminLogout" method = "POST">
+                        {% csrf_token %} 
+                        <div id = "logindata">
+                            <table>
+                                <tr>
+                                    <td><input type = "submit" value="Logout" class = "bta"></td>
+                                </tr>
+                            </table>
+                        </div>
+                {% endif %}
+            {% else %}
+                <nav>
+                    <ul class = disabled>
+                        <li><a href = "users">Users</a></li>
+                        <li><a href = "machines">Machines</a></li>
+                        <li><a href = "operations">Operations</a></li>
+                        <li><a href = "setups">Setups/ Processes</a></li>
+                        <li><a href = "parts">Parts</a></li>
+                    </ul>
+                </nav>
+                <div id = "login">
+                    <form action = "adminLogin" method = "POST">
+                        {% csrf_token %} 
+                        <div id = "logindata">
+                            <table>
+                                <tr>
+                                    <td>Administrator   </td><td><input type = "text" name = "username" 
+                                        size = "12" placeholder = "admin user" required></td>
+                                </tr>
+                                <tr>
+                                    <td>Password</td><td><input type = "password" name = "password" 
+                                        size = "12" placeholder = "password" required></td>
+                                </tr>
+                                <tr>
+                                    <td></td><td><input type = "submit" value="Login" class = "bta"></td>
+                                </tr>
+                            </table>
+                        </div>
+            {% endif %}
+                        <div id = "errormessages">
+                            {% for message in messages %}
+                            {{message}}
+                            {% endfor %}
+                        </div>
+                    </form>
+                </div>
+        </aside>
+        <main>
+            {% block content_2 %}
+            {% endblock %}
+        </main>
+        {% block content_script_1 %}
+        {% endblock %}
+        <script>
+            (function() {
+                var menu = document.querySelector('ul'), 
+                menulink = document.querySelector('img');
+                menulink.addEventListener('click', function (e){
+                    menu.classList.toggle('active');
+                    e.preventDefault();
+                })
+            })();
+        </script>
+    </body>
+</html>

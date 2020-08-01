@@ -1,0 +1,345 @@
+{% extends 'timesheet/timesheet_base.html' %}
+{% block content_meta %}
+    <meta id = "nonProdTasksJSONTag"         data = "{{nonProdTasksJSON}}" />
+    <meta id = "selectedEntryJSONTag"            data = "{{selectedEntryJSON}}" />
+    <meta id = "allTimeSheetEntriesJSONTag"   data = "{{allTimeSheetEntriesJSON}}" />
+{% endblock %}
+
+{% block content_main %}
+    {% if not user.is_authenticated %}
+        <script>
+            window.location.href = "/";
+        </script>
+    {% endif %}
+    <form name = "usersForm" action = "processRequest" method = "POST" onsubmit = "return isInputValid();">
+        {% csrf_token %} 
+        <input type = "hidden" id = "functionMode" name = "functionMode" value = "UNEDITED"/>
+        <input type = "hidden" id = "entryId" name = "entryId"/>
+        <input type = "hidden" id = "pageready" name = "pageready" value = "FALSE"/>
+        <table id = "usertable"  width = 100% border = 0>
+            <tr>
+                <td>
+                    <div class = "tablesetupselect">
+                        <label for="timesheetdate">Date:</label>
+                    </div>
+                </td>
+                <td>
+                    <div class = "tablesetupselect">
+                        <input type="text" id="timesheetdate" name="timesheetdate" readonly="readonly">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class = "tablesetupselect">
+                        <label>Non-prod Task</label>
+                    </div>
+                </td>
+                <td>
+                    <div id = "selectsetupdiv" class = "tablesetupselect">
+                        <select id="nonprodtaskselect" name="nonprodtaskselect" style="min-width:100%;" onchange="nonProdTaskSelected();" >
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class = "tablesetupselect">
+                        <label>Description</label>
+                    </div>
+                </td>
+                <td>
+                    <div id = "selectsetupdiv" class = "tablesetupselect">
+                        <input id="description" name="description" style="min-width:40%;" onchange = "nonProdDescriptionChanged();"/>
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class = "tablesetupselect">
+                        <label for="timesheetstart">Start:</label>
+                    </div>
+                </td>
+                <td>
+                    <div class = "tablesetupselect">
+                        <input type="time" id="timesheetstart" name="timesheetstart" onchange="timeStartSelected();">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class = "tablesetupselect">
+                        <label for="timesheetend">End:</label>
+                    </div>
+                </td>
+                <td>
+                    <div class = "tablesetupselect">
+                        <input type="time" id="timesheetend" name="timesheetend" onchange="timeEndSelected();">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" id = "edittimeentrybtn" name = "edittimeentrybtn"  
+                            class="w3-button w3-blue" value="Submit" onclick = "setMode('EDITED_NP');">                           
+                </td>
+                <td>
+                    <input type="submit" id = "cancelbtn" name = "cancelbtn"  
+                            class="w3-button w3-blue" value="Cancel"  onclick = "setMode('CANCEL');">                           
+                </td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}
+{% block content_script_1 %}
+    <script>
+
+        function markDirty(){
+            if (document.getElementById('pageready').value == "TRUE"){
+                document.getElementById('edittimeentrybtn').classList.remove('disabled');
+            }
+        }
+
+        function setMode(currentMode){
+            document.getElementById('functionMode').value = currentMode;
+        }
+    
+        function nonProdTaskSelected(){
+            markDirty();
+        }
+    
+        function nonProdDescriptionChanged(){
+            markDirty();
+        }
+
+        function dateSelected(){
+            markDirty();
+        }
+
+        function timeStartSelected(){
+            markDirty();
+        }
+
+        function timeEndSelected(){
+            markDirty();
+        }
+
+        function isInputValid(){
+            if (document.getElementById('functionMode').value == "CANCEL"){
+                return true;
+            }
+
+            var invalidVal = "Select Option"
+
+            var dateVal = document.getElementById('timesheetdate').value
+            if (!isDateValid(dateVal)){
+                alert('InvalidDate')
+                return false;
+            }
+
+            var startTime                       = document.getElementById('timesheetstart').value
+            var endTime                         = document.getElementById('timesheetend').value
+            if (!validInterval(dateVal, startTime, endTime)){
+                return false;
+            }
+            return true;   // later change it to true
+        }
+
+        function isDateValid(dateValue){
+            today                               = new Date();
+            dateParts                           = dateValue.split("-")
+
+            year                                = parseInt(dateParts[0]);
+            month                               = parseInt(dateParts[1]);
+            day                                 = parseInt(dateParts[2]);
+
+            dt1                                 = Date.UTC(year, month - 1, day);
+            dt2                                 = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+
+            diff                                = Math.floor((dt2 - dt1) /(1000 * 60 * 60 * 24));
+            if (diff < 0){
+                alert('Invalid-Diff')
+                return false;
+            }
+            return true;
+        }
+
+        function validInterval(day, startTime, endTime){
+            var todayDate                   = new Date();
+            var today                       = new Date (todayDate.getFullYear(), 
+                                                        todayDate.getMonth(), 
+                                                        todayDate.getDate(), 
+                                                        todayDate.getHours(), 
+                                                        todayDate.getMinutes());
+            dateComp                        = 0;
+            year                            = day.split("-")[0];
+            month                           = day.split("-")[1] - 1;
+            dayOfMonth                      = day.split("-")[2];
+
+            startHours                      = startTime.split(":")[0];
+            startMins                       = startTime.split(":")[1];
+            var dateTimeStart               = new Date(year, month, dayOfMonth, startHours, startMins);
+
+            endHours                        = endTime.split(":")[0];
+            endMins                         = endTime.split(":")[1];
+            var dateTimeEnd                 = new Date(year, month, dayOfMonth, endHours, endMins);
+        
+            // TODO: TESTING WITH NP TIMES SHEET ENTRIES
+
+
+            if (dateTimeStart.getTime() >= today.getTime()){
+                // THIS CAN BE BASED ON MINIMUM ENTRY TIME DURATION
+                alert('InValid start date-time')
+                return false;
+            }
+            if (dateTimeEnd.getTime() > today.getTime()){
+                // END TIME CAN BE CURRENT TIME
+                alert('InValid end date-time')
+                return false;
+            }
+            if (dateTimeStart.getTime() >= dateTimeEnd.getTime()){
+                alert('InValid Time Interval')
+                return false;
+            }
+
+            try {
+                var allTimeSheetEntriesJSON         = document.getElementById('allTimeSheetEntriesJSONTag').getAttribute("data");
+                allTimeSheetEntries                 = JSON.parse(allTimeSheetEntriesJSON)
+
+                intervalStart = stringToTime(startTime);
+                intervalEnd = stringToTime(endTime);
+                selectedEntryJSON                   = document.getElementById('selectedEntryJSONTag').getAttribute("data");
+                selectedEntry                       = JSON.parse(selectedEntryJSON);
+                id_selected_entry                   = selectedEntry['id'];
+                //------------ remove selected entry-------
+                console.log(allTimeSheetEntries);
+                index2 = 0;
+                while(allTimeSheetEntries[index2][2].substring(2) != id_selected_entry){
+                    index2 += 1;
+                }
+                allTimeSheetEntries.splice(index2, 1)
+                for( ent in allTimeSheetEntries){
+                    console.log(allTimeSheetEntries[ent]);
+                }
+
+                no_entries = allTimeSheetEntries.length
+                if (no_entries > 0){
+                    first_start     = stringToTime(allTimeSheetEntries[0][0]);
+                    first_end       = stringToTime(allTimeSheetEntries[0][1]);
+                    last_start     = stringToTime(allTimeSheetEntries[no_entries - 1][0]);
+                    last_end       = stringToTime(allTimeSheetEntries[no_entries - 1][1]);
+                    if (intervalStart < first_start){
+                        // before first
+                        if (intervalEnd > first_start){
+                            alert('Entries overlap');
+                            return false;
+                        } else {
+                            console.log('ITS FIRST ENTRY');
+                            return true; // overlap with first one
+                        }
+                    } 
+                    
+                    if (intervalStart > last_start){
+                        // after last
+                        if (intervalStart < last_end){
+                            alert('Entries overlap');
+                            return false; // overlap with last
+                        } else {
+                            console.log('ITS LAST ENTRY');
+                            return true; // its last entry
+                        }
+                    }
+                    selectedEntryJSON               = document.getElementById('selectedEntryJSONTag').getAttribute("data");
+                    selectedEntry                   = JSON.parse(selectedEntryJSON)
+                    index = no_entries - 1;
+                    notFound = true;
+                    var currentStartTime;
+                    while (index > -1 && notFound){
+                        currentStartTimeEntryStr        = allTimeSheetEntries[index][0];
+                        currentStartTime                = stringToTime(allTimeSheetEntries[index][0]);
+                        currentEndTime                  = stringToTime(allTimeSheetEntries[index][1]);
+                        notFound = intervalStart <  currentStartTime;
+                        index -= 1;
+                    }
+                    entry_before_end                    = stringToTime(allTimeSheetEntries[index+1][1]);
+                    entry_after_start                   = stringToTime(allTimeSheetEntries[index+2][0]);
+
+                    if (intervalStart < entry_before_end){
+                        alert('Entries overlap');
+                        return false;
+                    } 
+
+                    if (intervalEnd > entry_after_start){
+                        alert('Entries overlap');
+                        return false;
+                    } 
+                    console.log('ITS VALID IN BETWEEN ENTRY');
+                } else {
+                    console.log('NO ENTRIES');
+                    return true;
+                }
+            } catch (error){
+                alert ('Error: ' + error);
+            }
+            return true;
+        }
+
+        function stringToTime(timeAsString, ){
+            hours               = timeAsString.split(":")[0];
+            mins                = timeAsString.split(":")[1];
+            var time            = new Date(0, 0, 0, hours, mins).getTime();
+            return time;
+        }
+
+        function init(){
+            document.getElementById('edittimeentrybtn').classList.add('disabled');
+
+            selectedEntryJSON                   = document.getElementById('selectedEntryJSONTag').getAttribute("data");
+            selectedEntry                       = JSON.parse(selectedEntryJSON)
+
+            defaultString                       = "Select Option";
+            var nonProdTasksJSON                = document.getElementById('nonProdTasksJSONTag').getAttribute("data");
+            var nonProdTasks                    = JSON.parse(nonProdTasksJSON);
+            var selectNonProdTaskTag            = document.getElementById('nonprodtaskselect');
+            // ADD SELECT OPTION TEXT
+            var optionTag                       = document.createElement('option');
+            var attValue                        = document.createAttribute('value');
+            attValue.value                      = defaultString;
+            optionTag.setAttributeNode(attValue); 
+            var attSelected                     = document.createAttribute('selected');
+            attSelected.value                   = 'true';
+            optionTag.setAttributeNode(attSelected); 
+            optionTag.innerHTML                 = defaultString;
+
+            selectNonProdTaskTag.appendChild(optionTag);     
+
+            for (task_id in nonProdTasks){
+                var strLabel                    = task_id + ":" + nonProdTasks[task_id]
+                var optionTag                   = document.createElement('option');
+                var attValue                    = document.createAttribute('value');
+                attValue.value                  = task_id;
+                optionTag.setAttributeNode(attValue); 
+                optionTag.innerHTML             = strLabel;
+                selectNonProdTaskTag.appendChild(optionTag);     
+            }
+
+            //TODO: THE SELECT OPTION IS NOT GETTING SELECTED
+
+            entryId.value                       = selectedEntry['id'];
+            selectNonProdTaskTag.value          = selectedEntry['nonprod_task']['id_code'];
+
+            var descTag                         = document.getElementById('description');
+            descTag.value                       = selectedEntry['description'];
+
+            var selectDateTag                   = document.getElementById('timesheetdate');
+            var selectedDate                    = new Date(selectedEntry['date']);
+            selectDateTag.value                 = selectedEntry['date'];
+            
+            document.getElementById("timesheetstart").value     = selectedEntry['timeStart'];
+            document.getElementById('timesheetend').value       = selectedEntry['timeEnd'];
+            document.getElementById('pageready').value          = "TRUE";
+        }
+        init();
+    </script>
+{% endblock %}

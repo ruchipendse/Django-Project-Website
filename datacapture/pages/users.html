@@ -1,0 +1,608 @@
+{% extends 'base.html' %}
+
+{% block content_2 %}
+    {% if not user.is_authenticated %}
+        <script>
+            window.location.href = "/";
+        </script>
+    {% endif %}
+
+    <meta id="operatorsListJsonTag" data="{{operatorsListJson}}" />
+    <meta id="allSetupsListJsonTag" data="{{allSetupsListJson}}" />
+    <h1>Electral Devices</h1>
+    <p>Welcome to User management page.</p>
+    <div class = "parts">
+        <div id = "splitLeft" class="split left">
+            <div class="centered">
+                <table id = "usertable"  width = 95% border = 1>
+                    <tr>
+                        <th  width="25%">User Name</th>
+                        <th  width="35%">First Name</th>
+                        <th  width="35%">Last Name</th>
+                        <th  width="5%"></th>
+                    </tr>
+                    {% for u in operators %}
+                    <tr>
+                        <td>{{u.user.username}}</td>
+                        <td>{{u.user.first_name}}</td>
+                        <td>{{u.user.last_name}}</td>
+                        <td><input type = "radio" value = "{{u.user.username}}" id = "editUser" name = "editUser" 
+                            class = "selected" 
+                            onchange="userSelected('{{u.user.first_name}},{{u.user.last_name}},{{u.user.username}},{{u.user.email}}')">
+                            </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                <div align = "center">
+                    <table>
+                        <tr>
+                            <td>
+                                <input type = "submit" value="Add New User"  
+                                    id = "mode"  class = "cta" onclick="toggleButton()">
+                            </td>
+                            <td>
+                                <form name = "deleteForm" action = "deleteUser" method = "POST">
+                                    {% csrf_token %} 
+                                    <input type = "hidden" name = "selectedUser" value = "NO_USER"/>
+                                    <input type = "submit" value="Delete User"  
+                                        id = "deleteButton"  class = "cta">
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+      
+        <div id = "splitRight" class="split right">
+            <div class="centered">
+                <form action = "users" onsubmit = "return compileselections();" method = "POST">
+                    {% csrf_token %} 
+                    <input type = "hidden" id = "userOperation" name = "userOperation" value = "UPDATE"/>
+                    <input type = "hidden" id = "setupSelection" name = "setupSelection" value = ""/>
+                    <table  id = "rightsidetable" name = "rightsidetable" width = "95%">
+                        <tr>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td><label id="labeluname" for = "userName" >User Name</label></td>
+                                        <td><input type = "text" name = "userName" id = "userName" onChange = "markDirty();"  required></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label id="labelfname" for = "firstName" >First Name</label></td>
+                                        <td><input type = "text" name = "firstName" id = "firstName" onChange = "markDirty();" required></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label id="labellname" for = "lastName" >Last Name</label></td>
+                                        <td><input type = "text" name = "lastName" id = "lastName" onChange = "markDirty();"  required></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label id="labelemail" for = "email" >email</label></td>
+                                        <td><input type = "text" name = "email" id  = "email" onChange = "markDirty();"  required></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label id="labelpword" for = "pword" >Password</label></td>
+                                        <td><input type = "password" name = "pword" id = "pword" onChange = "markDirty();"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label id="labelrpword" for = "rpword" >Repeat Password</label></td>
+                                        <td><input type = "password" name = "rpword" id = "rpword" onChange = "markDirty();"></td>
+                                    </tr>
+                                    <tr>
+                                        <td align = "right"><input type="checkbox" id="updatepword" name="updatepword" value="updatepassword"
+                                            onchange = "togglePasswordEdit();">
+                                        </td><td><label for="updatepword" id = "labelupdatepword">Reset Password</label></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table   width = 100% >
+                                    <tr>
+                                        <td>
+                                            <label id="labelmoperations"  for="selectsetups">Assign Setups:</label>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table id = "selectsetups" name = "selectsetups"  width = 100%>
+                                    <tr>
+                                        <td   width="45%">
+                                            <select id="totalsetups" name="totalsetups" 
+                                                    size = "5" multiple style="min-width:100%;">
+                                            </select>
+                                        </td>
+                                        <td   width="10%">
+                                            <table>
+                                                <tr>
+                                                    <td>
+                                                        <input type = "button" value = ">>" id = "selectAllSetups" 
+                                                        onclick= "selectOps('SELECT_ALL', '{{totalOperationsListJson}}');">
+                                                    </td>                                                    
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <input type = "button" value = "->" id = "selectSetups" 
+                                                        onclick = "selectOps('SELECT', '{{totalOperationsListJson}}');">
+                                                    </td>                                                    
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <input type = "button" value = "<--" id = "deselectSetups" 
+                                                        onclick = "selectOps('DESELECT', '{{totalOperationsListJson}}');">
+                                                    </td>                                                    
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <input type = "button" value = "<<" id = "deselectAllSetups" 
+                                                        onclick = "selectOps('DESELECT_ALL', '{{machinesListJson}}', '{{totalOperationsListJson}}');">
+                                                    </td>                                                    
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td   width="45%">
+                                            <select id="selectedsetups"  name="selectedsetups" size = "5" multiple style="min-width:100%;" >
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input id = "userDetailsSubmit" type="submit" class="w3-button w3-blue" value="Submit" >
+                            </td>
+                        </tr>
+                    </table>  
+                    <div id = "errormessages">
+                        {% for message in messages %}
+                        {{message}}
+                        {% endfor %}
+                    </div>  
+                </form>            
+            </div>
+        </div>
+    </div>
+<script>
+
+    function markDirty(){
+        enableSubmitButton();
+    }
+
+    function clearLeftSetupSelectBox(){
+        selectedSetupTag = document.getElementById('totalsetups');
+        selectedSetupTag.options.length = 0;
+    }
+
+    function clearRightSetupSelectBox(){
+        selectedSetupTag = document.getElementById('selectedsetups');
+        selectedSetupTag.options.length = 0;
+    }
+
+    function clearUserData(){
+        document.getElementById('firstName').value = "";
+        document.getElementById('lastName').value = "";
+        document.getElementById('userName').value = "";
+        document.getElementById('email').value = "";
+
+        document.getElementById('pword').value = "";
+        document.getElementById('rpword').value = "";
+        clearLeftSetupSelectBox();
+        clearRightSetupSelectBox();
+    }
+
+    function clearPasswordData(){
+        document.getElementById('pword').value = "";
+        document.getElementById('rpword').value = "";
+    }
+
+    function disableUserName(){
+        if (!document.getElementById('userName').classList.contains('disabled')){
+            document.getElementById('userName').classList.add('disabled');
+        }
+    }
+
+    function enableUserName(){
+        if (document.getElementById('userName').classList.contains('disabled')){
+            document.getElementById('userName').classList.remove('disabled');
+        }
+    }
+
+    function enableUserDetails(){
+        if (document.getElementById('firstName').classList.contains('disabled')){
+            document.getElementById('firstName').classList.remove('disabled');
+        }
+        if (document.getElementById('lastName').classList.contains('disabled')){
+            document.getElementById('lastName').classList.remove('disabled');
+        }
+        if (document.getElementById('email').classList.contains('disabled')){
+            document.getElementById('email').classList.remove('disabled');
+        }
+        if (document.getElementById('labelfname').classList.contains('disabled')){
+            document.getElementById('labelfname').classList.remove('disabled');
+        }
+        if (document.getElementById('labellname').classList.contains('disabled')){
+            document.getElementById('labellname').classList.remove('disabled');
+        }
+        if (document.getElementById('labeluname').classList.contains('disabled')){
+            document.getElementById('labeluname').classList.remove('disabled');
+        }
+        if (document.getElementById('labelemail').classList.contains('disabled')){
+            document.getElementById('labelemail').classList.remove('disabled');
+        }
+        if (document.getElementById('selectsetups').classList.contains('disabled')){
+            document.getElementById('selectsetups').classList.remove('disabled');
+        }
+        if (document.getElementById('labelmoperations').classList.contains('disabled')){
+            document.getElementById('labelmoperations').classList.remove('disabled');
+        }
+    }
+
+    function disableUserDetails(){
+        if (!document.getElementById('firstName').classList.contains('disabled')){
+            document.getElementById('firstName').classList.add('disabled');
+        }
+        if (!document.getElementById('lastName').classList.contains('disabled')){
+            document.getElementById('lastName').classList.add('disabled');
+        }
+        if (!document.getElementById('email').classList.contains('disabled')){
+            document.getElementById('email').classList.add('disabled');
+        }
+        if (!document.getElementById('labelfname').classList.contains('disabled')){
+            document.getElementById('labelfname').classList.add('disabled');
+        }
+        if (!document.getElementById('labellname').classList.contains('disabled')){
+            document.getElementById('labellname').classList.add('disabled');
+        }
+        if (!document.getElementById('labeluname').classList.contains('disabled')){
+            document.getElementById('labeluname').classList.add('disabled');
+        }
+        if (!document.getElementById('labelemail').classList.contains('disabled')){
+            document.getElementById('labelemail').classList.add('disabled');
+        }
+        if (!document.getElementById('selectsetups').classList.contains('disabled')){
+            document.getElementById('selectsetups').classList.add('disabled');
+        }
+        if (!document.getElementById('labelmoperations').classList.contains('disabled')){
+            document.getElementById('labelmoperations').classList.add('disabled');
+        }
+        disableUserName();
+    }
+
+    function enablePasswordDetails(){
+        pwordField = document.getElementById('pword');
+        rpwordField = document.getElementById('rpword');
+        pwordLabel = document.getElementById('labelpword');
+        rpwordLabel = document.getElementById('labelrpword');
+
+        pwordField.required = true;
+        rpwordField.required = true;
+
+        pwordField.value = "";
+        rpwordField.value = "";
+
+        if (pwordField.classList.contains('disabled')){
+            pwordField.classList.remove('disabled');
+        }
+        if (rpwordField.classList.contains('disabled')){
+            rpwordField.classList.remove('disabled');
+        }
+        if (pwordLabel.classList.contains('disabled')){
+            pwordLabel.classList.remove('disabled');
+        }
+        if (rpwordLabel.classList.contains('disabled')){
+            rpwordLabel.classList.remove('disabled');
+        }
+    }
+
+    function disablePasswordDetails(){
+        pwordField = document.getElementById('pword');
+        rpwordField = document.getElementById('rpword');
+        pwordLabel = document.getElementById('labelpword');
+        rpwordLabel = document.getElementById('labelrpword');
+
+        pwordField.required = false;
+        rpwordField.required = false;
+
+        pwordField.value = "";
+        rpwordField.value = "";
+
+        if (!pwordField.classList.contains('disabled')){
+            pwordField.classList.add('disabled');
+        }
+        if (!rpwordField.classList.contains('disabled')){
+            rpwordField.classList.add('disabled');
+        }
+        if (!pwordLabel.classList.contains('disabled')){
+            pwordLabel.classList.add('disabled');
+        }
+        if (!rpwordLabel.classList.contains('disabled')){
+            rpwordLabel.classList.add('disabled');
+        }
+    }
+
+    function enableResetPassword(){
+        document.getElementById("updatepword").checked = false;
+        if (document.getElementById("updatepword").classList.contains('disabled')){
+            document.getElementById("updatepword").classList.remove('disabled');
+        }
+        if (document.getElementById("labelupdatepword").classList.contains('disabled')){
+            document.getElementById("labelupdatepword").classList.remove('disabled');
+        }
+    }
+
+    function disableResetPassword(){
+        document.getElementById("updatepword").checked = false;
+        if (!document.getElementById("updatepword").classList.contains('disabled')){
+            document.getElementById("updatepword").classList.add('disabled');
+        }
+        if (!document.getElementById("labelupdatepword").classList.contains('disabled')){
+            document.getElementById("labelupdatepword").classList.add('disabled');
+        }
+    }
+
+    function enableSubmitButton(){
+        if (document.getElementById("userDetailsSubmit").classList.contains('disabled')){
+            document.getElementById("userDetailsSubmit").classList.remove('disabled');
+        }
+    }
+
+    function disableSubmitButton(){
+        if (!document.getElementById("userDetailsSubmit").classList.contains('disabled')){
+            document.getElementById("userDetailsSubmit").classList.add('disabled');
+        }
+    }
+
+    function populateAllSetupsLeftSide(){
+        // USE WHEN NEW USER
+        var allSetupsListJson = document.getElementById('allSetupsListJsonTag').getAttribute("data");
+        var allSetupsList = JSON.parse(allSetupsListJson);
+
+        unselectedSetupTag = document.getElementById('totalsetups');
+        clearLeftSetupSelectBox();
+
+        for (setup in allSetupsList){
+            optionText = allSetupsList[setup]['id_code'] + "-" + allSetupsList[setup]['name']
+            var option = document.createElement("option");
+            option.text = optionText;
+            unselectedSetupTag.add(option);
+        }
+    }
+
+    function populateOperatorSetupsLeftSide(){
+        var operatorsListJson = document.getElementById('operatorsListJsonTag').getAttribute("data");
+        var operatorsList = JSON.parse(operatorsListJson);
+        var setupsForOperatorExisting = operatorsList[username]['setups'];
+
+        var allSetupsListJson = document.getElementById('allSetupsListJsonTag').getAttribute("data");
+        var allSetupsList = JSON.parse(allSetupsListJson);
+
+        // -------- POPULATE LEFT SIDE SELECT BOX -----
+        unselectedSetupTag = document.getElementById('totalsetups');
+        unselectedSetupTag.options.length = 0;
+
+        for (setup in allSetupsList){
+            if (!(allSetupsList[setup]['id_code'] in setupsForOperatorExisting)){
+                optionText = allSetupsList[setup]['id_code'] + "-" + allSetupsList[setup]['name']
+                var option = document.createElement("option");
+                option.text = optionText;
+                unselectedSetupTag.add(option);
+            }
+        }
+    }
+    
+    function populateOperatorSetupsRightSide(){
+        var operatorsListJson = document.getElementById('operatorsListJsonTag').getAttribute("data");
+        var operatorsList = JSON.parse(operatorsListJson);
+        var setupsForOperatorExisting = operatorsList[username]['setups'];
+        selectedSetupTag = document.getElementById('selectedsetups');
+        // -------- POPULATE LEFT SIDE SELECT BOX -----
+        selectedSetupTag.options.length = 0;
+        for (setup in setupsForOperatorExisting){
+            optionText = setupsForOperatorExisting[setup]['id_code'] + "-" + setupsForOperatorExisting[setup]['name']
+            var option = document.createElement("option");
+            option.text = optionText;
+            selectedSetupTag.add(option);
+        }
+    }
+
+    /**TODO: CUSTOMIZE THE FUNCTION   **/
+    function selectOps(choice_mode, totalOperationsListJson){
+        var allSetupsListJson = document.getElementById('allSetupsListJsonTag').getAttribute("data");
+        var allSetupsList = JSON.parse(allSetupsListJson);
+        leftSideSetupBox = document.getElementById('totalsetups');
+        rightSideSetupBox = document.getElementById('selectedsetups');
+
+        switch(choice_mode) {
+            case "SELECT_ALL":
+                selectedSetups = leftSideSetupBox.options;
+                const lsl = selectedSetups.length
+                for (i = lsl; i > 0; i--){
+                    selectedSetups[i-1].selected = false
+                    rightSideSetupBox.options.add(selectedSetups[i-1]);
+                }
+            break;
+            case "SELECT":
+                selectedSetups = leftSideSetupBox.options;
+                const ls = selectedSetups.length
+                for (i = ls; i > 0; i--){
+                    if (selectedSetups[i-1].selected){
+                        selectedSetups[i-1].selected = false
+                        rightSideSetupBox.options.add(selectedSetups[i-1]);
+                    }
+                }
+                break;
+            case "DESELECT_ALL":
+                selectedSetups = rightSideSetupBox.options;
+                const lright = selectedSetups.length
+                for (i = lright; i > 0; i--){
+                    selectedSetups[i-1].selected = false
+                    leftSideSetupBox.options.add(selectedSetups[i-1]);
+                }
+                break;
+            case "DESELECT":
+                selectedSetups = rightSideSetupBox.options;
+                const ld = selectedSetups.length
+                for (i = ld; i > 0; i--){
+                    if (selectedSetups[i-1].selected){
+                        selectedSetups[i-1].selected = false
+                        leftSideSetupBox.options.add(selectedSetups[i-1]);
+                    }
+                }
+                break;
+            default:
+        }
+        markDirty()
+    }
+
+    function prepareForUpdate(){
+        if (document.getElementById("usertable").classList.contains('disabled')){
+            document.getElementById("usertable").classList.remove('disabled');
+        }
+        if (document.getElementById("deleteButton").classList.contains('disabled')){
+            document.getElementById("deleteButton").classList.remove('disabled');
+        }
+        if (document.getElementById("mode").classList.contains('disabled')){
+            document.getElementById("mode").classList.remove('disabled');
+        }
+        document.getElementById('mode').value = "Add New User";
+        clearUserData();
+        disableUserDetails();
+        disablePasswordDetails();
+        disableResetPassword();
+        disableSubmitButton();
+        document.getElementById('userOperation').value = "UPDATE";
+    }
+
+    function uncheckRadioButtons(){
+        var radList = document.getElementsByName('editUser');
+        for (var i = 0; i < radList.length; i++) {
+            if(radList[i].checked) radList[i].checked = false;
+        }
+    }
+
+    function prepareForNewUser(){
+        if (!document.getElementById("usertable").classList.contains('disabled')){
+            document.getElementById("usertable").classList.add('disabled');
+        }
+        if (!document.getElementById("deleteButton").classList.contains('disabled')){
+            document.getElementById("deleteButton").classList.add('disabled');
+        }
+        if (document.getElementById("userName").classList.contains('disabled')){
+            document.getElementById("userName").classList.remove('disabled');
+        }
+        if (document.getElementById("mode").classList.contains('disabled')){
+            document.getElementById("mode").classList.remove('disabled');
+        }
+        document.getElementById('mode').value = "Update User";
+        enableUserDetails();
+        enablePasswordDetails();
+        disableResetPassword();
+        clearUserData();
+        clearPasswordData();
+        uncheckRadioButtons();
+        disableSubmitButton();
+        document.getElementById('userOperation').value = "NEW_USER";
+        populateAllSetupsLeftSide();
+    }
+
+    /**
+        THIS METHOD GETS CALLED WHEN ADD USER/ UPDATE USER BUTTON IS CLICKED.
+        THIS METHOD TGLES THE MODE OF PAGE. 
+    */
+
+    function toggleButton(){
+        var btnText = document.getElementById('mode');
+        if (btnText.value == "Update User"){
+            prepareForUpdate();
+        } else if (btnText.value == "Add New User"){
+            prepareForNewUser();
+        } else {
+            // THIS WILL NEVER BE THE CASE. OPTIONALLY LOG ERROR HERE
+        }
+    }
+
+    /**
+        THIS METHOD GETS CALLED WHEN RADIO BUTTON IS HIT. 
+        IT SETS THE USER DETAILS IN THE CORRESPONDING FIELDS
+        PARAMETER OASSED IS A STRING CONTAINING USER DETAILS.
+        TODO: THE PARAMETER IS PASSED AS COMMA SEPARATED STRING. 
+        THIS NEEDS TO BE REPLACED BY ACTUAL OBJECT.
+    */
+    function userSelected(e){
+        var fields = e.split(',');
+        username = fields[2].trim();
+        document.getElementById('firstName').value = fields[0].trim();
+        document.getElementById('lastName').value = fields[1].trim();
+        document.getElementById('userName').value = fields[2].trim();
+        document.getElementById('email').value = fields[3].trim();
+        document.forms["deleteForm"]['selectedUser'].value = fields[2].trim();
+        enableUserDetails();
+        disablePasswordDetails();
+        enableResetPassword();
+        disableSubmitButton();
+        populateOperatorSetupsLeftSide();
+        populateOperatorSetupsRightSide();
+    }
+
+    /**
+        THIS METHOD TAKES CARE OF ENABLING/ DISABLING PARTS FORM USER DETAILS
+        BASED ON "RESET PASSWORD" CHECK BOX STATUS 
+    */
+    function togglePasswordEdit(){
+        checkBox = document.getElementById('updatepword');
+        if (checkBox.checked == true){
+            enablePasswordDetails();
+        }
+        else {
+            disablePasswordDetails();
+        }
+    }        
+
+    function compileselections(){
+        try {
+            // OPERATIONS
+            leftSideSetupBox = document.getElementById('totalsetups');
+            rightSideSetupBox = document.getElementById('selectedsetups');
+            operationSelection = document.getElementById('setupSelection');
+
+            leftSideSetups = "";
+            rightSideSetups = "";
+
+            stpslist = leftSideSetupBox.options;
+            const lscs = stpslist.length
+            for (i = lscs; i > 0; i--){
+                stName = (stpslist[i-1].text).split("-")[1]
+                leftSideSetups += stName + ","
+            }
+
+            stpslist = rightSideSetupBox.options;
+            const ldcs = stpslist.length
+            for (i = ldcs; i > 0; i--){
+                stName = (stpslist[i-1].text).split("-")[1]
+                rightSideSetups += stName + ","
+            }
+
+            setupSelection.value = leftSideSetups + ";" + rightSideSetups
+            alert(setupSelection.value)
+            console.log(setupSelection.value)
+        } catch (err) {
+            console.log(err);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+        THIS METHOD INITAITES THE STATUS OF REQUIRED FIELDS ON USERS PAGE 
+    */
+    function init(){
+        prepareForUpdate();
+    }
+    init();
+</script>
+{% endblock %}

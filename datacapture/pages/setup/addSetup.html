@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% block content_2 %}
+{% if not user.is_authenticated %}
+    <script>
+        window.location.href = "/";
+    </script>
+{% endif %}
+<h1>Electral Control Systems</h1>
+<h2>Setups:</h2>
+<div class = "parts"> 
+    <div class="splitleft">
+        <div class="centered">
+            <form name = "addForm" id = "addForm" action = "processSetup"  onsubmit = "return compileselections();"  method = "POST">
+                {% csrf_token %} 
+                <input type = "hidden" id = "functionMode" name = "functionMode" value = ""/>
+                <input type = "hidden" id = "operationSequence" name = "operationSequence" value = ""/>
+
+                <table>
+                    <tr>
+                        <td><label id="labelscode" for = "scode" >Setup Code</label></td>
+                        <td><input type = "text" name = "scode" id = "scode" onchange = "markDirty();" required></td>
+                    </tr>
+                    <tr>
+                        <td><label id="labelsname" for = "sname" >Setup Name</label></td>
+                        <td><input type = "text" name = "sname" id = "sname" onchange = "markDirty();" required></td>
+                    </tr>
+                    <tr>
+                        <td><label id="labelsdesc" for = "sdesc" >Setup Description</label></td>
+                        <td><input type = "text" name = "sdesc" id = "sdesc" onchange = "markDirty();" required></td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td><input id = "addsetupbtn" name = "addsetupbtn" type="submit" class="w3-button w3-blue" value="Submit"></td>
+                                    <td><input id = "cancelbtn" name = "cancelbtn" type="submit" class="w3-button w3-blue" 
+                                        onclick = "setCancel()" value="Cancel"></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table> 
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function formTag(parentTag, tagName, attributes, attValues){
+
+        var tag = document.createElement(tagName);
+        for (i1 = 0; i1 < attributes.length; i1++){
+            var attribute = document.createAttribute(attributes[i1]);
+            attribute.value = attValues[i1];
+            tag.setAttributeNode(attribute); 
+            parentTag.appendChild(tag);     
+        }
+        return tag;
+    }
+
+    function formLeafTag(parentTag, tagName, attributes, attValues, innerText){
+
+        var tagLeaf = formTag(parentTag, tagName, attributes, attValues);
+        tagLeaf.innerHTML = innerText;
+        return tagLeaf;
+    }
+
+    function reAssignRowIndex(){
+        var tableoperation = document.getElementById('tableoperation');
+        var rows = tableoperation.rows;
+        for (i = 1; i < rows.length; i ++){
+            var cellUp = rows[i].cells[1];
+            var buttonUpTag = cellUp.childNodes[0];
+            buttonUpTag.setAttribute("onclick", "onUpBtnClicked(" + i + ");");
+            buttonUpTag.setAttribute("id", "upbtn" + i);
+            buttonUpTag.setAttribute("name", "upbtn" + i);
+
+            var cellDel = rows[i].cells[2];
+            var buttonDelTag = cellDel.childNodes[0];
+            buttonDelTag.setAttribute("onclick", "onDelBtnClicked(" + i + ");");
+            buttonDelTag.setAttribute("id", "delbtn" + i);
+            buttonDelTag.setAttribute("name", "delbtn" + i);
+        }
+    }
+
+    function insertRow(index){
+        var tablesetup = document.getElementById('tableoperation');
+        var row = tablesetup.rows[index];
+    }
+
+    function deleteRow(index){
+        document.getElementById("tableoperation").deleteRow(index);
+        reAssignRowIndex();
+    }
+
+    function onUpBtnClicked(index){
+        if (index > 1){
+            var tableTag = document.getElementById('tableoperation');
+            indexDest = index - 1;
+
+            var tbodyTag = tableTag.children[0];
+            var trTagSource = tbodyTag.children[index];
+            var trTagSourceClone = trTagSource.cloneNode(true);
+            var setVal = trTagSource.children[0].children[0].children[0].value
+            trTagSourceClone.children[0].children[0].children[0].value = setVal;
+            var trTagMarker = tbodyTag.children[indexDest];
+            deleteRow(index)
+            tbodyTag.insertBefore(trTagSourceClone, trTagMarker);
+            reAssignRowIndex();
+        }
+    }
+
+    function onDelBtnClicked(index){
+        deleteRow(index);
+    }
+
+    function compileselections(){
+        markDirty();
+        return true;
+    }
+
+    function markDirty(){
+        document.getElementById('functionMode').value = "ADDED";
+        document.getElementById('addsetupbtn').classList.remove('disabled');
+    }
+
+    function setCancel(){
+        document.getElementById('scode').removeAttribute('required');
+        console.log(document.getElementById('scode'))
+        document.getElementById('sname').removeAttribute('required');
+        document.getElementById('sdesc').removeAttribute('required');
+        document.getElementById('addForm').removeAttribute("onsubmit")
+        document.getElementById('functionMode').value = "CANCEL";
+    }
+    /**
+        THIS METHOD INITAITES THE STATUS OF REQUIRED FIELDS ON USERS PAGE 
+    */
+    function init(){
+        document.getElementById('addsetupbtn').classList.add('disabled');
+    }
+
+    init();
+
+</script>
+{% endblock %}

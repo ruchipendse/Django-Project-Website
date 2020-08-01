@@ -1,0 +1,371 @@
+{% extends 'timesheet/timesheet_base.html' %}
+{% block content_meta %}
+    <meta id = "entry_details_datewise_modularJSONTag"  data = "{{entry_details_datewise_modularJSON}}" />
+    <meta id = "date_lowboundTag"                       data = "{{date_lowbound}}" />
+    <meta id = "date_highboundTag"                      data = "{{date_highbound}}" />
+    <meta id = "currentDateTag"                         data = "{{currentDate}}" />
+{% endblock %}
+
+{% block content_main %}
+    {% if not user.is_authenticated %}
+        <script>
+            window.location.href = "/";
+        </script>
+    {% endif %}
+    <form id = "tsheetForm" name = "tsheetForm" action = "processRequest" method = "POST" onSubmit = " return isSubmittable();">
+        {% csrf_token %} 
+        <div id = 'date_div' align = 'center'>
+            <table>
+                <tr>
+                    <td align = "right">
+                        <input type="button" id = "prevDateButton" class="w3-button w3-blue w3-tiny" value="Prev"
+                                onclick = "prevDate();" />
+                    </td>
+                    <td align = "center"><input type = "text" id = "date_cell" name = "date_cell" readonly="readonly" size="10"></td>
+                    <td align = "left">
+                        <input type="button" id = "nextDateButton" class="w3-button w3-blue w3-tiny" value="Next"
+                                onclick = "nextDate();" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <table width = 100% >
+            <tr>
+                <td>
+                    <div id = "absent_mark_div" align = "left">
+                        <input type="checkbox" id="absent_marker" name="absent_marker" value="true" onchange = "mark_absent(this);">
+                        <label id="absent_marker_label" for="absent_marker"> Mark Absent</label>
+                    </div>
+                </td>
+                <td align = "right">
+                    <div class="w3-bar">
+                        <button type="submit" id = "addEntryButton"  class="w3-button w3-green w3-small w3-border-black" onclick = "setFunctionMode('ADD_PR')">PROD+</button>
+                        <button type="submit" id = "addNPEntryButton"  class="w3-button w3-green w3-small w3-border-black" onclick = "setFunctionMode('ADD_NP')">NPROD+</button>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <table id = "tsheet_entry_table" border="1" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
+            <tr>
+                <th  width="auto">
+                    <div id = "column-heading" class = "column_heading">
+                        Timesheet Entries
+                    </div>
+                </th>
+                <th  width="5%">
+                    <!-- <button type="submit" id = "addEntryButton"  class="w3-button w3-green" onclick = "setFunctionMode('ADD')">+</button> -->
+                </th>
+            </tr>
+        </table>
+        <div id = "buttondiv" align = "right">
+            <input type = "hidden" id = "selectedEntry" name = "selectedEntry" value = "NO_ENTRY"/>
+            <input type = "hidden" id = "functionMode" name = "functionMode" value = "ADD"/>
+            <input type = "hidden" id = "currentDate" name = "currentDate" value = ""/>
+            <input type = "hidden" id = "readyForSubmit" name = "readyForSubmit" value = "TRUE"/>
+
+            <table>
+                <tr>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        <input type="submit" id = "commitEntryButton" class="w3-button w3-blue" value="Commit"
+                                        onclick = "setForCommit('COMMIT')">
+                                        <!-- onclick = "setFunctionMode('COMMIT')"> -->
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+{% endblock %}
+{% block content_script_1 %}
+    <script>
+        function entrySelected(id){
+            // ENABLE EDIT/ CANCEL BUTTON
+            document.getElementById("editEntryButton").disabled = false;
+            document.getElementById("deleteEntryButton").disabled = false;
+            document.getElementById("selectedEntry").value = id;
+        }
+
+        function isSubmittable(){
+            return (document.getElementById("readyForSubmit").value == "TRUE");
+        }
+
+        function setForCommit(){
+            TOTAL_MINIMUM_HOURS                         = 8;
+            //TODO: THIS FUNCTION NOT WORKING
+            try{
+                var currentDate                         = document.getElementById('date_cell').value;
+                var entry_details_datewise_modularJSON  = document.getElementById('entry_details_datewise_modularJSONTag').getAttribute("data");
+                entry_details_datewise_modular          = JSON.parse(entry_details_datewise_modularJSON);
+                entry_details_for_date                  = entry_details_datewise_modular[currentDate];
+                entries                                 = entry_details_for_date["entries"];
+                no_of_entries                           = entries.length;
+                missingEntries                          = [];
+                if (no_of_entries > 0){
+                    // TODO: COMPUTE TOTAL DURATION FOR THE DAY. CHECK IT AGAINST ALLOWED MINIMUM THRESHOLD
+                    first_entry_start                   = stringToTime(entries[0][0]);
+                    last_entry_end                      = stringToTime(entries[no_of_entries - 1][1]);
+                    duration_secs                       = (last_entry_end - first_entry_start)/ 1000.0;
+                    duration_hours                      = duration_secs/ 3600.0;
+                    if (duration_hours >= TOTAL_MINIMUM_HOURS){
+                        for (index = 1; index < no_of_entries; index++){
+                            prev = entries[index - 1];
+                            next = entries[index];
+                            if (prev[1] != next[0]){
+                                missingEntries.push("[" + prev[1] + " to " + next[0] + "]")
+                            }
+                        }
+                        if (missingEntries.length > 0){
+                            console.log(missingEntries);
+                            alert('Gap in entries present');
+                            document.getElementById("readyForSubmit").value = "FALSE";
+                        } else {
+                            setFunctionMode("COMMIT");
+                        } 
+                    } else {
+                        alert('Total duration of entries need to be minimum ' + TOTAL_MINIMUM_HOURS + " Hours");
+                        document.getElementById("readyForSubmit").value = "FALSE";
+                    }
+                } else {
+                    alert('No entries present');
+                    document.getElementById("readyForSubmit").value = "FALSE";
+                }
+
+            } catch(error){
+                alert (error);
+            }
+        }
+
+        function stringToTime(timeAsString){
+            hours               = timeAsString.split(":")[0];
+            mins                = timeAsString.split(":")[1];
+            var time            = new Date(0, 0, 0, hours, mins).getTime();
+            return time;
+        }
+
+        function setFunctionMode(function_mode){
+            document.getElementById("readyForSubmit").value = "TRUE";
+            document.getElementById("functionMode").value = function_mode;
+        }
+
+        function deleteEntry(function_mode, entry_id){
+            setFunctionMode(function_mode);
+            document.getElementById("selectedEntry").value = entry_id;
+        }
+
+        function mark_absent(absentMarker){
+
+            formTag = document.getElementById("tsheetForm");
+            message = "Default";
+            if (absentMarker.checked){
+                deleteAllRows('tsheet_entry_table');
+                setFunctionMode('ABSENT_MARKED');
+                message= "Are you sure, you want to mark absent?"
+            } else {
+                document.getElementById("addEntryButton").classList.add('disabled')
+                setFunctionMode('ABSENT_UNMARKED');
+                message= "Are you sure, you want to remove absent mark?"
+            }
+            var retVal = confirm(message);
+            if( retVal == true ) {
+                formTag.submit();
+            }
+        }
+
+        function formNewTag(parentTag, tagName, attributes, attValues){
+            var tag = document.createElement(tagName);
+            for (i1 = 0; i1 < attributes.length; i1++){
+                var attribute = document.createAttribute(attributes[i1]);
+                attribute.value = attValues[i1];
+                tag.setAttributeNode(attribute); 
+                parentTag.appendChild(tag);     
+            }
+            return tag;
+        }
+
+        function formLeafTag(parentTag, tagName, attributes, attValues, innerText){
+            var tagLeaf = formNewTag(parentTag, tagName, attributes, attValues);
+            tagLeaf.innerHTML = innerText;
+            return tagLeaf;
+        }
+
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+        
+            if (month.length < 2) 
+                month = '0' + month;
+            if (day.length < 2) 
+                day = '0' + day;
+        
+            return [year, month, day].join('-');
+        }
+
+        function deleteAllRows(tableName){
+            var entryTable      = document.getElementById(tableName);
+            var tableTBody      = entryTable.getElementsByTagName('tbody')[0];
+            var tableRows       = tableTBody.getElementsByTagName('tr');
+            var rowCount        = tableRows.length;
+            for (var x=rowCount-1; x>0; x--) {
+                tableTBody.removeChild(tableRows[x]);
+            }
+        }
+
+        function populateEntryTableForDate(required_date){
+            var entry_details_datewiseJSON  = document.getElementById('entry_details_datewise_modularJSONTag').getAttribute("data");
+//            var entry_details_datewiseJSON  = document.getElementById('entry_details_datewiseJSONTag').getAttribute("data");
+            entry_details_datewise          = JSON.parse(entry_details_datewiseJSON);
+            var required_date_key           = formatDate(required_date);
+            var entryTable                  = document.getElementById('tsheet_entry_table');
+            deleteAllRows('tsheet_entry_table');
+            dates_entries                   = entry_details_datewise[required_date_key];
+            isAbsent                        = dates_entries['is_absent'] == true;
+            isCommitted                     = dates_entries['committed'] == true ;
+            if (isAbsent) {
+                document.getElementById('absent_marker').checked        = true;
+                document.getElementById("addEntryButton").classList.add('disabled')
+            } else {
+                document.getElementById('absent_marker').checked        = false;
+                document.getElementById("addEntryButton").classList.remove('disabled')
+                if (dates_entries != null) {
+                    // ITERATE OVER THE ENTRIES AND ADD TO TABLE
+                    for (var entry_no = 0; entry_no < dates_entries['entries'].length; entry_no++){
+                        var row                 = entryTable.insertRow();
+                        var tdEntry             = row.insertCell();
+                        var tdButton            = row.insertCell();
+
+                        var entry_id            = dates_entries['entries'][entry_no][2]
+                        var entry_details       = dates_entries['entries'][entry_no][3]
+                        entry_id_code       = "_" + entry_id.substring(0,2);
+                        entry_id_number     = entry_id.substring(2);
+
+                        //ref: <button type="submit" id = "addEntryButton"  class="w3-button w3-green" onclick = "setFunctionMode('ADD')">+</button>
+                        if (isCommitted){
+                            attributes          = ["type",      "id",               "class",            "onclick",                          "disabled"  ]
+                            attValues           = ["submit",    "deleteEntryButton","w3-button w3-teal","deleteEntry('DELETE" + entry_id_code + "', " + entry_id_number + ");" ]
+                            tdEntry.innerHTML   = entry_details;
+                        } else {
+                            attributes          = ["type",      "id",               "class",            "onclick",                         ]
+                            attValues           = ["submit",    "deleteEntryButton","w3-button w3-teal","deleteEntry('DELETE" + entry_id_code + "', " + entry_id_number + ");" ]
+                            linkstr             =  "<a onclick = 'setParams(\"" + entry_id_code + "\", " 
+                                                                                + entry_id_number + ", \"" 
+                                                                                + required_date_key + "\");' >" 
+                                                   + entry_details + "</a>";
+                            tdEntry.innerHTML   = linkstr
+                        }
+
+                        var tagButton           = formNewTag(tdButton, "button", attributes, attValues)
+                        tagButton.innerHTML     = "-"
+                    }
+                } else {
+                    alert ('dates_entries null')
+                }
+            }
+
+            if (isCommitted){
+                document.getElementById('commitEntryButton').disabled   = true; 
+                document.getElementById('addEntryButton').disabled      = true; 
+                document.getElementById('addNPEntryButton').disabled    = true;
+                entryTable.classList.add('committed');
+                document.getElementById('absent_marker').disabled       = true;
+                document.getElementById('absent_marker_label').classList.add('disabled');
+            } else {
+                document.getElementById('commitEntryButton').disabled   = false; 
+                document.getElementById('addEntryButton').disabled      = false; 
+                document.getElementById('addNPEntryButton').disabled    = false;
+                entryTable.classList.remove('committed');
+                document.getElementById('absent_marker').disabled       = false;
+                document.getElementById('absent_marker_label').classList.remove('disabled');
+            }
+        }
+
+        function setParams(entry_id_code, entry_id_number, currentDateValue){
+            selectedEntry           = document.getElementById("selectedEntry");
+            selectedEntry.value     = entry_id_number;
+
+            currentDateTag          = document.getElementById("currentDate");
+            currentDateTag.value    = currentDateValue;
+            setFunctionMode('EDIT' + entry_id_code);
+            formTag = document.getElementById("tsheetForm");
+            formTag.submit();
+        }
+
+        function prevDate(){
+            var present_date        = document.getElementById('date_cell').value;
+            var date_parts          = present_date.split ('-');
+            var prev_date           = new Date(parseInt(date_parts[0]), parseInt(date_parts[1]) - 1, 
+                                                    parseInt(date_parts[2]) - 1);
+            var date_lowbound_str   = (document.getElementById('date_lowboundTag').getAttribute("data")).split('-');
+            var date_lowbound       = new Date(parseInt(date_lowbound_str[0]), parseInt(date_lowbound_str[1]) - 1, 
+                                                    parseInt(date_lowbound_str[2]));
+            var date_highbound_str  = (document.getElementById('date_highboundTag').getAttribute("data")).split('-');
+            var date_highbound      = new Date(parseInt(date_highbound_str[0]), parseInt(date_highbound_str[1]) - 1, 
+                                                    parseInt(date_highbound_str[2]));
+
+            if (!(prev_date > date_lowbound)) {
+                // DISABLE "PREV" BUTTON
+                document.getElementById('prevDateButton').disabled  = true;            
+            }
+
+            if (prev_date < date_highbound) {
+                // ENABLE "NEXT" BUTTON
+                document.getElementById('nextDateButton').disabled  = false;            
+            }
+
+            document.getElementById('date_cell').value              = formatDate(prev_date);
+            populateEntryTableForDate(prev_date);
+        }
+
+        function nextDate(){
+            var present_date        = document.getElementById('date_cell').value;
+            var date_parts          = present_date.split ('-');
+            var next_date           = new Date(parseInt(date_parts[0]), parseInt(date_parts[1]) - 1, 
+                                                parseInt(date_parts[2]) + 1);
+            var date_lowbound_str   = (document.getElementById('date_lowboundTag').getAttribute("data")).split('-');
+            var date_lowbound       = new Date(parseInt(date_lowbound_str[0]), parseInt(date_lowbound_str[1]) - 1, 
+                                                parseInt(date_lowbound_str[2]));
+            var date_highbound_str  = (document.getElementById('date_highboundTag').getAttribute("data")).split('-');
+            var date_highbound      = new Date(parseInt(date_highbound_str[0]), parseInt(date_highbound_str[1]) - 1, 
+                                                parseInt(date_highbound_str[2]));
+
+            if (!(next_date < date_highbound)) {
+                // DISBLE "NEXT" BUTTON
+                document.getElementById('nextDateButton').disabled  = true;            
+            }
+
+            if (next_date > date_lowbound) {
+                // ENABLE "PREV" BUTTON
+                document.getElementById('prevDateButton').disabled  = false;            
+            }
+            document.getElementById('date_cell').value              = formatDate(next_date);
+            populateEntryTableForDate(next_date);
+        }
+
+        function init(){
+            try {
+                today                                                   = new Date().setHours(0,0,0,0);
+                var currentDate                                         = document.getElementById('currentDateTag').getAttribute("data");
+                populateEntryTableForDate(currentDate)
+
+                document.getElementById('date_cell').value              = formatDate(currentDate);
+
+                var currentDate_str                                     = currentDate.split('-');
+                var currentDate_date                                    = new Date( parseInt(currentDate_str[0]), 
+                                                                                    parseInt(currentDate_str[1]) - 1, 
+                                                                                    parseInt(currentDate_str[2]));
+                if (!(currentDate_date < today)) {
+                    // DISBLE "NEXT" BUTTON
+                    document.getElementById('nextDateButton').disabled  = true;            
+                }
+            } catch (err){
+                console.log(err);
+            }
+
+        }
+        init();
+    </script>
+{% endblock %}

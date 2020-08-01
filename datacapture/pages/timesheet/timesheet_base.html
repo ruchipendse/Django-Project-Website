@@ -1,0 +1,71 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<!-- USED     -->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+        <link rel = "stylesheet" href = "https://www.w3schools.com/w3css/4/w3.css">
+        <link rel = "stylesheet" href = "{% static 'css/timesheet.css' %}">
+        {% block content_meta %}
+        {% endblock %}
+
+        <title>Elec</title>
+    </head>
+    <body>
+        <aside>
+            <img src = "{% static 'images/MobileDropDownBlueBack.jpg' %}">
+            <figure>
+                <div id = "avatar"></div>
+                <figcaption>Electral Controls</figcaption>
+            </figure>
+            <nav>
+                <ul>
+                    <li><a href = "#">Home</a></li>
+                    <li><a href = "#">Login</a></li>
+                    <li><a href = "timesheetLogout">Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main>
+            {% if user.is_authenticated %}
+                <table width = 100%>
+                    <tr>
+                        <td>
+                            <div id = "userid">
+                                Hi {{user.first_name}}
+                            </div>
+                        </td>
+                        <td align = "right">
+                            <a href = "timesheetLogout">Logout</a>
+                        </td>
+                    </td>
+                    </tr>
+                </table>
+            {% endif %}
+            <div class="centered">
+                {% block content_main %}
+                {% endblock %}
+            </div>
+        </main>
+
+        <script>
+            (function() {
+                var menu = document.querySelector('ul'),
+                    menulink = document.querySelector('img');
+                    menulink.addEventListener('click', function(e){
+                        menu.classList.toggle('active');
+                        e.preventDefault();
+                    })
+            })();
+
+        </script>
+        {% block content_script_1 %}
+        {% endblock %}
+</body>
+</html>

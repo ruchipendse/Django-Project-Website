@@ -1,0 +1,355 @@
+2020-07-27 14:41:39,511 django.utils.autoreload INFO     /home/tokekark/electral/timekeeper/projects/datacapture/inprogress/subviews/views_machine.py changed, reloading.
+2020-07-27 14:42:32,246 django.utils.autoreload INFO     /home/tokekark/electral/timekeeper/projects/datacapture/inprogress/subviews/views_part.py changed, reloading.
+2020-07-27 14:43:22,823 django.utils.autoreload INFO     /home/tokekark/electral/timekeeper/projects/datacapture/inprogress/subviews/views_user.py changed, reloading.
+2020-07-27 14:43:31,902 django.utils.autoreload INFO     /home/tokekark/electral/timekeeper/projects/datacapture/inprogress/subviews/views_user.py changed, reloading.
+2020-07-27 14:44:30,939 django.utils.autoreload INFO     /home/tokekark/electral/timekeeper/projects/datacapture/inprogress/subviews/views_timesheet.py changed, reloading.
+2020-07-27 14:47:28,404 django.utils.autoreload INFO     /home/tokekark/electral/timekeeper/projects/datacapture/inprogress/views.py changed, reloading.
+2020-07-27 16:37:21,181 django.request WARNING  Not Found: /favicon.ico
+2020-07-27 16:38:59,667 inprogress.subviews.views_part INFO     Part Updated
+2020-07-27 16:39:26,694 inprogress.subviews.views_machine INFO     Machine updated
+2020-07-27 18:05:11,841 django.request WARNING  Not Found: /ip.ws.126.net:443
+2020-07-27 22:36:41,045 django.request WARNING  Not Found: /ip.ws.126.net:443
+2020-07-28 10:34:51,102 inprogress.subviews.views_user INFO     User added
+2020-07-28 10:35:39,042 inprogress.subviews.views_part INFO     Part Updated
+2020-07-28 10:36:06,855 inprogress.subviews.views_machine DEBUG    Upate-Machine Failed
+2020-07-28 10:36:38,833 inprogress.subviews.views_machine INFO     Machine updated
+2020-07-28 19:59:57,666 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\datacapture\settings.py changed, reloading.
+2020-07-28 19:59:58,058 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-28 20:02:04,409 django.security.SuspiciousSession WARNING  Session data corrupted
+2020-07-28 20:09:23,354 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-28 20:09:23,362 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-28 20:10:29,961 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-28 20:24:08,625 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-28 20:24:08,643 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-28 20:25:20,810 django.request ERROR    Internal Server Error: /timesheet_entries
+Traceback (most recent call last):
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\backends\utils.py", line 86, in _execute
+    return self.cursor.execute(sql, params)
+psycopg2.errors.UndefinedTable: relation "inprogress_employeedate" does not exist
+LINE 1: ...tted", "inprogress_employeedate"."is_absent" FROM "inprogres...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py", line 111, in timesheet_entries
+    for status in employeeDateStatus:
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\models\query.py", line 276, in __iter__
+    self._fetch_all()
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\models\query.py", line 1261, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\models\query.py", line 57, in __iter__
+    results = compiler.execute_sql(chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\models\sql\compiler.py", line 1144, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\backends\utils.py", line 100, in execute
+    return super().execute(sql, params)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\backends\utils.py", line 68, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\backends\utils.py", line 77, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\backends\utils.py", line 86, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\utils.py", line 90, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\backends\utils.py", line 86, in _execute
+    return self.cursor.execute(sql, params)
+django.db.utils.ProgrammingError: relation "inprogress_employeedate" does not exist
+LINE 1: ...tted", "inprogress_employeedate"."is_absent" FROM "inprogres...
+                                                             ^
+
+2020-07-28 20:27:50,719 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-28 20:27:50,774 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-28 20:45:54,940 django.request ERROR    Internal Server Error: /timesheet_entries
+Traceback (most recent call last):
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\backends\utils.py", line 86, in _execute
+    return self.cursor.execute(sql, params)
+psycopg2.errors.UndefinedTable: relation "inprogress_employeedate" does not exist
+LINE 1: ...tted", "inprogress_employeedate"."is_absent" FROM "inprogres...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py", line 111, in timesheet_entries
+    for status in employeeDateStatus:
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\models\query.py", line 276, in __iter__
+    self._fetch_all()
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\models\query.py", line 1261, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\models\query.py", line 57, in __iter__
+    results = compiler.execute_sql(chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\models\sql\compiler.py", line 1144, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\backends\utils.py", line 100, in execute
+    return super().execute(sql, params)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\backends\utils.py", line 68, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\backends\utils.py", line 77, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\backends\utils.py", line 86, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\utils.py", line 90, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\backends\utils.py", line 86, in _execute
+    return self.cursor.execute(sql, params)
+django.db.utils.ProgrammingError: relation "inprogress_employeedate" does not exist
+LINE 1: ...tted", "inprogress_employeedate"."is_absent" FROM "inprogres...
+                                                             ^
+
+2020-07-28 20:46:23,985 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-28 20:46:24,047 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-28 20:48:44,590 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-28 20:48:44,618 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-28 20:49:32,407 django.request ERROR    Internal Server Error: /timesheet_entries
+Traceback (most recent call last):
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\backends\utils.py", line 86, in _execute
+    return self.cursor.execute(sql, params)
+psycopg2.errors.UndefinedTable: relation "inprogress_employeedate" does not exist
+LINE 1: ...tted", "inprogress_employeedate"."is_absent" FROM "inprogres...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py", line 111, in timesheet_entries
+    for status in employeeDateStatus:
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\models\query.py", line 276, in __iter__
+    self._fetch_all()
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\models\query.py", line 1261, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\models\query.py", line 57, in __iter__
+    results = compiler.execute_sql(chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\models\sql\compiler.py", line 1144, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\backends\utils.py", line 100, in execute
+    return super().execute(sql, params)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\backends\utils.py", line 68, in execute
+    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\backends\utils.py", line 77, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\backends\utils.py", line 86, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\utils.py", line 90, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\db\backends\utils.py", line 86, in _execute
+    return self.cursor.execute(sql, params)
+django.db.utils.ProgrammingError: relation "inprogress_employeedate" does not exist
+LINE 1: ...tted", "inprogress_employeedate"."is_absent" FROM "inprogres...
+                                                             ^
+
+2020-07-28 22:18:03,017 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-28 22:18:35,892 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-28 22:23:18,981 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-28 22:24:43,095 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-28 22:30:24,207 inprogress.subviews.views_user DEBUG    Add-User Failed. reason: Setup matching query does not exist.
+2020-07-28 22:33:20,692 inprogress.subviews.views_user INFO     User added
+2020-07-28 22:34:18,777 inprogress.subviews.views_machine INFO     Machine 1 added
+2020-07-28 22:35:00,497 inprogress.subviews.views_part INFO     Part added
+2020-07-28 22:35:36,255 django.request ERROR    Internal Server Error: /processRequest
+Traceback (most recent call last):
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py", line 209, in processRequest
+    .filter(setups__id_code__in = setupIdCodes)
+UnboundLocalError: local variable 'setupIdCodes' referenced before assignment
+2020-07-28 22:38:19,203 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-28 22:38:19,210 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-28 22:38:40,327 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-28 22:38:40,331 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-28 22:40:59,572 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-28 22:40:59,644 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-28 22:41:05,430 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 10:22:28,793 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 10:22:28,948 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 10:43:29,749 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 10:43:29,880 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 10:47:54,629 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 10:47:54,631 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 10:48:50,275 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 10:48:50,277 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 10:52:55,859 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 10:52:55,861 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:02:04,119 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:02:04,548 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:02:50,315 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:02:50,317 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:03:38,263 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:03:38,265 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:04:03,519 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:04:03,521 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:04:10,371 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:04:10,374 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:06:47,723 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:06:47,869 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:07:10,356 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:07:10,359 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:08:57,158 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:08:57,367 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:43:43,129 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:43:43,677 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:44:35,014 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:44:35,016 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:47:19,510 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:47:19,511 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:47:31,082 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:47:31,084 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:47:53,402 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:47:53,404 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:48:26,905 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:48:26,907 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:49:49,408 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:49:49,410 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:50:04,456 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:50:04,458 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:50:24,180 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:50:24,182 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:50:39,063 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:50:39,069 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:50:57,733 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:50:57,736 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:51:19,520 django.request WARNING  Not Found: /metatdata
+2020-07-29 11:52:55,249 inprogress.subviews.views_part INFO     Part Updated
+2020-07-29 11:53:31,628 django.request ERROR    Internal Server Error: /processRequest
+Traceback (most recent call last):
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py", line 208, in processRequest
+    partSetupMap, usersSetupsForPart = getPartSetupMap(setupsForCurrentUser)
+  File "C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py", line 177, in getPartSetupMap
+    usersSetupsForPart[part.id_code].add({
+AttributeError: 'list' object has no attribute 'add'
+2020-07-29 11:53:56,166 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:53:56,168 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 11:54:18,187 django.request ERROR    Internal Server Error: /processRequest
+Traceback (most recent call last):
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py", line 208, in processRequest
+    partSetupMap, usersSetupsForPart = getPartSetupMap(setupsForCurrentUser)
+  File "C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py", line 177, in getPartSetupMap
+    usersSetupsForPart[part.id_code].append({
+TypeError: unhashable type: 'list'
+2020-07-29 11:55:17,432 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 11:55:17,433 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 12:03:05,742 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 12:03:05,745 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 12:03:12,577 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 12:03:12,578 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 12:07:12,348 django.request ERROR    Internal Server Error: /processRequest
+Traceback (most recent call last):
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py", line 234, in processRequest
+    partsForUserJSON                            = json.dumps(partsForUser)
+UnboundLocalError: local variable 'partsForUser' referenced before assignment
+2020-07-29 12:09:16,273 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 12:09:16,276 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 12:10:42,231 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 12:10:42,233 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 12:11:03,656 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 12:11:03,658 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 12:11:13,781 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 12:11:13,784 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 12:12:17,576 django.request ERROR    Internal Server Error: /processRequest
+Traceback (most recent call last):
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py", line 210, in processRequest
+    print ('\n --- usersSetupsForPart --- \n', usersSetupsForPart)
+NameError: name 'usersSetupsForPart' is not defined
+2020-07-29 12:12:52,491 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 12:12:52,492 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 12:46:04,484 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 12:46:04,945 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 12:55:11,075 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 12:55:11,182 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 12:56:23,229 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 12:56:23,231 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 12:56:34,849 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 12:56:34,853 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 12:56:41,590 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 12:56:41,592 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 12:56:57,286 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 12:56:57,288 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 12:58:08,784 django.request ERROR    Internal Server Error: /processRequest
+Traceback (most recent call last):
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Sanzaru\selfLearning\DJango\DJango_env\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py", line 239, in processRequest
+    "partsForUserJSON": partsForUserJSON,
+UnboundLocalError: local variable 'partsForUserJSON' referenced before assignment
+2020-07-29 12:58:56,946 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 12:58:56,948 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 12:59:20,516 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 12:59:20,519 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 13:00:43,498 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 13:00:43,501 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 13:04:51,912 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 13:04:51,914 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 13:05:05,844 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 13:05:05,848 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 13:10:50,845 inprogress.subviews.views_user INFO     User saved
+2020-07-29 13:13:20,888 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 13:13:20,890 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 13:13:31,628 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 14:14:46,218 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 14:14:46,253 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 14:17:26,689 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 14:17:26,691 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 14:19:41,603 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 14:19:41,618 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 14:30:07,657 inprogress.subviews.views_timesheet INFO     Time entry saved
+2020-07-29 14:30:40,294 inprogress.subviews.views_timesheet INFO     Time entry saved
+2020-07-29 14:33:30,016 django.utils.autoreload INFO     C:\Sanzaru\2020GauravJoshi\CloudInstallation\SourceCode\datacapture\inprogress\subviews\views_timesheet.py changed, reloading.
+2020-07-29 14:33:30,061 asyncio      DEBUG    Using proactor: IocpProactor
+2020-07-29 14:42:09,621 inprogress.subviews.views_timesheet INFO     Production Time entry updated
+2020-07-29 14:43:02,326 inprogress.subviews.views_machine DEBUG    New-Machine Failed:Field 'cycle_time' expected a number but got ''.
+2020-07-29 14:43:43,964 inprogress.subviews.views_machine INFO     Machine 3 added
+2020-07-29 14:44:15,615 inprogress.subviews.views_timesheet INFO     Production Time entry updated
+2020-07-29 21:12:37,050 asyncio      DEBUG    Using proactor: IocpProactor

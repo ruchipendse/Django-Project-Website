@@ -1,0 +1,310 @@
+body, html {
+    height: calc(100%);
+    margin: 0;
+    font-family: 'Verdana';
+
+}
+
+body {
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#7aaee2+0,ef02ef+100 */
+    background: #7aaee2; /* Old browsers */
+    background: -moz-linear-gradient(-45deg,  #7aaee2 0%, #ef02ef 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(-45deg,  #7aaee2 0%,#ef02ef 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(135deg,  #7aaee2 0%,#ef02ef 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7aaee2', endColorstr='#ef02ef',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+aside {
+/*    color: #FFF; */
+    display: grid;
+    grid-template-columns: auto 40px;
+    padding:  2em;
+
+}
+
+img {
+    width: 20px;
+    cursor: pointer;
+}
+
+figure {
+    margin: 0;
+}
+
+figcaption {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+nav {
+    background: white;
+}
+
+.active {
+    position: absolute;
+    display: block;
+    background: #fff;
+    width: 50%;
+    left: 0;
+    top:0;
+    height:100%;
+}
+ul {
+    display: none;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+}
+
+ul li a {
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: .8em;
+    display: block;
+    padding: 1em;
+    background-color: rgba(255,255,255,.35);
+    color: black;
+
+}
+
+main {
+    background: white;
+    padding: 0, 1.4em;
+}
+
+h1 {
+    margin: 0;
+}
+
+p {
+    font-size: 1.1em;
+    line-height: 1.5em;
+}
+.cta {
+    display: block;
+    color: white;
+    background: #0e7fff;
+    text-decoration: none;
+    padding: 8px, 50px;
+    font-size: 1.2em;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 4px;
+    margin: 2em 0;
+}
+
+@media only screen and (min-width:70px){
+
+    body {
+        display: grid;
+        grid-template-columns: 17% auto;
+        padding: 2em;
+    }
+    img {
+        display: none;
+
+    }
+    aside {
+        background: #DCE1F6;
+        grid-template-columns: auto;
+        grid-template-rows: 30% auto;
+        padding: 0;
+    }
+
+    main {
+        padding-left: 1em;
+        background: white;
+        /* background: white url('../images/bg.jpg') no-repeat bottom right; */
+        background-size: 30%;
+    }
+
+    #avatar {
+        border-radius: 50%;
+        background: white  url('../images/OnlyLogo.jpg') no-repeat center;
+        width: 100px;
+        height: 100px;
+        margin: 2em auto 1em auto;
+    }
+
+    #logindata {
+        display:block;
+        position: relative !important;
+        background:none !important;
+        color: black;
+        margin: 8em auto auto auto;
+        font-size: 0.8em;
+        width: 100%;
+    }
+
+    figcaption {
+        text-align: center;
+        color: black;
+
+    }
+    
+    ul {
+        display:block;
+        margin-top:2em;
+        position: relative !important;
+        background: none !important;
+        width: 100%;
+        
+    }
+
+    ul li a:hover {
+        background: white;
+    }
+    nav {
+        background: none;
+    }
+
+    .cta {
+        display: inline-block;
+        font-size: 1.3em;
+        padding: .8em 3em;
+    }
+
+    .bta {
+        display: inline-block;
+    }
+
+    .uta {
+        display: block;
+        color: white;
+        background: #0e7fff;
+        text-decoration: none;
+        text-align: center;
+        border-radius: 4px;
+        margin: 0em 0;
+        }
+
+    h1 {
+        font-size: 3em;
+        margin-top: 1em;
+    }
+
+    p {
+        font-size: 1.5em;
+    }
+
+    .disabled {
+        pointer-events:none; /*This makes it not clickable*/
+        opacity:0.4;         /*This grays it out to look disabled*/
+    }
+
+    #errormessages{
+        display:block;
+        color: red;
+    }
+
+    th {
+        background: lightcyan;
+    }
+/*
+    .left {
+        background: #FFF8F8;
+    }
+
+    .right {
+        background: #F8F8FF;
+    }
+*/
+/*
+.centered {
+        font-size: 1em;
+    }
+*/
+
+    .mysetups {
+        background: white;
+        display: grid;
+        grid-template-columns: 35% auto;
+    }
+
+    .parts {
+        background: white;
+        display: grid;
+        grid-template-columns: 50% auto;
+    }
+
+    .parts30 {
+        background: white;
+        display: grid;
+        grid-template-columns: 30% auto;
+    }
+
+    .parts40 {
+        background: white;
+        display: grid;
+        grid-template-columns: 40% auto;
+    }
+
+    .togglebutton {
+        background: pink;
+        align-content: right;
+    }
+
+    #selectdiv {
+        width:400px;
+        font-size: 1.5em;
+    }
+
+
+    option {
+        text-decoration: none;
+        font-family: verdana;
+        font-size:    1.2em;
+    }
+
+    .splitleft {
+        width: 100%;
+/*        background-color:aqua;  */
+    }
+
+    .splitright {
+        width: 100%;
+/*        background-color: powderblue;  */
+    }
+
+    .divwidth20{
+        width: 20%;
+    }
+
+    .divwidth30{
+        width: 30%;
+    }
+
+    .divwidth70{
+        width: 70%;
+    }
+
+    .divwidth80{
+        width: 80%;
+    }
+
+    .splitcenter {
+        width: 100%;
+        background-color: yellowgreen;  
+    }
+    #buttondiv {
+        padding: .5em 2em;
+    }
+
+    .tablesetupselect {
+        font-family: verdana;
+        font-size:    1.3em;
+    }
+
+    .tablepartselect {
+        font-family: verdana;
+        font-size:    1.3em;
+    }
+
+    .timesheetpanes {
+        background: pinl;
+        display: grid;
+        grid-template-columns: 40% auto;
+    }
+}

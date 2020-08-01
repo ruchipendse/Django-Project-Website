@@ -1,0 +1,228 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+html body {
+    height: calc(100% - 2em);
+    margin: 0;
+    font-family: 'Montserrat';
+}
+
+body {
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#7aaee2+0,ef02ef+100 */
+    background: #7aaee2; /* Old browsers */
+    background: -moz-linear-gradient(-45deg,  #7aaee2 0%, #ef02ef 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(-45deg,  #7aaee2 0%,#ef02ef 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(135deg,  #7aaee2 0%,#ef02ef 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7aaee2', endColorstr='#ef02ef',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+
+aside {
+    color: #fff;
+    display: grid;
+    grid-template-columns: 25px auto;
+    grid-template-rows: auto;
+    padding: 1em;
+}
+
+img {
+    width: 25px;
+    cursor: pointer; 
+    margin: 2em auto auto auto;
+}
+
+#avatar {
+    border-radius: 50%;
+    background: white  url('../images/OnlyLogo_53px.jpg') no-repeat center;
+    width: 50px;
+    height: 50px;
+/*    margin: 2em auto 1em auto; */
+}
+
+figure {
+    margin: auto auto auto 1em;
+    display: grid;
+    grid-template-columns: 30px auto;
+    grid-template-rows: auto;
+}
+
+figcaption {
+    font-size:1.3em;
+    font-weight: bold;
+    margin: auto auto auto 2em; 
+}
+
+nav {
+    background:pink;
+}
+
+.active {
+    position: absolute;
+    display: block;
+    background: rgb(139, 159, 209);
+    width: 30%;
+/*    height: 100%; */
+    left: 0;
+    top: 5.3em;
+}
+
+ul {
+    display: none;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+li {
+    padding: .5em 1em;
+}
+ul li a {
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: .8em;
+    font-weight: bold;
+    display: block;
+/*    padding: 1.5em 3em; */
+    background-color: rgb(139, 159, 209);
+    color: black;
+}
+
+main {
+    background: white;
+    padding: 1em 1.4em;
+}
+
+#userid {
+    font-size: .8em;
+    font-weight: bold;
+    color: red;
+}
+
+h1 {
+    margin: 0;
+}
+
+p {
+    font-size: 1.1em;
+    line-height: 1.5em;
+}
+
+.cta {
+    display: block;
+    color: white;
+    background: #0e7fff;
+    text-decoration: none;
+    padding: 8px 50px;
+    font-size: 1.2em;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 4px;
+    margin: 2em 0;
+}
+
+.disabled {
+    pointer-events:none; /*This makes it not clickable*/
+    opacity:0.4;         /*This grays it out to look disabled*/
+}
+
+.committed {
+    background-color: #f0f0f1;
+    color: #ff4848;
+}
+
+.column_heading {
+    display: grid;
+    grid-template-columns: 60% auto;
+    grid-template-rows: auto;
+}
+
+@media only screen and (min-width: 768px) {
+    html {
+        height: calc(100% - 2em);
+    }
+    body {
+        display: grid;
+        grid-template-columns: 20% auto;
+        padding: 2em;
+    }
+
+    img {
+        display: none;
+    }
+
+    aside {
+        background: #DCE1F6;
+        grid-template-columns : auto;
+        grid-template-rows: 30% auto;
+        padding: 0;
+
+    }
+
+    main {
+        padding : 4em;
+        background: white;
+        background-size: 70%;
+    }
+
+    #avatar {
+        border-radius: 50%;
+        background: white  url('../images/OnlyLogo.jpg') no-repeat center;
+        width: 100px;
+        height: 100px;
+        margin: 2em auto 1em auto;
+    }
+
+    figure {
+        margin: 0;
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-rows: auto auto;
+    }
+    
+    figcaption {
+        text-align: left;
+        color: #000;
+        margin: auto auto auto 1em; 
+
+    }
+    ul {
+        display: block;
+        margin-top: 2em;
+        position: relative !important;
+        background: none !important;
+        width: 100% !important;
+
+    }
+
+    li a {
+        padding: .8em 3em;
+        background-color: rgba(255,255,255,.35);
+/*        background-color: rgba(255,255,255,.35);  */
+    }
+
+    ul li a:hover {
+        background: white;
+        padding: .6em 3em;
+    }
+
+    nav {
+        background: none;
+    }
+
+    .cta {
+        display: inline-block;
+        font-size: 1.3em;
+        padding: .8em 3em;
+    }
+
+    h1 {
+        font-size: 3em;
+        margin-top: 1em;
+    }
+
+    p {
+        font-size: 1.5em;
+    }
+
+}
