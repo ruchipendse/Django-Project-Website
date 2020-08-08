@@ -85,7 +85,11 @@ def updateUserDetails(request):
                     user.set_password(pword)
 
                 setupSelectionParts = setupString.split(";")
-                rightSideSetups = (setupSelectionParts[1][:-1]).split(",")
+                # rightSideSetups = (setupSelectionParts[1][:-1]).split(",")
+                rightPart = setupSelectionParts[1][:-1]
+                rightSideSetups = set([])
+                if len(rightPart) > 0:
+                    rightSideSetups = set(rightPart.split(","))
 
                 setupsForOperator =  operator.setups.values()
                 existingOperatorSetups = set([])
@@ -108,7 +112,7 @@ def updateUserDetails(request):
         
                 # for su in operator.setups.values():
                 #     print ('Final Setup: ', su['id_code'], su['name'])
-                user.save()
+                operator.save()
                 logger.info('User saved')
             else:
                 messages.info(request, 'User not found')
