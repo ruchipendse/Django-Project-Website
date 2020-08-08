@@ -110,8 +110,6 @@ def updateUserDetails(request):
                         setupToBeRemoved = Setup.objects.get(name = setupName)
                         operator.setups.remove(setupToBeRemoved)
         
-                # for su in operator.setups.values():
-                #     print ('Final Setup: ', su['id_code'], su['name'])
                 operator.save()
                 logger.info('User saved')
             else:
