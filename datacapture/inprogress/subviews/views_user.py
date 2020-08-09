@@ -85,7 +85,6 @@ def updateUserDetails(request):
                     user.set_password(pword)
 
                 setupSelectionParts = setupString.split(";")
-                # rightSideSetups = (setupSelectionParts[1][:-1]).split(",")
                 rightPart = setupSelectionParts[1][:-1]
                 rightSideSetups = set([])
                 if len(rightPart) > 0:
@@ -109,7 +108,7 @@ def updateUserDetails(request):
                     for setupName in setupsToBeRemoved:
                         setupToBeRemoved = Setup.objects.get(name = setupName)
                         operator.setups.remove(setupToBeRemoved)
-        
+                user.save()
                 operator.save()
                 logger.info('User saved')
             else:
@@ -148,7 +147,10 @@ def addNewUser(request):
                     newEmployee = Employee.objects.create(user = user)
 
                     setupSelectionParts = setupString.split(";")
-                    rightSideSetups = (setupSelectionParts[1][:-1]).split(",")
+                    rightPart = setupSelectionParts[1][:-1]
+                    rightSideSetups = set([])
+                    if len(rightPart) > 0:
+                        rightSideSetups = set(rightPart.split(","))
 
                     setupsToBeAdded = set(rightSideSetups)
 
