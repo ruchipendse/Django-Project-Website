@@ -90,7 +90,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'electraldb',
         'USER': 'timekeeper',
-        'PASSWORD': 'eledevitracecl',
+        'PASSWORD': 'eledevicectral',
         'HOST': 'localhost'
     }
 }
