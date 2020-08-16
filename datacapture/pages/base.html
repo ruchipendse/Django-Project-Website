@@ -28,6 +28,7 @@
                             <li><a href = "setups">Setups/ Processes</a></li>
                             <li><a href = "machines">Machines</a></li>
                             <li><a href = "parts">Parts</a></li>
+                            <li><a href = "holidays">Holidays</a></li>
                         </ul>
                     </nav>
                     <div id = "login">
@@ -42,26 +43,6 @@
                             </div>
                 {% else %}
                 <!-- AUTHENTICATED BY NOT STAFF-->
-                <nav>
-                    <ul class = disabled>
-                        <li><a href = "/">Home</a></li>
-                        <li><a href = "users">Users</a></li>
-                        <!-- <li><a href = "operations">Operations</a></li> -->
-                        <li><a href = "setups">Setups/ Processes</a></li>
-                        <li><a href = "machines">Machines</a></li>
-                        <li><a href = "parts">Parts</a></li>
-                    </ul>
-                </nav>
-                <div id = "login">
-                    <form action = "adminLogout" method = "POST">
-                        {% csrf_token %} 
-                        <div id = "logindata">
-                            <table>
-                                <tr>
-                                    <td><input type = "submit" value="Logout" class = "bta"></td>
-                                </tr>
-                            </table>
-                        </div>
                 {% endif %}
             {% else %}
                 <nav>

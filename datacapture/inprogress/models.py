@@ -14,6 +14,7 @@ class Employee (models.Model):
 
     def __str__(self):
         return "[" + self.user.username + "]" 
+
 class Setup(models.Model):
     id_code = models.CharField(max_length = 4)
     name = models.CharField(max_length = 100)
@@ -24,6 +25,17 @@ class Setup(models.Model):
     machines    = models.ManyToManyField('Machine', through = 'MachineSetup')
     def __str__(self):
         return "[" + self.name + "]" 
+        
+#-------------  HOLIDAYS ----------------
+class Holiday(models.Model):
+    id_code     = models.CharField(max_length = 4)
+    desc        = models.TextField()
+    date        = models.DateField()
+    is_working  = models.BooleanField(default = False)
+    is_active   = models.BooleanField(default = True)
+    def __str__(self):
+        return "[" + self.id_code + "-" + self.desc + "]" 
+
 
 #-------------  NON PRODUCTION TASK ----------------
 class NonProdTask(models.Model):
