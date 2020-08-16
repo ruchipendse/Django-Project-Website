@@ -1,15 +1,13 @@
 {% extends 'timesheet/timesheet_base.html' %}
 {% block content_main %}
     <form name = "usersForm" action = "timesheet_entries" method = "POST">
-        <!-- <form name = "usersForm" action = "timesheet" method = "POST"> -->
-            {% csrf_token %} 
+        {% csrf_token %} 
         <table id = "usertable"  width = 70% border = 0>
             <tr>
                 <td><label>User</label></td>
                 <td>
                     <div class = "tablesetupselect">
                         <select id="username" name="username" style="min-width:100%;">
-                        <!-- <select id="username" name="username" style="min-width:100%;" onchange="userSelected();"> -->
                                 {% for u in activeUsers %}
                                 <option value="{{u.username}}">{{u.username}}</option>
                             {% endfor %}
@@ -39,8 +37,6 @@
             var activeUsersListJson = document.getElementById('activeUsersListJson').getAttribute("data");
             activeUsersList = JSON.parse(activeUsersListJson)
             var selectedUser = document.getElementById('username').value;
-//            document.getElementById('fname').innerText = activeUsersList[selectedUser]["first_name"];
-//            document.getElementById('lname').innerText = activeUsersList[selectedUser]["last_name"];
         }
 
     </script>

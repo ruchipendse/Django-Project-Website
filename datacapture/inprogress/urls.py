@@ -26,6 +26,9 @@ urlpatterns = [
     path ('holidays', views.holidays, name = 'holidays'),
     path ('processHoliday', views.processHoliday, name = 'processHoliday'),
 
+#-------------------- REPORT --------------
+    path ('reports', views.reports, name = 'reports'),
+    path ('generateReport', views.generateReport, name = 'generateReport'),
 #-------------------- NON-PRODUCTION TASK --------------
     path ('nonprodtasks', views.nonprodtasks, name = 'nonprodtasks'),
     path ('processNonProdTask', views.processNonProdTask, name = 'processNonProdTask'),

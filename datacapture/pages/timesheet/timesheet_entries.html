@@ -217,7 +217,6 @@
 
         function populateEntryTableForDate(required_date){
             var entry_details_datewiseJSON  = document.getElementById('entry_details_datewise_modularJSONTag').getAttribute("data");
-//            var entry_details_datewiseJSON  = document.getElementById('entry_details_datewiseJSONTag').getAttribute("data");
             entry_details_datewise          = JSON.parse(entry_details_datewiseJSON);
             var required_date_key           = formatDate(required_date);
             var entryTable                  = document.getElementById('tsheet_entry_table');

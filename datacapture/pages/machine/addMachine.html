@@ -203,12 +203,6 @@
         }
     }
 
-    /*---- TODO: PROBABLY NEED TO DEPRECATE
-    function insertRow(index){
-        var tablemachine = document.getElementById('tablemachine');
-        var row = tablemachine.rows[index];
-    }
-*/
     function deleteRow(index){
         alert('CHECK POINT 01')
         document.getElementById("tablesetups").deleteRow(index);
@@ -221,8 +215,6 @@
     }
 
     function compileselections(){
-        /*
-        */
         if (document.getElementById('functionMode').value != "CANCEL"){
             var mcode = document.getElementById('mcode').value;
             var mname = document.getElementById('mname').value;
@@ -249,15 +241,6 @@
                         'cycle_time'    : cycleTimeTag.value
                     }
                     setups.push(machine_setup_cycle);
-
-//                    console.log (trTags[i].children[1].children[0])
-//                    console.log ('\n---- cycle Time ----\n', selectTag.value, ' - ', cycleTimeTag.value);
-/*
-                    var pair = {};
-                    pair['setup'] = selectTag.value;
-                    pair['cycle_time'] = cycleTimeTag.value;
-                    setups.push(pair);
-*/
                 }
             }
             var setUpsJSON = JSON.stringify(setups);
