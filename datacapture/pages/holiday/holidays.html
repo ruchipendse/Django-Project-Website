@@ -52,20 +52,20 @@
                     </table>
                     <div id = "buttondiv" align = "right">
 
-                        <input type = "hidden" id = "selectedSetup" name = "selectedSetup" value = "NO_SETUP"/>
+                        <input type = "hidden" id = "selectedHoliday" name = "selectedHoliday" value = "NO_SETUP"/>
                         <input type = "hidden" id = "functionMode" name = "functionMode" value = "ADD"/>
                         <table>
                             <tr>
                                 <td>
-                                    <input type="submit" id = "addSetupButton" class="w3-button w3-blue" value=" New "
+                                    <input type="submit" id = "addHolidayButton" class="w3-button w3-blue" value=" New "
                                             onclick = "setFunctionMode('ADD')">
                                 </td>
                                 <td>
-                                    <input type="submit" id = "editSetupButton" class="w3-button w3-blue" value="Edit"
+                                    <input type="submit" id = "editHolidayButton" class="w3-button w3-blue" value="Edit"
                                             onclick = "setFunctionMode('EDIT')">
                                 </td>
                                 <td>
-                                    <input type="submit" id = "deleteSetupButton" class="w3-button w3-blue" value="Delete"
+                                    <input type="submit" id = "deleteHolidayButton" class="w3-button w3-blue" value="Delete"
                                             onclick = "setFunctionMode('DELETE')">
                                 </td>
                             </tr>
@@ -79,20 +79,22 @@
             <div class="centered">
                 <table>
                     <tr>
-                        <td><label id="labelscode" for = "scode" disabled>Setup Code</label></td>
-                        <td><input type = "text" name = "scode" id = "scode" disabled></td>
+                        
+                        <td><label id="labelhcode" for = "hcode" disabled>Holiday Code</label></td>
+                        <td><input type = "text" name = "hcode" id = "hcode" disabled></td>
                     </tr>
                     <tr>
-                        <td><label id="labelsname" for = "sname" >Setup Name</label></td>
-                        <td><input type = "text" name = "sname" id = "sname" disabled></td>
+                        <!--- Change to label_h_description for better readability-->
+                        <td><label id="labelhdesc" for = "hdesc" >Holiday Description</label></td>
+                        <td><input type = "text" name = "hdesc" id = "hdesc" disabled></td>
                     </tr>
                     <tr>
-                        <td><label id="labelsdesc" for = "sdesc" >Setup Description</label></td>
-                        <td><input type = "text" name = "sdesc" id = "sdesc" disabled></td>
+                        <td><label id="labelhdate" for = "hdate" >Date</label></td>
+                        <td><input type = "date" name = "hdate" id = "hdate" disabled></td>
                     </tr>
                     <tr>
                         <td></td>
-                        <td><label id="labelsops" for = "sdesc" disable ></label></td>
+                        <td><label id="labelhops" for = "hdesc" disable ></label></td>
                         </td>
                     </tr>
                 </table>
