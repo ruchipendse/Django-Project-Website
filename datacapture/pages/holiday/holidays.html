@@ -5,7 +5,7 @@
             window.location.href = "/";
         </script>
     {% endif %}
-    <meta id="setupsListJsondata" data="{{setupsListJson}}" />
+    <meta id="holidaysListJsondata" data="{{holidaysListJson}}" />
     
     <h1>Electral Control Systems</h1>
 
@@ -24,24 +24,29 @@
 
         <div class="splitleft">
             <div class="centered">
-                <form name = "setupsForm" action = "processHoliday" method = "POST">
+                <form name = "holidaysForm" action = "processHoliday" method = "POST">
                     {% csrf_token %} 
                     <!-- TODO: YOU NEED TO MAKE CHANGES IN TABLE DATA SUITABLE FOR HOLIDAY -->
-                    <table id = "setuptable"  width = 95% border = 1>
+                    <table id = "holidaystable"  width = 95% border = 1>
                         <tr>
-                            <th  width="20%">Setup ID</th>
-                            <th  width="auto">Setup name</th>
-                            <th  width="5%"></th>
+                            <th  width="20%">Holiday ID</th>
+                            <th  width="auto">Description</th>
+                            <th  width="5%">Date</th>
                         </tr>
-                        {% for s in setups %}
+                        {% for h in holidays %}
                         <tr>
-                            <td>{{s.id_code}}</td>
-                            <td>{{s.name}}</td>
-                            <td><input type = "radio" value = "{{s.id_code}}" id = "editSetup{{s.id_code}}" name = "editSetup" 
+                            <td>{{h.id_code}}</td>
+                            <td>{{h.description}}</td>
+                            <td>{{h.date}}</td>
+                            <td><input type = "radio" value = "{{h.id_code}}" id = "editHolidays{{h.id_code}}" name = "editHolidays" 
                                 class = "selected" 
                                 onchange= 
-                                "setupSelected('{{s.id_code}}');">
-                                </td>
+                                "HolidaysSelected('{{h.id_code}}');">
+                            </td>
+                            <!---
+                            <td><input type = "radio" value = "{{h.working}} id = </td>
+                            Adding functionality to 'working' radio button
+                            -->
                         </tr>
                         {% endfor %}
                     </table>
