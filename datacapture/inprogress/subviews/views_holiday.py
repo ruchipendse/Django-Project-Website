@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from inprogress.models import Setup
+from inprogress.models import Holiday
 import json
 
 #------------------------------------------------------------------
@@ -23,18 +24,18 @@ RETURNS PARTS LIST
 #---------------------------------------------------
 
 def holidays(request):
-    # TODO: YOU NEED TO REPLACE THIS LOGIC SUITABLE FOR HOLIDAY ----
-    setupQuerySet = Setup.objects.filter(is_active = True)
-    setupsList = {}
-    for setup in setupQuerySet:
+    # TO DO: YOU NEED TO REPLACE THIS LOGIC SUITABLE FOR HOLIDAY ----
+    holidayQuerySet = Holiday.objects.filter(is_active = True)
+    holidaysList = {}
+    for holiday in holidayQuerySet:
         st = {
-            "id_code": setup.id_code,
-            "name": setup.name,
-            "desc": setup.desc
+            "id_code": holiday.id_code,
+            "desc": holiday.name, #changed name to desc for holiday
+            "date": holiday.desc  #changed desc to date for holiday
         }
-        setupsList[st['id_code']] =  st
-    setupsListJson = json.dumps(setupsList)
-    # TODO: REPLACE THIS TEMP CALL BY SUITABLE FOR HOLIDAYS
+        holidaysList[st['id_code']] =  st
+    holidaysListJson = json.dumps(holidaysList)
+    # TO DO: REPLACE THIS TEMP CALL BY SUITABLE FOR HOLIDAYS
     # REFERE THE COMMENTED ONE FOR CHANGES
     # -------------------------------------- 
     return render(request, 'holiday/holidays.html')
@@ -54,8 +55,8 @@ def processHoliday(request):
         return render(request, 'holiday/addHoliday.html')
 
     elif mode == 'EDIT':
-        setup = Setup.objects.get(id_code = request.POST['selectedSetup'])
-        return render(request, 'holiday/editHoliday.html', {'selectedSetup': setup})
+        holiday = Holiday.objects.get(id_code = request.POST['selectedHoliday'])
+        return render(request, 'holiday/editHoliday.html', {'selectedHoliday': holiday})
 
     elif mode == 'DELETE':
         deleteHoliday(request)
@@ -69,43 +70,43 @@ def processHoliday(request):
     return redirect(returnPage)
 
 def updateHolidayDetails(request):
-    setup_code = request.POST['scode']
-    setup_name = request.POST['sname']
-    setup_desc = request.POST['sdesc']
-    setup = Setup.objects.get(id_code = setup_code)
-    setup.name = setup_name
-    setup.desc = setup_desc
-    # TODO: UNCOMMENT THIS WHEN YOU MAKE ALL CHANGES, ELSE THIS WILL SAVE IN TO SETUP TABLES
-    # setup.save()  
+    holiday_code = request.POST['hcode']
+    holiday_desc = request.POST['hdesc']
+    holiday_date = request.POST['hdate']
+    holiday = Holiday.objects.get(id_code = holiday_code)
+    holiday.name = holiday_name
+    holiday.desc = holiday_desc
+    # TO DO: UNCOMMENT THIS WHEN YOU MAKE ALL CHANGES, ELSE THIS WILL SAVE IN TO SETUP TABLES
+    holiday.save()   #was setup.save() before
     return redirect('holidays')
 
 def addNewHoliday(request):
-    setup_code = request.POST['scode']
-    setup_name = request.POST['sname']
-    setup_desc = request.POST['sdesc']
+    holiday_code = request.POST['hcode']
+    holiday_desc = request.POST['hdesc']
+    holiday_date = request.POST['hdate']
 
-    if Setup.objects.filter(id_code = setup_code).exists():
+    if Holiday.objects.filter(id_code = holiday_code).exists():
         messages.info(request, 'Setup code already exists')
         return redirect('holidays')
     else:
         try:
-            setup = Setup.objects.create(id_code = setup_code, 
-                                        name = setup_name, 
-                                        desc = setup_desc)
-            # TODO: UNCOMMENT THIS WHEN YOU MAKE ALL CHANGES, ELSE THIS WILL SAVE IN TO SETUP TABLES
-            # setup.save()
+            holiday = Holiday.objects.create(id_code = holiday_code, 
+                                        desc = holiday_desc, 
+                                        date = setup_date)
+            # TO DO: UNCOMMENT THIS WHEN YOU MAKE ALL CHANGES, ELSE THIS WILL SAVE IN TO SETUP TABLES
+            holiday.save() #was setup.save()
                 
         except Exception as e:
             print ('--Exception while creating Setup ---', e)
     return redirect('holidays')
 
 def editHoliday(request):
-    return render(request, 'setup/editSetup.html')
+    return render(request, 'setup/editHoliday.html')
 
 def deleteHoliday(request):
-    setup = Setup.objects.get(id_code = request.POST['selectedSetup'])
+    holiday = Holiday.objects.get(id_code = request.POST['selectedHoliday'])
 
-    if setup is not None:
-        setup.is_active = False
-        setup.save()
+    if holiday is not None:
+        holiday.is_active = False
+        holiday.save()
     return redirect('holidays')
