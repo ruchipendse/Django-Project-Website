@@ -5,6 +5,8 @@
             window.location.href = "/";
         </script>
     {% endif %}
+
+    <meta id="allTimeSheetEntriesJsondata" data="{{allTimeSheetEntriesJson}}" />
     
     <h1>Electral Control Systems</h1>
     <h2>Reports: IN PROGRESS</h2>
@@ -35,37 +37,22 @@
                     </tr>
                 </table>
             </div>
-                <table id = "reporttable"  width = 95%>
+            <table id = "report_table"  width = 95% border = 1>
                 <tr>
-                    <td>Userwise all entries</td>
+                    <th  width="10%">Date</th>
+                    <th  width="15%">Prod (min)</th>
+                    <th  width="15%">Non-Prod (min)</th>
+                    <th  width="15%">Parts expected</th>
+                    <th  width="15%">Parts actual</th>
+                    <th  width="auto%"></th>
                 </tr>
                 <tr>
-                    <td>Machinewise all entries</td>
-                </tr>
-                <tr>
-                    <td>Partwise all entries</td>
-                </tr>
-            </table>
-            <!-- <div id = "buttondiv" align = "right">
-                <input type = "hidden" id = "selectedSetup" name = "selectedSetup" value = "NO_SETUP"/>
-                <input type = "hidden" id = "functionMode" name = "functionMode" value = "ADD"/>
-                <table>
-                    <tr>
-                        <td>
-                            <input type="submit" id = "addSetupButton" class="w3-button w3-blue" value=" New "
-                                    onclick = "setFunctionMode('ADD')">
-                        </td>
-                        <td>
-                            <input type="submit" id = "editSetupButton" class="w3-button w3-blue" value="Edit"
-                                    onclick = "setFunctionMode('EDIT')">
-                        </td>
-                        <td>
-                            <input type="submit" id = "deleteSetupButton" class="w3-button w3-blue" value="Delete"
-                                    onclick = "setFunctionMode('DELETE')">
-                        </td>
-                    </tr>
-                </table>
-            </div> -->
+                    <td>2020-08-13</td>
+                    {% for key, value in allTimeSheetEntries.items %}
+                        <td>{{value}}</td>
+                    {% endfor %}
+            </tr>
+        </table>
         </form>
     </div>
 
@@ -92,8 +79,6 @@
         THIS METHOD INITAITES THE STATUS OF REQUIRED FIELDS ON USERS PAGE 
     */
     function init(){
-        document.getElementById('editSetupButton').classList.add('disabled');
-        document.getElementById('deleteSetupButton').classList.add('disabled');
     }
 
     init();
