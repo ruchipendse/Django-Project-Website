@@ -8,6 +8,8 @@ from inprogress.models import Machine, Employee, Setup, TimeSheetEntryProd, Time
 
 import json
 import datetime
+from datetime import datetime as dt
+from datetime import timedelta, date
 #------------------------------------------------------------------
 #        REPORTS 
 #------------------------------------------------------------------
@@ -18,20 +20,38 @@ RETURNS PARTS LIST
 """
 def reports(request):
     uname = "U001"
-    currentDate = "2020-08-13"
+    if ("to_date" in request.POST.keys()):
+        print ("------------ KEY FOUND")
+        upper_date = request.POST["to_date"]
+    else:
+        print ("------------ KEY NOT FOUND")
+        upper_date = dt.today().strftime("%Y-%m-%d")
 
     operator = Employee.objects.get(user__username = uname)
     user = operator.user
 
-    allTimeSheetEntries                     = allTimeSheetEntriesForUserDateDeep(user, currentDate)
-    allTimeSheetEntriesJSON                 = json.dumps(allTimeSheetEntries)
+    # # FETCH N DAYS RECORD HISTORY TILL TODAY
+    date_highbound = dt.strptime(upper_date, "%Y-%m-%d")
 
+    NUMBER_OF_PREV_DAYS = 7
+    date_lowbound = date_highbound - timedelta(days=NUMBER_OF_PREV_DAYS)  # TO
+    employeeDateStatus = EmployeeDate.objects.filter(user_id=user.id).filter(
+        date__range=[
+            date_lowbound.strftime("%Y-%m-%d"),
+            date_highbound.strftime("%Y-%m-%d"),
+        ]
+    )
+    entry_details_datewise_modular = {}
+    for status in employeeDateStatus:
+        entry_key = status.date.strftime("%Y-%m-%d")
+        #TODO: GETTING KEY ERROR FOR DATE HERE
+        entry_details_datewise_modular[entry_key] =  allTimeSheetEntriesForUserDateDeep(user, status.date)
+    entry_details_datewise_modularJSON                 = json.dumps(entry_details_datewise_modular)
     #TODO: FORWARD DATE_RANGE_WISE_EMPLOYEE - PROD/NON-PROD + EXP/ACTUAL DATA
-    --------
-
+    print ('\n ----- Datewise userdata details ----- \n', entry_details_datewise_modularJSON, '\n ----- Datewise userdata details ----- \n')
     return render(request, 'report/reports.html', 
-                            {'allTimeSheetEntries': allTimeSheetEntries, 
-                            'allTimeSheetEntriesJson': allTimeSheetEntriesJSON,
+                            {'allTimeSheetEntries': entry_details_datewise_modular, 
+                            'allTimeSheetEntriesJson': entry_details_datewise_modularJSON,
                             })
 
 def generateReport(request):

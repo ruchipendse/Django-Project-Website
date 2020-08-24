@@ -89,7 +89,7 @@ def timesheet_entries(request, currentDate=datetime.today().strftime("%Y-%m-%d")
     # FETCH N DAYS RECORD HISTORY TILL TODAY
     date_highbound = datetime.today()  # FROM
 
-    NUMBER_OF_PREV_DAYS = 5
+    NUMBER_OF_PREV_DAYS = 7
     date_lowbound = date_highbound - timedelta(days=NUMBER_OF_PREV_DAYS)  # TO
     employeeDateStatus = EmployeeDate.objects.filter(user_id=request.user.id).filter(
         date__range=[

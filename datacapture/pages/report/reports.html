@@ -12,7 +12,7 @@
     <h2>Reports: IN PROGRESS</h2>
 
     <div class = "reports"> 
-        <form name = "reportsForm" action = "generateReport" method = "POST">
+        <form name = "reportsForm" action = "reports" method = "POST">
             {% csrf_token %} 
             <input type = "hidden" id = "selectedCriteria" name = "selectedCriteria" value = "USER"/>
             <div id = 'date_div' align = 'left'>
@@ -39,20 +39,23 @@
             </div>
             <table id = "report_table"  width = 95% border = 1>
                 <tr>
-                    <th  width="10%">Date</th>
-                    <th  width="15%">Prod (min)</th>
-                    <th  width="15%">Non-Prod (min)</th>
-                    <th  width="15%">Parts expected</th>
-                    <th  width="15%">Parts actual</th>
-                    <th  width="auto%"></th>
+                    <th  width="20%">Date</th>
+                    <th  width="20%">Prod (min)</th>
+                    <th  width="20%">Non-Prod (min)</th>
+                    <th  width="20%">Parts expected</th>
+                    <th  width="20%">Parts actual</th>
+                    <!-- <th  width="auto%"></th> -->
                 </tr>
-                <tr>
-                    <td>2020-08-13</td>
                     {% for key, value in allTimeSheetEntries.items %}
-                        <td>{{value}}</td>
-                    {% endfor %}
-            </tr>
-        </table>
+                    <tr>
+                        <td>{{key}}</td>
+                        <td>{{value.total_time_prod_mins}}</td>
+                        <td>{{value.total_time_nonprod_mins}}</td>
+                        <td>{{value.total_parts_finished_expected}}</td>
+                        <td>{{value.total_parts_finished_actual}}</td>
+                    </tr>
+                {% endfor %}
+            </table>
         </form>
     </div>
 
@@ -79,6 +82,12 @@
         THIS METHOD INITAITES THE STATUS OF REQUIRED FIELDS ON USERS PAGE 
     */
     function init(){
+/*
+        var allTimeSheetEntriesJson = document.getElementById('allTimeSheetEntriesJsondata').getAttribute("data");
+        var allTimeSheetEntries = JSON.parse(allTimeSheetEntriesJson);
+        for (let [key, val] of Object.entries(allTimeSheetEntries)) {
+        }
+*/
     }
 
     init();
