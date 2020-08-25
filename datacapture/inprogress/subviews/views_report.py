@@ -1,3 +1,4 @@
+import numpy as np
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from inprogress.models import Setup
@@ -18,7 +19,9 @@ from datetime import timedelta, date
 METHOD CALLED WHEN ADMIN CLICKS "SETUPS" LINK. 
 RETURNS PARTS LIST
 """
+
 def reports(request):
+    NUMBER_OF_PREV_DAYS = 6
 
     report_criteria = "USER"
     if ("report_criteria" in request.POST.keys()):
@@ -28,33 +31,52 @@ def reports(request):
     if ("to_date" in request.POST.keys()):
         upper_date = request.POST["to_date"]
 
-    print (report_criteria)
-    uname = "U001"  # TODO: REMOVE THIS HARDCODING LATER
-    operator = Employee.objects.get(user__username = uname)
-    user = operator.user
-
-    # # FETCH N DAYS RECORD HISTORY TILL TODAY
     date_highbound = dt.strptime(upper_date, "%Y-%m-%d")
-
-    NUMBER_OF_PREV_DAYS = 7
     date_lowbound = date_highbound - timedelta(days=NUMBER_OF_PREV_DAYS)  # TO
-    employeeDateStatus = EmployeeDate.objects.filter(user_id=user.id).filter(
-        date__range=[
-            date_lowbound.strftime("%Y-%m-%d"),
-            date_highbound.strftime("%Y-%m-%d"),
-        ]
-    )
-    entry_details_datewise_modular = {}
-    for status in employeeDateStatus:
-        entry_key = status.date.strftime("%Y-%m-%d")
-        entry_details_datewise_modular[entry_key] =  allTimeSheetEntriesForUserDateDeep(user, status.date)
-    entry_details_datewise_modularJSON                 = json.dumps(entry_details_datewise_modular)
+    report_dates = []
+    to_date_entry = date_highbound.strftime("%Y-%m-%d")
+    report_dates.append(to_date_entry)
 
-    #TODO: PROVIDE ALL USERS, MACHINES, PARTS, SETUPS ETC
+    for day in range(1, NUMBER_OF_PREV_DAYS + 1):
+        to_date = date_highbound - timedelta(days=day)
+        report_dates.append(to_date.strftime("%Y-%m-%d"))
+
+    if (report_criteria == "USER"):
+        # collect data for all users
+        operators = Employee.objects.filter(is_active = True)
+        userwise_report_data = {}
+        for op in operators:
+            user = op.user
+            employeeDateStatus = EmployeeDate.objects.filter(user_id=user.id).filter(
+                date__range=[
+                    date_lowbound.strftime("%Y-%m-%d"),
+                    date_highbound.strftime("%Y-%m-%d"),
+                ]
+            )
+            entry_details_datewise_modular = {}
+            for report_date in report_dates:
+                entry_details_datewise_modular[report_date] = {
+                    'total_time_prod_mins' :"-",
+                    'total_time_nonprod_mins' :"-",
+                    'total_parts_finished_expected': "-",
+                    'total_parts_finished_actual': "-"
+                }
+
+            for status in employeeDateStatus:
+                entry_key = status.date.strftime("%Y-%m-%d")
+                entry_details_datewise_modular[entry_key] =  allTimeSheetEntriesForUserDateDeep(user, status.date)
+            # entry_details_datewise_modularJSON                 = json.dumps(entry_details_datewise_modular)
+            userwise_report_data [user.username] = entry_details_datewise_modular
+        # userwise_report_dataJSON = json.dumps(userwise_report_data)
+        # print ('\n ----- userwise_report_dataJSON ----- \n', userwise_report_dataJSON)
+    elif (report_criteria == "MACHINE"):
+        pass
     
     return render(request, 'report/reports.html', 
-                            {'allTimeSheetEntries': entry_details_datewise_modular, 
-                            'allTimeSheetEntriesJson': entry_details_datewise_modularJSON,
+                            {
+                                'report_dates'          : report_dates,
+                                'selected_date'            : upper_date,
+                                'userwise_report_data'  : userwise_report_data,
                             })
 
 #-------------------------- UTILITY METHOD -----------------------

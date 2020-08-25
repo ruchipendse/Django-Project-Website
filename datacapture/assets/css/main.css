@@ -307,4 +307,20 @@ p {
         display: grid;
         grid-template-columns: 40% auto;
     }
+
+    .td_parts_expected{
+        background-color: #ffcfff;
+    }
+
+    .td_parts_actual{
+        background-color: #ffefff;
+    }
+
+    .td_time_prod{
+        background-color: #cfffff;
+    }
+
+    .td_time_nonprod{
+        background-color: #9fffff;
+    }
 }

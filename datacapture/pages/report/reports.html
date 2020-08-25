@@ -5,11 +5,9 @@
             window.location.href = "/";
         </script>
     {% endif %}
-
-    <meta id="allTimeSheetEntriesJsondata" data="{{allTimeSheetEntriesJson}}" />
     
     <h1>Electral Control Systems</h1>
-    <h2>Reports: IN PROGRESS</h2>
+    <h2>Reports:</h2>
 
     <div class = "reports"> 
         <form name = "reportsForm" action = "reports" method = "POST">
@@ -18,8 +16,9 @@
             <div id = 'date_div' align = 'left'>
                 <table>
                     <tr>
-                        <td><label id="label_from_date" for = "from_date" disabled>From</label></td>
-                        <td><input type = "date" name = "from_date" id = "from_date"></td>
+                        <!-- TODO: if from_date is required field uncomment this  -->
+                        <!-- <td><label id="label_from_date" for = "from_date" disabled>From</label></td>
+                        <td><input type = "date" name = "from_date" id = "from_date"></td> -->
                         <td><label id="label_to_date" for = "to_date" disabled>To</label></td>
                         <td><input type = "date" name = "to_date" id = "to_date" value = '{{selected_date}}''></td>
                         <td><label id="label_criteria" for = "criteria" disabled>Criteria</label></td>
@@ -39,21 +38,30 @@
             </div>
             <table id = "report_table"  width = 95% border = 1>
                 <tr>
-                    <th  width="20%">Date</th>
-                    <th  width="20%">Prod (min)</th>
-                    <th  width="20%">Non-Prod (min)</th>
-                    <th  width="20%">Parts expected</th>
-                    <th  width="20%">Parts actual</th>
-                    <!-- <th  width="auto%"></th> -->
+                    <th  width="20%">User</th>
+                {% for day in report_dates %}
+                    <th  >{{day}}</th>
+
+                {% endfor %}
                 </tr>
-                    {% for key, value in allTimeSheetEntries.items %}
-                    <tr>
-                        <td>{{key}}</td>
-                        <td>{{value.total_time_prod_mins}}</td>
-                        <td>{{value.total_time_nonprod_mins}}</td>
-                        <td>{{value.total_parts_finished_expected}}</td>
-                        <td>{{value.total_parts_finished_actual}}</td>
-                    </tr>
+                {% for key, value in userwise_report_data.items %}
+                <tr>
+                    <td>{{key}}</td>
+                    {% for key1, value1 in value.items %}
+                    <td>
+                        <table border = "1" width = "100%">
+                            <tr>
+                                <td id = "td_parts_expected" class = "td_parts_expected"  width="50%" align = "right">{{value1.total_parts_finished_expected}}</td>
+                                <td id = "td_parts_actual" class = "td_parts_actual"  width="50%" align = "right">{{value1.total_parts_finished_actual}}</td>
+                            </tr>
+                            <tr>
+                                <td id = "td_time_prod" class = "td_time_prod"  width="50%" align = "right">{{value1.total_time_prod_mins}}</td>
+                                <td id = "td_time_nonprod" class = "td_time_nonprod"  width="50%" align = "right">{{value1.total_time_nonprod_mins}}</td>
+                            </tr>
+                          </table>                        
+                    </td>
+                    {% endfor %}
+                </tr>
                 {% endfor %}
             </table>
         </form>
@@ -82,6 +90,9 @@
         THIS METHOD INITAITES THE STATUS OF REQUIRED FIELDS ON USERS PAGE 
     */
     function init(){
+        var userwise_report_dataJSON = document.getElementById('userwise_report_dataJSONdata').getAttribute("data");
+        var userwise_report_data = JSON.parse(userwise_report_dataJSON);
+        console.log(userwise_report_data);
     }
 
     init();
