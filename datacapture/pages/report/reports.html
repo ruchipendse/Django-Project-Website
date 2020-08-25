@@ -21,13 +21,13 @@
                         <td><label id="label_from_date" for = "from_date" disabled>From</label></td>
                         <td><input type = "date" name = "from_date" id = "from_date"></td>
                         <td><label id="label_to_date" for = "to_date" disabled>To</label></td>
-                        <td><input type = "date" name = "to_date" id = "to_date"></td>
+                        <td><input type = "date" name = "to_date" id = "to_date" value = '{{selected_date}}''></td>
                         <td><label id="label_criteria" for = "criteria" disabled>Criteria</label></td>
                         <td>
-                            <select name = "criteria" id = "criteria">
-                                <option>User</option>
-                                <option>Part</option>
-                                <option>Machine</option>
+                            <select id = "report_criteria" name = "report_criteria"  style="min-width:100%;">
+                                <option value = "USER">User</option>
+                                <option value = "MACHINE">Machine</option>
+                                <!-- <option VALUE = PART"">Part</option> -->
                             </select>
                         </td>
                         <td>
@@ -82,12 +82,6 @@
         THIS METHOD INITAITES THE STATUS OF REQUIRED FIELDS ON USERS PAGE 
     */
     function init(){
-/*
-        var allTimeSheetEntriesJson = document.getElementById('allTimeSheetEntriesJsondata').getAttribute("data");
-        var allTimeSheetEntries = JSON.parse(allTimeSheetEntriesJson);
-        for (let [key, val] of Object.entries(allTimeSheetEntries)) {
-        }
-*/
     }
 
     init();

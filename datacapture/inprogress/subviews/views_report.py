@@ -19,14 +19,17 @@ METHOD CALLED WHEN ADMIN CLICKS "SETUPS" LINK.
 RETURNS PARTS LIST
 """
 def reports(request):
-    uname = "U001"
-    if ("to_date" in request.POST.keys()):
-        print ("------------ KEY FOUND")
-        upper_date = request.POST["to_date"]
-    else:
-        print ("------------ KEY NOT FOUND")
-        upper_date = dt.today().strftime("%Y-%m-%d")
 
+    report_criteria = "USER"
+    if ("report_criteria" in request.POST.keys()):
+        report_criteria = request.POST["report_criteria"]
+
+    upper_date = dt.today().strftime("%Y-%m-%d")
+    if ("to_date" in request.POST.keys()):
+        upper_date = request.POST["to_date"]
+
+    print (report_criteria)
+    uname = "U001"  # TODO: REMOVE THIS HARDCODING LATER
     operator = Employee.objects.get(user__username = uname)
     user = operator.user
 
@@ -44,20 +47,15 @@ def reports(request):
     entry_details_datewise_modular = {}
     for status in employeeDateStatus:
         entry_key = status.date.strftime("%Y-%m-%d")
-        #TODO: GETTING KEY ERROR FOR DATE HERE
         entry_details_datewise_modular[entry_key] =  allTimeSheetEntriesForUserDateDeep(user, status.date)
     entry_details_datewise_modularJSON                 = json.dumps(entry_details_datewise_modular)
-    #TODO: FORWARD DATE_RANGE_WISE_EMPLOYEE - PROD/NON-PROD + EXP/ACTUAL DATA
-    print ('\n ----- Datewise userdata details ----- \n', entry_details_datewise_modularJSON, '\n ----- Datewise userdata details ----- \n')
+
+    #TODO: PROVIDE ALL USERS, MACHINES, PARTS, SETUPS ETC
+    
     return render(request, 'report/reports.html', 
                             {'allTimeSheetEntries': entry_details_datewise_modular, 
                             'allTimeSheetEntriesJson': entry_details_datewise_modularJSON,
                             })
-
-def generateReport(request):
-    criteria = request.POST['selectedCriteria']
-    print ('\n ----- GENERATING REPORT ----- \n', criteria)
-    return redirect('reports')
 
 #-------------------------- UTILITY METHOD -----------------------
 # TODO: THIS METHOD NEEDS TO BE REUSED ALONG WITH SIMILAR METHOD FROM TIMESHEET ENTRY
@@ -145,7 +143,6 @@ def collectTimeSheetEntriesDeep(status):
                 tentry_np.as_display_line()
             )
         )
-    print ('\n ----- total prod ----- \n', total_time_prod/ 3600, total_time_nonprod/ 3600, total_handled_expected, total_handled_actual)
     datewise_user_productivity = {
         'total_time_prod_mins' :round(total_time_prod/ 60, 0),
         'total_time_nonprod_mins' :round(total_time_nonprod/ 60, 0),

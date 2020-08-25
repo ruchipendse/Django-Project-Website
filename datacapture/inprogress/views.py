@@ -10,7 +10,7 @@ from inprogress.subviews.views_machine import machines, processMachine, addNewMa
 
 from inprogress.subviews.views_setup import setups, processSetup
 from inprogress.subviews.views_holiday import holidays, processHoliday
-from inprogress.subviews.views_report import reports, generateReport
+from inprogress.subviews.views_report import reports
 from inprogress.subviews.views_nonprodtask import nonprodtasks, processNonProdTask
 from inprogress.subviews.views_part import parts, addNewPart, deletePart, processPart
 from inprogress.subviews.views_timesheet import gototimesheet, gototimesheet_init, timesheet_entries, processRequest, timesheetLogout
