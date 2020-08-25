@@ -46,9 +46,11 @@
                 </tr>
                 {% for key, value in userwise_report_data.items %}
                 <tr>
-                    <td>{{key}}</td>
+                    <td id = "user_column_highlight" class = "user_column_highlight">{{key}}</td>
                     {% for key1, value1 in value.items %}
-                    <td>
+                    TODO: THESE KEYS USE FOR DRILL DOWN APPROACH
+                    -------------------------------------------
+                    <td onclick="alert('{{key1}} - {{key}}')">
                         <table border = "1" width = "100%">
                             <tr>
                                 <td id = "td_parts_expected" class = "td_parts_expected"  width="50%" align = "right">{{value1.total_parts_finished_expected}}</td>
