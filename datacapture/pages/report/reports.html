@@ -17,8 +17,10 @@
                 <table>
                     <tr>
                         <!-- TODO: if from_date is required field uncomment this  -->
+
                         <!-- <td><label id="label_from_date" for = "from_date" disabled>From</label></td>
                         <td><input type = "date" name = "from_date" id = "from_date"></td> -->
+
                         <td><label id="label_to_date" for = "to_date" disabled>To</label></td>
                         <td><input type = "date" name = "to_date" id = "to_date" value = '{{selected_date}}''></td>
                         <td><label id="label_criteria" for = "criteria" disabled>Criteria</label></td>
@@ -37,7 +39,7 @@
                 </table>
             </div>
             <table id = "report_table"  width = 95%  class = "unselected_report_cell">
-                <tr>
+                <tr >
                     <th  width="20%" class = "unselected_report_cell">User</th>
                 {% for day in report_dates %}
                     <th class = "unselected_report_cell">{{day}}</th>
@@ -48,7 +50,7 @@
                 <tr>
                     <td id = "user_column_highlight" class = "user_column_highlight unselected_report_cell">{{key}}</td>
                     {% for key1, value1 in value.items %}
-                    <td onclick="alert('{{key1}} - {{key}}')" onmouseenter = "mark_red(this)" onmouseleave = "unmark_red(this)">
+                    <td onclick="alert('{{key1}} - {{key}}')" onmouseenter = "mark_red(this)" onmouseleave = "unmark_red(this)"  class = "unselected_report_cell">
                         <table id = "{{key1}} - {{key}}" width = "100%" class = "unselected_report_cell">
                             <tr>
                                 <td id = "td_parts_expected" class = "td_parts_expected unselected_report_cell"  width="50%" align = "right">{{value1.total_parts_finished_expected}}</td>
@@ -71,13 +73,11 @@
     function mark_red(comp_table){
         comp_table.classList.remove("unselected_report_cell")
         comp_table.classList.add("selected_report_cell")
-//        comp_table.style.border = "2px solid red";
     }
 
     function unmark_red(comp_table){
         comp_table.classList.remove("selected_report_cell")
         comp_table.classList.add("unselected_report_cell")
-//        comp_table.style.border = "1px solid black";
     }
 
     function setFunctionMode(fMode){

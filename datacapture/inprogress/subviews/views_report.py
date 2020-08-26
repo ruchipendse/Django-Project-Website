@@ -42,7 +42,6 @@ def reports(request):
         report_dates.append(to_date.strftime("%Y-%m-%d"))
 
     if (report_criteria == "USER"):
-        # collect data for all users
         operators = Employee.objects.filter(is_active = True)
         userwise_report_data = {}
         for op in operators:
@@ -51,8 +50,8 @@ def reports(request):
                 date__range=[
                     date_lowbound.strftime("%Y-%m-%d"),
                     date_highbound.strftime("%Y-%m-%d"),
-                ]
-            )
+                ],
+            ).filter(committed = True)
             entry_details_datewise_modular = {}
             for report_date in report_dates:
                 entry_details_datewise_modular[report_date] = {
@@ -65,11 +64,9 @@ def reports(request):
             for status in employeeDateStatus:
                 entry_key = status.date.strftime("%Y-%m-%d")
                 entry_details_datewise_modular[entry_key] =  allTimeSheetEntriesForUserDateDeep(user, status.date)
-            # entry_details_datewise_modularJSON                 = json.dumps(entry_details_datewise_modular)
             userwise_report_data [user.username] = entry_details_datewise_modular
-        # userwise_report_dataJSON = json.dumps(userwise_report_data)
-        # print ('\n ----- userwise_report_dataJSON ----- \n', userwise_report_dataJSON)
     elif (report_criteria == "MACHINE"):
+        #TODO: DEVELOP THE MACHINE SPECIFIC REPORT HERE
         pass
     
     return render(request, 'report/reports.html', 

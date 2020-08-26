@@ -332,6 +332,7 @@ p {
         border: 1px solid black;
         border-collapse: collapse;
     }
+
     .selected_report_cell {
         border: 2px solid red;
         border-collapse: collapse;
