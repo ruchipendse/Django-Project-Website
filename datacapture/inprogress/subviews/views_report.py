@@ -14,6 +14,8 @@ import json
 import datetime
 from datetime import datetime as dt
 from datetime import timedelta, date
+
+import pands as pd
 #------------------------------------------------------------------
 #        REPORTS 
 #------------------------------------------------------------------
@@ -31,14 +33,23 @@ def report_download(request, report_criteria = None, report_date = None):
             report_date = request.POST["to_date"]
 
     dummy1, dummy2, userwise_report_data = getReportsData(request, report_criteria, report_date)
-    userwise_report_dataJson = json.dumps(userwise_report_data)    
+    # userwise_report_dataJson = json.dumps(userwise_report_data)    
 
-    file_name = "tmp/report_data.json"
+    file_name = "tmp/report_data.csv"
     file_path = os.path.join("", file_name)
 
-    handle1=open(file_path,'w+')
-    handle1.write(userwise_report_dataJson)
-    handle1.close()
+    report_df = pd.DataFrame.from_dict(userwise_report_data, orient="index")
+    cols = len(report_df.iloc[0])
+    for i in range(len(report_df)) :
+        for c in range(cols):
+            element = report_df.iloc[i, c] 
+            new_element = "["   + str(element['total_time_prod_mins']) + "]["                   \
+                            + str(element['total_time_nonprod_mins']) + "]\n["                  \
+                            + str(element['total_parts_finished_expected']) + "]["              \
+                            + str(element['total_parts_finished_actual'])                       \
+                        + "]"
+            report_df.iloc[i, c] = new_element
+    report_df.to_csv(file_path)
 
     if os.path.exists(file_path):
         with open(file_path, 'rb') as fh:
@@ -53,7 +64,7 @@ METHOD CALLED WHEN ADMIN CLICKS "REPORTS" LINK.
 RETURNS DATA REPORT
 """
 def reports(request):
-    file_name = "tmp/report_data.json"
+    file_name = "tmp/report_data.csv"
     if os.path.exists(file_name):
         # delete file after use
         os.remove(file_name)
