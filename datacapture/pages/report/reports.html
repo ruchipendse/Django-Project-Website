@@ -21,13 +21,18 @@
                         <!-- <td><label id="label_from_date" for = "from_date" disabled>From</label></td>
                         <td><input type = "date" name = "from_date" id = "from_date"></td> -->
 
-                        <td><label id="label_to_date" for = "to_date" disabled>To</label></td>
-                        <td><input type = "date" name = "to_date" id = "to_date" value = "{{selected_date}}"></td>
+                        <td><label id="label_to_date" for = "to_date" disabled>Week ending on</label></td>
+                        <td>
+                            <!-- <input type = "date" name = "to_date" id = "to_date" value = "{{selected_date}}"> -->
+                            <input type="date" name="to_date"  id = "to_date" value = "{{selected_date}}" min="2020-08-01">
+                                <!--TODO: THIS ISNT WORKING AT PRESENT placeholder="yyyy-mm-dd"   -->
+                        </td>
+
                         <td><label id="label_criteria" for = "criteria" disabled>Criteria</label></td>
                         <td>
                             <select id = "report_criteria" name = "report_criteria"  style="min-width:100%;">
                                 <option value = "USER">User</option>
-                                <option value = "MACHINE">Machine</option>
+                                <!-- <option value = "MACHINE">Machine</option> -->
                                 <!-- <option VALUE = PART"">Part</option> -->
                             </select>
                         </td>
@@ -56,12 +61,16 @@
                     <td onclick="alert('{{key1}} - {{key}}')" onmouseenter = "mark_red(this)" onmouseleave = "unmark_red(this)"  class = "unselected_report_cell"  style="cursor: pointer;">
                         <table id = "{{key1}} - {{key}}" width = "100%" class = "unselected_report_cell">
                             <tr>
-                                <td id = "td_parts_expected" class = "td_parts_expected unselected_report_cell"  width="50%" align = "right">{{value1.total_parts_finished_expected}}</td>
-                                <td id = "td_parts_actual" class = "td_parts_actual unselected_report_cell"  width="50%" align = "right">{{value1.total_parts_finished_actual}}</td>
+                                <td id = "td_parts_expected" class = "td_parts_expected unselected_report_cell"  
+                                        width="50%" align = "right" title="Expected number of parts">{{value1.total_parts_finished_expected}}</td>
+                                <td id = "td_parts_actual" class = "td_parts_actual unselected_report_cell"  
+                                        width="50%" align = "right" title="Actual number of parts">{{value1.total_parts_finished_actual}}</td>
                             </tr>
                             <tr>
-                                <td id = "td_time_prod" class = "td_time_prod unselected_report_cell"  width="50%" align = "right">{{value1.total_time_prod_mins}}</td>
-                                <td id = "td_time_nonprod" class = "td_time_nonprod unselected_report_cell"  width="50%" align = "right">{{value1.total_time_nonprod_mins}}</td>
+                                <td id = "td_time_prod" class = "td_time_prod unselected_report_cell"  
+                                        width="50%" align = "right" title="Production time">{{value1.total_time_prod_mins}}</td>
+                                <td id = "td_time_nonprod" class = "td_time_nonprod unselected_report_cell"  
+                                        width="50%" align = "right" title="Non-production time">{{value1.total_time_nonprod_mins}}</td>
                             </tr>
                         </table>                        
                     </td>
@@ -104,6 +113,7 @@
         THIS METHOD INITAITES THE STATUS OF REQUIRED FIELDS ON USERS PAGE 
     */
     function init(){
+        document.getElementById('to_date').setAttribute('max', new Date().toISOString().split("T")[0]);
     }
 
     init();

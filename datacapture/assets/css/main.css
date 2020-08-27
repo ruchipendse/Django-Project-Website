@@ -156,6 +156,11 @@ p {
     ul li a:hover {
         background: white;
     }
+
+    a:hover, a:active {
+        color: red;
+    }
+   
     nav {
         background: none;
     }
@@ -309,19 +314,19 @@ p {
     }
 
     .td_parts_expected{
-        background-color: #ffcfff;
+        background-color: #cfcfff;
     }
 
     .td_parts_actual{
-        background-color: #ffefff;
+        background-color: #dfdfff;
     }
 
     .td_time_prod{
-        background-color: #cfffff;
+        background-color: #bfffff;
     }
 
     .td_time_nonprod{
-        background-color: #9fffff;
+        background-color: #dfffff;
     }
 
     .user_column_highlight {
