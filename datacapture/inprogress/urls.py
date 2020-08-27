@@ -28,7 +28,7 @@ urlpatterns = [
 
 #-------------------- REPORT --------------
     path ('reports', views.reports, name = 'reports'),
-    # path ('generateReport', views.generateReport, name = 'generateReport'),
+    path ('report_download/<str:report_criteria>/<str:report_date>', views.report_download, name = 'report_download'),
 #-------------------- NON-PRODUCTION TASK --------------
     path ('nonprodtasks', views.nonprodtasks, name = 'nonprodtasks'),
     path ('processNonProdTask', views.processNonProdTask, name = 'processNonProdTask'),

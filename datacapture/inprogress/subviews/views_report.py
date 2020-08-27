@@ -3,9 +3,12 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from inprogress.models import Setup
 
+import os
+from django.conf import settings
+from django.http import HttpResponse, Http404
+
 from inprogress.subviews.views_timesheet import allTimeSheetEntriesForUserDate
 from inprogress.models import Machine, Employee, Setup, TimeSheetEntryProd, TimeSheetEntryNonProd, EmployeeDate, MachineSetup
-
 
 import json
 import datetime
@@ -15,21 +18,64 @@ from datetime import timedelta, date
 #        REPORTS 
 #------------------------------------------------------------------
 
-"""
-METHOD CALLED WHEN ADMIN CLICKS "SETUPS" LINK. 
-RETURNS PARTS LIST
-"""
+def report_download(request, report_criteria = None, report_date = None):
 
+    if (report_criteria is None):
+        report_criteria = "USER"
+        if ("report_criteria" in request.POST.keys()):
+            report_criteria = request.POST["report_criteria"]
+
+    if (report_date is None):
+        report_date = dt.today().strftime("%Y-%m-%d")
+        if ("to_date" in request.POST.keys()):
+            report_date = request.POST["to_date"]
+
+    dummy1, dummy2, userwise_report_data = getReportsData(request, report_criteria, report_date)
+    userwise_report_dataJson = json.dumps(userwise_report_data)    
+
+    file_name = "tmp/report_data.json"
+    file_path = os.path.join("", file_name)
+
+    handle1=open(file_path,'w+')
+    handle1.write(userwise_report_dataJson)
+    handle1.close()
+
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'inline; filename=' + file_path
+
+            return response
+    raise Http404
+ 
+"""
+METHOD CALLED WHEN ADMIN CLICKS "REPORTS" LINK. 
+RETURNS DATA REPORT
+"""
 def reports(request):
-    NUMBER_OF_PREV_DAYS = 6
+    file_name = "tmp/report_data.json"
+    if os.path.exists(file_name):
+        # delete file after use
+        os.remove(file_name)
 
     report_criteria = "USER"
     if ("report_criteria" in request.POST.keys()):
         report_criteria = request.POST["report_criteria"]
 
-    upper_date = dt.today().strftime("%Y-%m-%d")
+    report_date = dt.today().strftime("%Y-%m-%d")
     if ("to_date" in request.POST.keys()):
-        upper_date = request.POST["to_date"]
+        report_date = request.POST["to_date"]
+
+    report_dates, upper_date, userwise_report_data = getReportsData(request, report_criteria, report_date)
+    return render(request, 'report/reports.html', 
+                            {
+                                'report_dates'          : report_dates,
+                                'selected_date'            : upper_date,
+                                'userwise_report_data'  : userwise_report_data,
+                            })
+
+def getReportsData(request, report_criteria, upper_date):
+    NUMBER_OF_PREV_DAYS = 6
 
     date_highbound = dt.strptime(upper_date, "%Y-%m-%d")
     date_lowbound = date_highbound - timedelta(days=NUMBER_OF_PREV_DAYS)  # TO
@@ -68,13 +114,7 @@ def reports(request):
     elif (report_criteria == "MACHINE"):
         #TODO: DEVELOP THE MACHINE SPECIFIC REPORT HERE
         pass
-    
-    return render(request, 'report/reports.html', 
-                            {
-                                'report_dates'          : report_dates,
-                                'selected_date'            : upper_date,
-                                'userwise_report_data'  : userwise_report_data,
-                            })
+    return report_dates, upper_date, userwise_report_data
 
 #-------------------------- UTILITY METHOD -----------------------
 # TODO: THIS METHOD NEEDS TO BE REUSED ALONG WITH SIMILAR METHOD FROM TIMESHEET ENTRY

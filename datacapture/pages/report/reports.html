@@ -22,7 +22,7 @@
                         <td><input type = "date" name = "from_date" id = "from_date"></td> -->
 
                         <td><label id="label_to_date" for = "to_date" disabled>To</label></td>
-                        <td><input type = "date" name = "to_date" id = "to_date" value = '{{selected_date}}''></td>
+                        <td><input type = "date" name = "to_date" id = "to_date" value = "{{selected_date}}"></td>
                         <td><label id="label_criteria" for = "criteria" disabled>Criteria</label></td>
                         <td>
                             <select id = "report_criteria" name = "report_criteria"  style="min-width:100%;">
@@ -34,6 +34,9 @@
                         <td>
                             <input type="submit" id = "generateReport" class="w3-button w3-blue" value=" Generate Report"
                                     onclick = "setFunctionMode('GENERATE')">
+                        </td>
+                        <td>
+                            <a  href="report_download/USER/{{selected_date}}"> Download</a>
                         </td>
                     </tr>
                 </table>
@@ -50,7 +53,7 @@
                 <tr>
                     <td id = "user_column_highlight" class = "user_column_highlight unselected_report_cell">{{key}}</td>
                     {% for key1, value1 in value.items %}
-                    <td onclick="alert('{{key1}} - {{key}}')" onmouseenter = "mark_red(this)" onmouseleave = "unmark_red(this)"  class = "unselected_report_cell">
+                    <td onclick="alert('{{key1}} - {{key}}')" onmouseenter = "mark_red(this)" onmouseleave = "unmark_red(this)"  class = "unselected_report_cell"  style="cursor: pointer;">
                         <table id = "{{key1}} - {{key}}" width = "100%" class = "unselected_report_cell">
                             <tr>
                                 <td id = "td_parts_expected" class = "td_parts_expected unselected_report_cell"  width="50%" align = "right">{{value1.total_parts_finished_expected}}</td>
