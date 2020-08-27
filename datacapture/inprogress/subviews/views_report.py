@@ -15,7 +15,7 @@ import datetime
 from datetime import datetime as dt
 from datetime import timedelta, date
 
-import pands as pd
+import pandas as pd
 #------------------------------------------------------------------
 #        REPORTS 
 #------------------------------------------------------------------
@@ -43,10 +43,11 @@ def report_download(request, report_criteria = None, report_date = None):
     for i in range(len(report_df)) :
         for c in range(cols):
             element = report_df.iloc[i, c] 
-            new_element = "["   + str(element['total_time_prod_mins']) + "]["                   \
-                            + str(element['total_time_nonprod_mins']) + "]\n["                  \
-                            + str(element['total_parts_finished_expected']) + "]["              \
-                            + str(element['total_parts_finished_actual'])                       \
+            new_element = "EP["                                                                   \
+                            + str(element['total_parts_finished_expected']) + "] AP["              \
+                            + str(element['total_parts_finished_actual']) + "]\nPR["              \
+                            + str(element['total_time_prod_mins']) + "] NP["                       \
+                            + str(element['total_time_nonprod_mins'])                           \
                         + "]"
             report_df.iloc[i, c] = new_element
     report_df.to_csv(file_path)
