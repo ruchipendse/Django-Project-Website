@@ -198,8 +198,8 @@ def collectTimeSheetEntriesDeep(status):
     # APPEND ALL NON-PRODUCTION ENTRIES AS A STRING
     total_time_nonprod                     = 0
     for tentry_np in tsheetentries_nonprod:
-        endTime = tentry.employee_date_time_slot.timeEnd
-        startTime = tentry.employee_date_time_slot.timeStart
+        endTime = tentry_np.employee_date_time_slot.timeEnd
+        startTime = tentry_np.employee_date_time_slot.timeStart
         dateTimeEnd = datetime.datetime.combine(datetime.date.today(), endTime)
         dateTimeStart = datetime.datetime.combine(datetime.date.today(), startTime)
         dateTimeDifference = dateTimeEnd - dateTimeStart

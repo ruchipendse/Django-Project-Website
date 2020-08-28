@@ -23,7 +23,6 @@ def nonprodtasks(request):
         }
         nonprodtasksList[st['id_code']] =  st
     nonprodtasksListJson = json.dumps(nonprodtasksList)
-    print ('\n--- nonprodtasksListJson --- \n', nonprodtasksListJson)
     return render(request, 'nonprodtask/nonprodtasks.html', 
                             {'nonprodtasks': nonprodtaskQuerySet, 
                             'nonprodtasksListJson': nonprodtasksListJson,
