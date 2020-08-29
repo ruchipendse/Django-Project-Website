@@ -113,10 +113,9 @@ def getReportsData(request, report_criteria, upper_date):
             entry_details_datewise_modular = {}
             for report_date in report_dates:
                 entry_details_datewise_modular[report_date] = {
-                    'total_time_prod_mins' :"-",
-                    'total_time_nonprod_mins' :"-",
-                    'total_parts_finished_expected': "-",
-                    'total_parts_finished_actual': "-"
+                    'efficiency'                        :"-",
+                    'production'                        :"-",
+                    'activity'                          :"-",
                 }
 
             for status in employeeDateStatus:
@@ -152,36 +151,28 @@ def collectTimeSheetEntriesDeep(status):
             )
         )
     )
-    entry_details_date_user_wise = []
+
     # APPEND ALL PRODUCTION ENTRIES AS A STRING
-    total_handled_expected              = 0
-    total_time_prod                     = 0
-    total_handled_actual                = 0
+    target_quantity              = 0
+    achieved_quantity                = 0
+    prod_time                     = 0
     for tentry in tsheetentries:
         endTime = tentry.employee_date_time_slot.timeEnd
         startTime = tentry.employee_date_time_slot.timeStart
         dateTimeEnd = datetime.datetime.combine(datetime.date.today(), endTime)
         dateTimeStart = datetime.datetime.combine(datetime.date.today(), startTime)
         dateTimeDifference = dateTimeEnd - dateTimeStart
-        totalTime = dateTimeDifference.total_seconds()
+        totalEntryTime = dateTimeDifference.total_seconds()
 
         machine = tentry.machine
         setup = tentry.setup
         machineSetup = MachineSetup.objects.get(machine__id = machine.id, setup__id = setup.id)
         cycle_time = machineSetup.cycle_time
-        handled_expected = int(totalTime/cycle_time)
-        total_handled_expected += handled_expected
-        total_time_prod += totalTime
-        total_handled_actual += tentry.quantityHandled
+        target_quantity_entry = int(totalEntryTime/cycle_time)
+        target_quantity += target_quantity_entry
+        prod_time += totalEntryTime
+        achieved_quantity += tentry.quantityHandled
 
-        entry_details_date_user_wise.append(
-            (
-                tentry.employee_date_time_slot.timeStart.strftime("%H:%M"),
-                tentry.employee_date_time_slot.timeEnd.strftime("%H:%M"),
-                "PR" + str(tentry.id), 
-                tentry.as_display_line()
-            )
-        )
     # COLLECT ALL NON-PRODUCTION ENTRIES
     tsheetentries_nonprod = (
         TimeSheetEntryNonProd.objects.select_related(
@@ -196,29 +187,26 @@ def collectTimeSheetEntriesDeep(status):
     )
 
     # APPEND ALL NON-PRODUCTION ENTRIES AS A STRING
-    total_time_nonprod                     = 0
+    nonprod_time                     = 0
     for tentry_np in tsheetentries_nonprod:
         endTime = tentry_np.employee_date_time_slot.timeEnd
         startTime = tentry_np.employee_date_time_slot.timeStart
         dateTimeEnd = datetime.datetime.combine(datetime.date.today(), endTime)
         dateTimeStart = datetime.datetime.combine(datetime.date.today(), startTime)
         dateTimeDifference = dateTimeEnd - dateTimeStart
-        totalTime = dateTimeDifference.total_seconds()
-        total_time_nonprod += totalTime
+        totalEntryTime = dateTimeDifference.total_seconds()
+        nonprod_time += totalEntryTime
 
-        entry_details_date_user_wise.append(
-            (
-                tentry_np.employee_date_time_slot.timeStart.strftime("%H:%M"),
-                tentry_np.employee_date_time_slot.timeEnd.strftime("%H:%M"),
-                "NP" + str(tentry_np.id), 
-                tentry_np.as_display_line()
-            )
-        )
+    efficiency = 0
+    if (target_quantity > 0):
+        efficiency = achieved_quantity * 100 / target_quantity
+    activity = (prod_time + nonprod_time) * 100/(8*3600)
+    if activity > 100:
+        activity = 100
     datewise_user_productivity = {
-        'total_time_prod_mins' :round(total_time_prod/ 60, 0),
-        'total_time_nonprod_mins' :round(total_time_nonprod/ 60, 0),
-        'total_parts_finished_expected': total_handled_expected,
-        'total_parts_finished_actual': total_handled_actual
+        'efficiency' :round(efficiency, 2),
+        'production' :round(prod_time * 100/ (prod_time + nonprod_time), 2),
+        'activity': activity,
     }
     return datewise_user_productivity
 
