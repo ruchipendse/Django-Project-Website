@@ -14,7 +14,7 @@
         <aside>
             <figure>
                 <div id="avatar"></div>
-                <figcaption>Electral Devices</figcaption>
+                <figcaption>NIGASAVI</figcaption>
             </figure>
             <img src = "{% static 'images/menu1.jpg' %}">
             {% if user.is_authenticated %}
@@ -22,7 +22,7 @@
                 <!-- AUTHENTICATED AND STAFF-->
                 <nav>
                         <ul>
-                            <li><a href = "/">Home</a></li>
+                            <li><a href = "metadata">Home</a></li>
                             <li><a href = "users">Users</a></li>
                             <li><a href = "nonprodtasks">Non-prod Tasks</a></li>
                             <li><a href = "setups">Setups/ Processes</a></li>
@@ -48,11 +48,14 @@
             {% else %}
                 <nav>
                     <ul class = disabled>
+                        <li><a href = "metadata">Home</a></li>
                         <li><a href = "users">Users</a></li>
-                        <li><a href = "machines">Machines</a></li>
-                        <li><a href = "operations">Operations</a></li>
+                        <li><a href = "nonprodtasks">Non-prod Tasks</a></li>
                         <li><a href = "setups">Setups/ Processes</a></li>
+                        <li><a href = "machines">Machines</a></li>
                         <li><a href = "parts">Parts</a></li>
+                        <li><a href = "holidays">Holidays</a></li>
+                        <li><a href = "reports">Reports</a></li>
                     </ul>
                 </nav>
                 <div id = "login">
