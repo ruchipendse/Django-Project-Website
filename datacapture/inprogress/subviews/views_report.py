@@ -89,7 +89,7 @@ def reports(request):
                             })
 
 def getReportsData(request, report_criteria, upper_date):
-    NUMBER_OF_PREV_DAYS = 7
+    NUMBER_OF_PREV_DAYS = 6
 
     date_highbound = dt.strptime(upper_date, "%Y-%m-%d")
     date_lowbound = date_highbound - timedelta(days=NUMBER_OF_PREV_DAYS)  # TO
@@ -100,6 +100,8 @@ def getReportsData(request, report_criteria, upper_date):
     for day in range(1, NUMBER_OF_PREV_DAYS + 1):
         to_date = date_highbound - timedelta(days=day)
         report_dates.append(to_date.strftime("%Y-%m-%d"))
+
+    report_dates.sort()
 
     if (report_criteria == "USER"):
         operators = Employee.objects.filter(is_active = True)
