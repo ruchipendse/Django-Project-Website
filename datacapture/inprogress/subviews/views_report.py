@@ -79,15 +79,17 @@ def reports(request):
         report_date = request.POST["to_date"]
 
     report_dates, upper_date, userwise_report_data = getReportsData(request, report_criteria, report_date)
+    report_datesJson = json.dumps(report_dates)    
     return render(request, 'report/reports.html', 
                             {
                                 'report_dates'          : report_dates,
+                                'report_datesJson'      : report_datesJson,
                                 'selected_date'            : upper_date,
                                 'userwise_report_data'  : userwise_report_data,
                             })
 
 def getReportsData(request, report_criteria, upper_date):
-    NUMBER_OF_PREV_DAYS = 6
+    NUMBER_OF_PREV_DAYS = 7
 
     date_highbound = dt.strptime(upper_date, "%Y-%m-%d")
     date_lowbound = date_highbound - timedelta(days=NUMBER_OF_PREV_DAYS)  # TO
@@ -113,9 +115,14 @@ def getReportsData(request, report_criteria, upper_date):
             entry_details_datewise_modular = {}
             for report_date in report_dates:
                 entry_details_datewise_modular[report_date] = {
-                    'efficiency'                        :"-",
-                    'production'                        :"-",
-                    'activity'                          :"-",
+                    # 'efficiency'                        :"-",
+                    # 'production'                        :"-",
+                    # 'activity'                          :"-",
+
+                    'efficiency'                            :"{:5.2f}".format(0),
+                    'production'                            :"{:5.2f}".format(0),
+                    'activity'                              : "{:5.2f}".format(0),
+
                 }
 
             for status in employeeDateStatus:
@@ -204,9 +211,14 @@ def collectTimeSheetEntriesDeep(status):
     if activity > 100:
         activity = 100
     datewise_user_productivity = {
-        'efficiency' :round(efficiency, 2),
-        'production' :round(prod_time * 100/ (prod_time + nonprod_time), 2),
+        'efficiency' :"{:5.2f}".format(efficiency),
+        'production' :"{:5.2f}".format(prod_time * 100/ (prod_time + nonprod_time)),
         'activity': activity,
     }
+    # datewise_user_productivity = {
+    #     'efficiency' :round(efficiency, 2),
+    #     'production' :round(prod_time * 100/ (prod_time + nonprod_time), 2),
+    #     'activity': activity,
+    # }
     return datewise_user_productivity
 

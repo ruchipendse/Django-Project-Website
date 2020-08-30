@@ -5,6 +5,8 @@
             window.location.href = "/";
         </script>
     {% endif %}
+
+    <meta id="report_datesJsondata" data="{{report_datesJson}}" />
     
     <h1>Electral Control Systems</h1>
     <h2>Reports:</h2>
@@ -50,7 +52,7 @@
                 <tr >
                     <th  width="20%" class = "unselected_report_cell">User</th>
                 {% for day in report_dates %}
-                    <th class = "unselected_report_cell">{{day}}</th>
+                    <th id = {{day}}  class = "unselected_report_cell">{{day}}</th>
 
                 {% endfor %}
                 </tr>
@@ -62,9 +64,21 @@
                         <table id = "{{key1}} - {{key}}" width = "100%" class = "unselected_report_cell">
                             <tr>
                                 <td id = "td_parts_expected" class = "td_parts_expected unselected_report_cell"  
-                                        width="50%" align = "right" title="Efficiency">{{value1.efficiency}}</td>
+                                        width="50%" align = "right" title="Efficiency">
+                                        {{value1.efficiency}}%
+                                </td>
+                            </tr>
+                            <tr>
                                 <td id = "td_parts_actual" class = "td_parts_actual unselected_report_cell"  
-                                        width="50%" align = "right" title="Production">{{value1.production}}</td>
+                                        width="50%" align = "right" title="Production">
+                                        {{value1.production}}%
+                                </td>
+                            </tr>
+                            <tr>
+                                <td id = "td_parts_actual" class = "td_parts_actual unselected_report_cell"  
+                                        width="50%" align = "right" title="Activity">
+                                        {{value1.activity}}%
+                                </td>
                             </tr>
                         </table>                        
                     </td>
@@ -90,24 +104,23 @@
         document.getElementById('functionMode').value =  fMode;
     }
 
-    function setupSelected(st){
-        document.getElementById('editSetupButton').classList.remove('disabled');
-        document.getElementById('deleteSetupButton').classList.remove('disabled');
-        document.forms["setupsForm"]['selectedSetup'].value = st;
-
-        var setupsListJson = document.getElementById('setupsListJsondata').getAttribute("data");
-        var setupsList = JSON.parse(setupsListJson);
-
-        document.getElementById('scode').setAttribute('value', setupsList[st]['id_code'])
-        document.getElementById('sname').setAttribute('value', setupsList[st]['name'])
-        document.getElementById('sdesc').setAttribute('value', setupsList[st]['desc'])
-    }
-
     /**
         THIS METHOD INITAITES THE STATUS OF REQUIRED FIELDS ON USERS PAGE 
     */
     function init(){
+        var weekdays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+        var months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
         document.getElementById('to_date').setAttribute('max', new Date().toISOString().split("T")[0]);
+        var report_datesJson = document.getElementById('report_datesJsondata').getAttribute("data");
+        var report_dates = JSON.parse(report_datesJson);
+        for (var i = 0; i < report_dates.length; i++){
+            dateObj = new Date(report_dates[i])
+            tdTag = document.getElementById(report_dates[i]);
+            tdTag.innerHTML = "<pre>" + 
+                            dateObj.getFullYear() + "-" +  dateObj.getMonth() + "-" + dateObj.getDate() 
+                            + "\n" + weekdays[dateObj.getDay()]
+                            + "</pre>";
+        }
     }
 
     init();
