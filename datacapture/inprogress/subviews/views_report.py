@@ -74,9 +74,15 @@ def reports(request):
     if ("report_criteria" in request.POST.keys()):
         report_criteria = request.POST["report_criteria"]
 
-    report_date = dt.today().strftime("%Y-%m-%d")
+    target_date = dt.today()
     if ("to_date" in request.POST.keys()):
-        report_date = request.POST["to_date"]
+        target_date = dt.strptime(request.POST["to_date"], "%Y-%m-%d")
+    week_day = target_date.strftime("%w")
+    go_back = 6
+    if (int(week_day) > 0):
+        go_back = int(week_day) - 0 # 0 for SUNDAY
+    last_monday = target_date - timedelta(days=go_back)  # TO
+    report_date = last_monday.strftime("%Y-%m-%d")
 
     report_dates, upper_date, userwise_report_data = getReportsData(request, report_criteria, report_date)
     report_datesJson = json.dumps(report_dates)    
@@ -117,14 +123,9 @@ def getReportsData(request, report_criteria, upper_date):
             entry_details_datewise_modular = {}
             for report_date in report_dates:
                 entry_details_datewise_modular[report_date] = {
-                    # 'efficiency'                        :"-",
-                    # 'production'                        :"-",
-                    # 'activity'                          :"-",
-
                     'efficiency'                            :"{:5.2f}".format(0),
                     'production'                            :"{:5.2f}".format(0),
                     'activity'                              : "{:5.2f}".format(0),
-
                 }
 
             for status in employeeDateStatus:
@@ -217,10 +218,5 @@ def collectTimeSheetEntriesDeep(status):
         'production' :"{:5.2f}".format(prod_time * 100/ (prod_time + nonprod_time)),
         'activity': activity,
     }
-    # datewise_user_productivity = {
-    #     'efficiency' :round(efficiency, 2),
-    #     'production' :round(prod_time * 100/ (prod_time + nonprod_time), 2),
-    #     'activity': activity,
-    # }
     return datewise_user_productivity
 
