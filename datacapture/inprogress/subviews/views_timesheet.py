@@ -89,7 +89,7 @@ def timesheet_entries(request, currentDate=datetime.today().strftime("%Y-%m-%d")
     # FETCH N DAYS RECORD HISTORY TILL TODAY
     date_highbound = datetime.today()  # FROM
 
-    NUMBER_OF_PREV_DAYS = 7
+    NUMBER_OF_PREV_DAYS = 30
     date_lowbound = date_highbound - timedelta(days=NUMBER_OF_PREV_DAYS)  # TO
     employeeDateStatus = EmployeeDate.objects.filter(user_id=request.user.id).filter(
         date__range=[
@@ -100,7 +100,7 @@ def timesheet_entries(request, currentDate=datetime.today().strftime("%Y-%m-%d")
 
     entry_details_datewise_modular = {}
     # entry_details_datewise = {}
-    for count in range(NUMBER_OF_PREV_DAYS + 1):
+    for count in range(NUMBER_OF_PREV_DAYS + 1):    
         cur_date = date_lowbound + timedelta(days=int(count))
         entry_details_datewise_modular[cur_date.strftime("%Y-%m-%d")] = {
             "committed": None,

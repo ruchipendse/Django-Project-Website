@@ -15,6 +15,7 @@ from inprogress.subviews.views_nonprodtask import nonprodtasks, processNonProdTa
 from inprogress.subviews.views_part import parts, addNewPart, deletePart, processPart
 from inprogress.subviews.views_timesheet import gototimesheet, gototimesheet_init, timesheet_entries, processRequest, timesheetLogout
 from inprogress.subviews.views_user import users, updateUserDetails, addNewUser, deleteUser
+from inprogress.subviews.views_batchprocess import autocommit
 
 # Create your views here.
 
@@ -26,6 +27,7 @@ def init_start(request):
     return redirect("home")
 
 def home(request):
+    autocommit(request)
     return render(request, 'home.html')
 
 def timesheet_base(request):

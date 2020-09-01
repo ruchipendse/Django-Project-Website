@@ -43,6 +43,11 @@ urlpatterns = [
     path ('timesheet_entries', views.timesheet_entries, name = 'timesheet_entries'),
     path ('<path:landing>/timesheetLogout', views.timesheetLogout, name = 'timesheetLogout'),
     path ('timesheetLogout', views.timesheetLogout, name = 'timesheetLogout'),
+#---------------------BATCH PROCESSES --------
+    path ('autocommit', views.autocommit, name = 'autocommit'),
+
+
+
 #--------------------- PROCESS REQUEST START --------------
     path ('<path:landing>/processRequest',  views.processRequest, name = 'processRequest'),
     path ('processRequest',  views.processRequest, name = 'processRequest'),
