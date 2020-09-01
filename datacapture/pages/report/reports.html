@@ -16,25 +16,6 @@
             <div id = 'date_div' align = 'left'>
                 <table>
                     <tr>
-                        <td><label id="label_to_date" for = "to_date" disabled>Week ending on</label></td>
-                        <td>
-                            <table>
-                                <tr>
-                                    <td align = "right">
-                                        <input type="button" id = "prevWeekButton" class="w3-button w3-blue w3-tiny" value="Prev"
-                                                onclick = "prevWeek();" />
-                                    </td>
-                                    <td align = "center">
-                                        <input type = "text" id = "to_date" name = "to_date" readonly="readonly" size="10" value = "{{selected_date}}" min="2020-08-01">
-                                    </td>
-                                    <td align = "left">
-                                        <input type="button" id = "nextWeekButton" class="w3-button w3-blue w3-tiny" value="Next"
-                                                onclick = "nextWeek();" />
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-
                         <td><label id="label_criteria" for = "criteria" disabled>Criteria</label></td>
                         <td>
                             <select id = "report_criteria" name = "report_criteria"  style="min-width:100%;">
@@ -43,9 +24,23 @@
                                 <!-- <option VALUE = PART"">Part</option> -->
                             </select>
                         </td>
+                        <td><label id="label_to_date" for = "to_date" disabled>Week ending on</label></td>
                         <td>
-                            <input type="submit" id = "generateReport" class="w3-button w3-blue" value=" Generate Report"
-                                    onclick = "setFunctionMode('GENERATE')">
+                            <table>
+                                <tr>
+                                    <td align = "right">
+                                        <input type="submit" id = "prevWeekButton" class="w3-button w3-blue w3-tiny" value="Prev"
+                                                onclick = "prevWeek();" />
+                                    </td>
+                                    <td align = "center">
+                                        <input type = "text" id = "to_date" name = "to_date" readonly="readonly" size="10" value = "{{selected_date}}" min="2020-08-01">
+                                    </td>
+                                    <td align = "left">
+                                        <input type="submit" id = "nextWeekButton" class="w3-button w3-blue w3-tiny" value="Next"
+                                                onclick = "nextWeek();" />
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                         <td>
                             <a  href="report_download/USER/{{selected_date}}"> Download</a>
@@ -120,6 +115,7 @@
         } else {
             alert ("Can not go before " + earliest_date);
         }
+        setFunctionMode('GENERATE');
     }
 
     function nextWeek(){
@@ -133,6 +129,7 @@
         } else {
             alert ("Can not go beyond current date");
         }
+        setFunctionMode('GENERATE');
     }
 
     function formatDate(date) {
