@@ -43,12 +43,12 @@ def report_download(request, report_criteria = None, report_date = None):
     for i in range(len(report_df)) :
         for c in range(cols):
             element = report_df.iloc[i, c] 
-            new_element = "EP["                                                                   \
-                            + str(element['total_parts_finished_expected']) + "] AP["              \
-                            + str(element['total_parts_finished_actual']) + "]\nPR["              \
-                            + str(element['total_time_prod_mins']) + "] NP["                       \
-                            + str(element['total_time_nonprod_mins'])                           \
+            new_element = "EFF["                                                                   \
+                            + str(element['efficiency']) + "]\nPROD["              \
+                            + str(element['production']) + "]\nACT["              \
+                            + str(element['activity'])                           \
                         + "]"
+
             report_df.iloc[i, c] = new_element
     report_df.to_csv(file_path)
 
