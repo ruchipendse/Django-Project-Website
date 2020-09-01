@@ -10,8 +10,8 @@
 <meta id="setupsParamJSONTag" data="{{setupSequenceJSON}}" />
 <h1>NIGASAVI</h1>
 <h2>Parts:</h2>
-<div class = "parts"> 
-    <div class="splitleft">
+<div class = "parts40"> 
+    <div>
         <div class="centered">
             <form name = "editForm" id = "editForm" action = "processPart"  onsubmit = "return compileselections();"  method = "POST">
                 {% csrf_token %} 
@@ -59,18 +59,29 @@
         </div>
     </div>
     
-    <div class="splitright">
+    <div>
         <div class="centered">
             <form name = "setupsForm" action = "#" method = "POST">
                 {% csrf_token %} 
                 <input type = "hidden" id = "partSetup" name = "partSetup" value = "UPDATE"/>
                 <input type = "hidden" id = "setupSelection" name = "setupSelection" value = ""/>
-                <table id = "rightsidetable" name = "rightsidetable" width = "100%">
+                <table id = "rightsidetable" name = "rightsidetable" width = "80%">
                     <tr>
                         <td>
-                            <input type="button" class="w3-button w3-block w3-round w3-teal" 
+                            <!-- <input type="button" class="w3-button w3-block w3-round w3-teal" 
                                     style="width:90%" value="Add Part" 
-                                    id = "btnaddpart"  onclick= "addSetupToSequence('{{allSetups}}', null);">
+                                    id = "btnaddpart"  onclick= "addSetupToSequence('{{allSetups}}', null);"> -->
+
+                            <table border = "1" width = "100%">
+                                <tr>
+                                    <td>
+                                        <input type="button" class="w3-button w3-block w3-round w3-teal" 
+                                                style="width:100%" value="Add Setup" 
+                                                id = "btnaddsetup"  onclick= "addSetupToSequence('{{allSetups}}');">
+                                    </td>
+                                </tr>
+                            </table>
+        
                         </td>
                     </tr>
                     <tr>
