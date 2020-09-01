@@ -23,15 +23,15 @@
                             <table>
                                 <tr>
                                     <td align = "right">
-                                        <input type="button" id = "prevDateButton" class="w3-button w3-blue w3-tiny" value="Prev"
-                                                onclick = "prevDate();" />
+                                        <input type="button" id = "prevWeekButton" class="w3-button w3-blue w3-tiny" value="Prev"
+                                                onclick = "prevWeek();" />
                                     </td>
                                     <td align = "center">
                                         <input type = "text" id = "to_date" name = "to_date" readonly="readonly" size="10" value = "{{selected_date}}" min="2020-08-01">
                                     </td>
                                     <td align = "left">
-                                        <input type="button" id = "nextDateButton" class="w3-button w3-blue w3-tiny" value="Next"
-                                                onclick = "nextDate();" />
+                                        <input type="button" id = "nextWeekButton" class="w3-button w3-blue w3-tiny" value="Next"
+                                                onclick = "nextWeek();" />
                                     </td>
                                 </tr>
                             </table>
@@ -111,7 +111,7 @@
         document.getElementById('functionMode').value =  fMode;
     }
 
-    function prevDate(){
+    function prevWeek(){
         var present_date        = document.getElementById('to_date').value;
         var date_parts          = present_date.split ('-');
         var prev_date           = new Date(parseInt(date_parts[0]), parseInt(date_parts[1]) - 1, 
@@ -119,10 +119,12 @@
         var earliest_date       = new Date("2020-08-01");       // REMOVE THIS HARD CODING LATER
         if (prev_date >= earliest_date){
             document.getElementById('to_date').value   = formatDate(prev_date);
+        } else {
+            alert ("Can not go before " + earliest_date);
         }
     }
 
-    function nextDate(){
+    function nextWeek(){
         var present_date        = document.getElementById('to_date').value;
         var date_parts          = present_date.split ('-');
         var next_date           = new Date(parseInt(date_parts[0]), parseInt(date_parts[1]) - 1, 
@@ -130,6 +132,8 @@
         var today               = new Date();
         if (next_date <= today){
             document.getElementById('to_date').value              = formatDate(next_date);
+        } else {
+            alert ("Can not go beyond current date");
         }
     }
 
