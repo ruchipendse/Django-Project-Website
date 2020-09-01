@@ -9,7 +9,7 @@
 <meta id="setupsJSONTag" data="{{setupsJSON}}" />
 <meta id="selectedMachineTag" data="{{selectedMachine}}" />
 
-<h1>Electral Control Systems</h1>
+<h1>NIGASAVI</h1>
 <h2>Machines:</h2>
 
 <div class = "parts40"> 
@@ -32,7 +32,10 @@
                     </tr>
                     <tr>
                         <td><label id="labelmdesc" for = "mdesc" >Description</label></td>
-                        <td><input type = "text" name = "mdesc" id = "mdesc"value = "{{selectedMachine.desc}}"></td>
+                        <td>
+                            <textarea name = "mdesc" id = "mdesc" rows = "8" cols = "30"  
+                                onchange = "markDirty();" required>{{selectedMachine.desc}}</textarea>
+                        </td>
                     </tr>
                     <tr>
                         <td>

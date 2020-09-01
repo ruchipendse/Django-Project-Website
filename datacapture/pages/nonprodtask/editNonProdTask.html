@@ -6,8 +6,8 @@
     </script>
 {% endif %}
 
-<h1>Electral Control Systems</h1>
-<h2>Non-Production Tasks:</h2>
+<h1>NIGASAVI</h1>
+<h2>Edit Non-Production Task:</h2>
 <div class = "parts"> 
     <div class="splitleft">
         <div class="centered">
@@ -27,8 +27,10 @@
                     </tr>
                     <tr>
                         <td><label id="labelsdesc" for = "sdesc" >Non-Prod Task  Description</label></td>
-                        <td><input type = "text" name = "sdesc" id = "sdesc"  
-                                value = "{{selectedNonProdTask.desc}}" onchange = "markDirty();" required></td>
+                        <td>
+                            <textarea name = "sdesc" id = "sdesc" rows = "8" cols = "30"  
+                                onchange = "markDirty();" required>{{selectedNonProdTask.desc}}</textarea>
+                        </td>
                     </tr>
                     <tr>
                         <td>

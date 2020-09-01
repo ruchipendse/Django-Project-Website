@@ -5,7 +5,7 @@
         window.location.href = "/";
     </script>
 {% endif %}
-<h1>Electral Control Systems</h1>
+<h1>NIGASAVI</h1>
 <h2>Machines:</h2>
 <div class = "parts40"> 
     <div>
@@ -27,7 +27,10 @@
                     </tr>
                     <tr>
                         <td><label id="labelmdesc" for = "mdesc" >Description</label></td>
-                        <td><input type = "text" name = "mdesc" id = "mdesc"></td>
+                        <td>
+                            <textarea name = "mdesc" id = "mdesc" rows = "8" cols = "30" 
+                                        onchange = "markDirty();" required>No Description</textarea>
+                        </td>
                     </tr>
                     <tr>
                         <td>

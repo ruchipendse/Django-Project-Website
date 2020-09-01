@@ -8,7 +8,7 @@
 
 <meta id="allSetupsTag" data="{{allSetups}}" />
 <meta id="setupsParamJSONTag" data="{{setupSequenceJSON}}" />
-<h1>Electral Control Systems</h1>
+<h1>NIGASAVI</h1>
 <h2>Parts:</h2>
 <div class = "parts"> 
     <div class="splitleft">
@@ -31,8 +31,10 @@
                     </tr>
                     <tr>
                         <td><label id="labelpdesc" for = "pdesc" >Part Description</label></td>
-                        <td><input type = "text" name = "pdesc" id = "pdesc"  
-                                value = "{{selectedPart.desc}}" onchange = "markDirty();" required></td>
+                        <td>
+                            <textarea name = "pdesc" id = "pdesc" rows = "8" cols = "30"  
+                                onchange = "markDirty();" required>{{selectedPart.desc}}</textarea>
+                        </td>
                     </tr>
                     <tr>
                         <td>

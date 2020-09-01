@@ -6,7 +6,7 @@
     </script>
 {% endif %}
 
-<h1>Electral Control Systems</h1>
+<h1>NIGASAVI</h1>
 <h2>Setups:</h2>
 <div class = "parts"> 
     <div class="splitleft">
@@ -27,8 +27,10 @@
                     </tr>
                     <tr>
                         <td><label id="labelsdesc" for = "sdesc" >Setup Description</label></td>
-                        <td><input type = "text" name = "sdesc" id = "sdesc"  
-                                value = "{{selectedSetup.desc}}" onchange = "markDirty();" required></td>
+                        <td>
+                            <textarea name = "sdesc" id = "sdesc" rows = "8" cols = "30"  
+                                onchange = "markDirty();" required>{{selectedSetup.desc}}</textarea>
+                        </td>
                     </tr>
                     <tr>
                         <td>

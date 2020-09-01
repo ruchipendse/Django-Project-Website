@@ -7,7 +7,7 @@
     {% endif %}
     <meta id="machinesListJsondata" data="{{machinesListJson}}" />
     
-    <h1>Electral Control Systems</h1>
+    <h1>NIGASAVI</h1>
     <h2>Machines:</h2>
 
     <div class = "parts"> 
@@ -72,7 +72,9 @@
                     </tr>
                     <tr>
                         <td><label id="labelpdesc" for = "mdesc" >Description</label></td>
-                        <td><input type = "text" name = "mdesc" id = "mdesc" disabled></td>
+                        <td>
+                            <textarea name = "mdesc" id = "mdesc" rows = "8" cols = "30"  disabled></textarea>
+                        </td>
                     </tr>
                     <tr>
                         <td></td>
@@ -106,7 +108,7 @@
         var setups = machinesList[mc]['setups'];
         document.getElementById('mcode').setAttribute('value', machinesList[mc]['id_code'])
         document.getElementById('mname').setAttribute('value', machinesList[mc]['name'])
-        document.getElementById('mdesc').setAttribute('value', machinesList[mc]['desc'])
+        document.getElementById('mdesc').innerHTML = machinesList[mc]['desc'];
 
         var setUpsTDTag = document.getElementById('setupList');
 

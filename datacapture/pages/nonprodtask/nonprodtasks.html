@@ -7,7 +7,7 @@
     {% endif %}
     <meta id="nonprodtasksListJsondata" data="{{nonprodtasksListJson}}" />
     
-    <h1>Electral Control Systems</h1>
+    <h1>NIGASAVI</h1>>
     <h2>Non production Tasks:</h2>
 
     <div class = "parts"> 
@@ -72,7 +72,9 @@
                     </tr>
                     <tr>
                         <td><label id="labelsdesc" for = "sdesc" >Non-prod Task Description</label></td>
-                        <td><input type = "text" name = "sdesc" id = "sdesc" disabled></td>
+                        <td>
+                            <textarea name = "sdesc" id = "sdesc" rows = "8" cols = "30"  disabled></textarea>
+                        </td>
                     </tr>
                     <tr>
                         <td></td>
@@ -98,7 +100,7 @@
         var nonprodtasksList = JSON.parse(nonprodtasksListJson);
         document.getElementById('scode').setAttribute('value', nonprodtasksList[st]['id_code'])
         document.getElementById('sname').setAttribute('value', nonprodtasksList[st]['name'])
-        document.getElementById('sdesc').setAttribute('value', nonprodtasksList[st]['desc'])
+        document.getElementById('sdesc').innerHTML = nonprodtasksList[st]['desc'];
     }
 
     /**
