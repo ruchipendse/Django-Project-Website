@@ -78,11 +78,11 @@ def reports(request):
     if ("to_date" in request.POST.keys()):
         target_date = dt.strptime(request.POST["to_date"], "%Y-%m-%d")
     week_day = target_date.strftime("%w")
-    go_back = 6
+    go_back = 0
     if (int(week_day) > 0):
         go_back = int(week_day) - 0 # 0 for SUNDAY
-    last_monday = target_date - timedelta(days=go_back)  # TO
-    report_date = last_monday.strftime("%Y-%m-%d")
+    last_sunday = target_date - timedelta(days=go_back)  # TO
+    report_date = last_sunday.strftime("%Y-%m-%d")
 
     report_dates, upper_date, userwise_report_data = getReportsData(request, report_criteria, report_date)
     report_datesJson = json.dumps(report_dates)    

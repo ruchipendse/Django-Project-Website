@@ -18,16 +18,23 @@
             <div id = 'date_div' align = 'left'>
                 <table>
                     <tr>
-                        <!-- TODO: if from_date is required field uncomment this  -->
-
-                        <!-- <td><label id="label_from_date" for = "from_date" disabled>From</label></td>
-                        <td><input type = "date" name = "from_date" id = "from_date"></td> -->
-
                         <td><label id="label_to_date" for = "to_date" disabled>Week ending on</label></td>
                         <td>
-                            <!-- <input type = "date" name = "to_date" id = "to_date" value = "{{selected_date}}"> -->
-                            <input type="date" name="to_date"  id = "to_date" value = "{{selected_date}}" min="2020-08-01">
-                                <!--TODO: THIS ISNT WORKING AT PRESENT placeholder="yyyy-mm-dd"   -->
+                            <table>
+                                <tr>
+                                    <td align = "right">
+                                        <input type="button" id = "prevDateButton" class="w3-button w3-blue w3-tiny" value="Prev"
+                                                onclick = "prevDate();" />
+                                    </td>
+                                    <td align = "center">
+                                        <input type = "text" id = "to_date" name = "to_date" readonly="readonly" size="10" value = "{{selected_date}}" min="2020-08-01">
+                                    </td>
+                                    <td align = "left">
+                                        <input type="button" id = "nextDateButton" class="w3-button w3-blue w3-tiny" value="Next"
+                                                onclick = "nextDate();" />
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
 
                         <td><label id="label_criteria" for = "criteria" disabled>Criteria</label></td>
@@ -102,6 +109,42 @@
 
     function setFunctionMode(fMode){
         document.getElementById('functionMode').value =  fMode;
+    }
+
+    function prevDate(){
+        var present_date        = document.getElementById('to_date').value;
+        var date_parts          = present_date.split ('-');
+        var prev_date           = new Date(parseInt(date_parts[0]), parseInt(date_parts[1]) - 1, 
+                                        parseInt(date_parts[2]) - 7);
+        var earliest_date       = new Date("2020-08-01");       // REMOVE THIS HARD CODING LATER
+        if (prev_date >= earliest_date){
+            document.getElementById('to_date').value   = formatDate(prev_date);
+        }
+    }
+
+    function nextDate(){
+        var present_date        = document.getElementById('to_date').value;
+        var date_parts          = present_date.split ('-');
+        var next_date           = new Date(parseInt(date_parts[0]), parseInt(date_parts[1]) - 1, 
+                                                parseInt(date_parts[2]) + 7);
+        var today               = new Date();
+        if (next_date <= today){
+            document.getElementById('to_date').value              = formatDate(next_date);
+        }
+    }
+
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+    
+        if (month.length < 2) 
+            month = '0' + month;
+        if (day.length < 2) 
+            day = '0' + day;
+    
+        return [year, month, day].join('-');
     }
 
     /**
