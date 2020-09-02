@@ -203,15 +203,15 @@ def processRequest(request, function_mode=None, entry_id=-1, landing=None):
         machinesForSetupJSON                        = json.dumps(machinesForSetup)
         allTimeSheetEntriesJSON                     = json.dumps(allTimeSheetEntries)
         partSetupMapJSON                            = json.dumps(partSetupMap)
-
         return render(
             request,
             "timesheet/newTimeEntry.html",
             {
-                "partSetupMapJSON": partSetupMapJSON,
-                "machinesForSetupJSON": machinesForSetupJSON,
-                "currentDate": currentDate,
-                "allTimeSheetEntriesJSON": allTimeSheetEntriesJSON
+                "partSetupMapJSON"              : partSetupMapJSON,
+                "machinesForSetupJSON"          : machinesForSetupJSON,
+                "currentDate"                   : currentDate,
+                "allTimeSheetEntriesJSON"       : allTimeSheetEntriesJSON,
+                "lastEntryEndTime"              : allTimeSheetEntries[-1][1]
             },
         )
 
@@ -231,9 +231,10 @@ def processRequest(request, function_mode=None, entry_id=-1, landing=None):
             request,
             "timesheet/newTimeEntryNonProd.html",
             {
-                "nonProdTasksJSON": nonProdTasksJSON, 
-                "currentDate": currentDate,
-                "allTimeSheetEntriesJSON": allTimeSheetEntriesJSON
+                "nonProdTasksJSON"              : nonProdTasksJSON, 
+                "currentDate"                   : currentDate,
+                "allTimeSheetEntriesJSON"       : allTimeSheetEntriesJSON,
+                "lastEntryEndTime"              : allTimeSheetEntries[-1][1]
             },
         )
 

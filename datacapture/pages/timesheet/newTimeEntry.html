@@ -5,6 +5,7 @@
     <meta id = "currentDateTag"                 data = "{{currentDate}}" />
     <meta id = "allTimeSheetEntriesJSONTag"     data = "{{allTimeSheetEntriesJSON}}" />
     <meta id = "partSetupMapJSONTag"            data = "{{partSetupMapJSON}}" />
+    <meta id = "lastEntryEndTime"            data = "{{lastEntryEndTime}}" />
     
 {% endblock %}
 
@@ -488,8 +489,9 @@
             }
             currentTime                         = curHours + ":" +curMins;
 
-            document.getElementById("timesheetstart").value     = currentTime;
-            document.getElementById('timesheetend').value       = currentTime;
+            lastEntryEndTime                    = document.getElementById('lastEntryEndTime').getAttribute("data")
+            document.getElementById("timesheetstart").value     = lastEntryEndTime;
+            document.getElementById('timesheetend').value       = lastEntryEndTime;
             document.getElementById('pageready').value          = "TRUE";
         }
 
