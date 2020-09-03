@@ -82,8 +82,13 @@ def autocommit(request):
         slots_sorted = sorted(tslots, key=lambda tup: tup[0])
         slot_count = len(slots_sorted)
 
-        blankEntryTask = NonProdTask.objects.get(id_code = 'NPBE')  # Dummy entry for blank timesheet entries
-
+        blankEntryTask = NonProdTask.objects.filter(id_code = 'NPBE')  # Dummy entry for blank timesheet entries
+        blank_entry = None
+        if blankEntryTask.count() == 0:
+            blank_entry = NonProdTask.objects.create(id_code = "NPBE", name = "Blank Entry", desc = "NO Valid entry exists", is_active = False)
+            blank_entry.save()
+        else:
+            blank_entry = blankEntryTask[0]
         if slot_count > 0:
             if slots_sorted[0][0] >  datetime.time(hour=9, minute=0):
                 # work hours did not start at 9AM so add empty entry
@@ -94,7 +99,7 @@ def autocommit(request):
                 )
 
                 tsEntry = TimeSheetEntryNonProd.objects.create(
-                    nonprod_task=blankEntryTask,
+                    nonprod_task=blank_entry,
                     employee_date_time_slot=employee_date_time_slot,
                     description= "No Valid time entry"
                 )
@@ -111,7 +116,7 @@ def autocommit(request):
                     )
 
                     tsEntry = TimeSheetEntryNonProd.objects.create(
-                        nonprod_task=blankEntryTask,
+                        nonprod_task=blank_entry,
                         employee_date_time_slot=employee_date_time_slot,
                         description= "No Valid time entry"
                     )
@@ -125,7 +130,7 @@ def autocommit(request):
                 )
 
                 tsEntry = TimeSheetEntryNonProd.objects.create(
-                    nonprod_task=blankEntryTask,
+                    nonprod_task=blank_entry,
                     employee_date_time_slot=employee_date_time_slot,
                     description= "No Valid time entry"
                 )
