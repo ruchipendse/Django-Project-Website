@@ -203,6 +203,11 @@ def processRequest(request, function_mode=None, entry_id=-1, landing=None):
         machinesForSetupJSON                        = json.dumps(machinesForSetup)
         allTimeSheetEntriesJSON                     = json.dumps(allTimeSheetEntries)
         partSetupMapJSON                            = json.dumps(partSetupMap)
+
+        lastEntryEndTime = "09:00"
+        if (len(allTimeSheetEntries) > 0):
+            lastEntryEndTime = allTimeSheetEntries[-1][1]
+
         return render(
             request,
             "timesheet/newTimeEntry.html",
@@ -211,7 +216,7 @@ def processRequest(request, function_mode=None, entry_id=-1, landing=None):
                 "machinesForSetupJSON"          : machinesForSetupJSON,
                 "currentDate"                   : currentDate,
                 "allTimeSheetEntriesJSON"       : allTimeSheetEntriesJSON,
-                "lastEntryEndTime"              : allTimeSheetEntries[-1][1]
+                "lastEntryEndTime"              : lastEntryEndTime
             },
         )
 
@@ -227,6 +232,10 @@ def processRequest(request, function_mode=None, entry_id=-1, landing=None):
         allTimeSheetEntries                         = allTimeSheetEntriesForUserDate(request.user.id, currentDate)
         allTimeSheetEntriesJSON                     = json.dumps(allTimeSheetEntries)
 
+        lastEntryEndTime = "09:00"
+        if (len(allTimeSheetEntries) > 0):
+            lastEntryEndTime = allTimeSheetEntries[-1][1]
+
         return render(
             request,
             "timesheet/newTimeEntryNonProd.html",
@@ -234,7 +243,7 @@ def processRequest(request, function_mode=None, entry_id=-1, landing=None):
                 "nonProdTasksJSON"              : nonProdTasksJSON, 
                 "currentDate"                   : currentDate,
                 "allTimeSheetEntriesJSON"       : allTimeSheetEntriesJSON,
-                "lastEntryEndTime"              : allTimeSheetEntries[-1][1]
+                "lastEntryEndTime"              : lastEntryEndTime
             },
         )
 
@@ -423,6 +432,10 @@ def addTimeEntryDetails(request):
                 )
                 tsEntry.save()
                 logger.info('Time entry saved')
+                #TODO: IF THIS IS FIRST ENTRY, ADD LUNCH BREAK ENTRY (12.30-13.00)
+                if (isFirstEntryAdded(employeeDateStatus)):
+                    addLunchBreak(employeeDateStatus)
+                logger.info('Production Time entry saved')
         except Exception as e:
             messages.info(request, 'Tme entry Failed')
             log_message = 'Time entry Failed:' + str(e)
@@ -468,6 +481,9 @@ def addNPTimeEntryDetails(request):
                     # employeeDate        = employeeDateStatus,
                 )
                 tsEntry.save()
+                #TODO: IF THIS IS FIRST ENTRY, ADD LUNCH BREAK ENTRY (12.30-13.00)
+                if (isFirstEntryAdded(employeeDateStatus)):
+                    addLunchBreak(employeeDateStatus)
                 logger.info('Non production Time entry saved')
         except Exception as e:
             messages.info(request, 'Non production Time entry saved Failed')
@@ -615,6 +631,46 @@ def collectTimeSheetEntries(status):
         )
     return entry_details_date_user_wise
 
+def addLunchBreak(employeeDateStatus):
+    non_prod_lunch_break = NonProdTask.objects.filter(id_code = "NPLN")
+    lunch_break = None
+    if non_prod_lunch_break.count() == 0:
+        lunch_break = NonProdTask.objects.create(id_code = "NPLN", name = "Lunch Break", desc = "Luch Break", is_active = False)
+        lunch_break.save()
+    else:
+        lunch_break = non_prod_lunch_break[0]
+    employee_date_time_slot = EmployeeDateTimeSlot.objects.create(
+        employeeDate=employeeDateStatus,
+        timeStart = "12:30",
+        timeEnd = "13:00",
+    )
 
+    tsEntry = TimeSheetEntryNonProd.objects.create(
+        nonprod_task = lunch_break,
+        employee_date_time_slot=employee_date_time_slot,
+        description = lunch_break.desc
+    )
+    tsEntry.save()
 
+def isFirstEntryAdded(employeeDateStatus):
+    entryCountPR = (
+        TimeSheetEntryProd.objects
+            .filter(employee_date_time_slot__employeeDate__user_id = employeeDateStatus.user.id)
+            .filter(
+                    employee_date_time_slot__employeeDate__date = employeeDateStatus.date.strftime(
+                        "%Y-%m-%d"
+            )
+        )
+    ).count()
+    entryCountNP = (
+        TimeSheetEntryNonProd.objects
+        .filter(employee_date_time_slot__employeeDate__user_id = employeeDateStatus.user.id)
+        .filter(
+            employee_date_time_slot__employeeDate__date = employeeDateStatus.date.strftime(
+                "%Y-%m-%d"
+            )
+        )
+    ).count()
+    totalEntryCount = entryCountPR + entryCountNP
+    return totalEntryCount == 1
 
