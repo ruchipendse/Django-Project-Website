@@ -213,10 +213,13 @@ def collectTimeSheetEntriesDeep(status):
     activity = (prod_time + nonprod_time) * 100/(8*3600)
     if activity > 100:
         activity = 100
+    production = 0
+    if ((prod_time + nonprod_time) > 0):
+        production = prod_time * 100/ (prod_time + nonprod_time)
     datewise_user_productivity = {
-        'efficiency' :"{:5.2f}".format(efficiency),
-        'production' :"{:5.2f}".format(prod_time * 100/ (prod_time + nonprod_time)),
-        'activity': activity,
+        'efficiency'        : "{:5.2f}".format(efficiency),
+        'production'        : "{:5.2f}".format(production),
+        'activity'          : "{:6.2f}".format(activity),
     }
     return datewise_user_productivity
 
