@@ -6,6 +6,7 @@ urlpatterns = [
     path ('gototimesheet', views.gototimesheet, name = 'gototimesheet'), 
     path ('metadata', views.init_start, name = 'init_start'), 
     path ('home', views.home, name = 'home'), 
+    path ('resetdatabase', views.resetdatabase, name = 'resetdatabase'),
 #    path ('metadeta', views.home, name = 'home'), init_start
 
 #-------------------- USER --------------

@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Machine, Part, PartSetupSequence, Setup, Employee
 import json
-
+from django.db import transaction
 from inprogress.subviews.views_machine import machines, processMachine, addNewMachine, updateMachineDetails,  deleteMachine
 
 from inprogress.subviews.views_setup import setups, processSetup
@@ -16,6 +16,16 @@ from inprogress.subviews.views_part import parts, addNewPart, deletePart, proces
 from inprogress.subviews.views_timesheet import gototimesheet, gototimesheet_init, timesheet_entries, processRequest, timesheetLogout
 from inprogress.subviews.views_user import users, updateUserDetails, addNewUser, deleteUser
 from inprogress.subviews.views_batchprocess import autocommit
+from inprogress.models import (
+     EmployeeDate, 
+     EmployeeDateTimeSlot, 
+     TimeSheetEntryProd, 
+     TimeSheetEntryNonProd, 
+     NonProdTask,
+     OperatorSetup,
+     MachineSetup,
+     Holiday
+     )
 
 # Create your views here.
 
@@ -61,6 +71,145 @@ def adminLogout(request):
     auth.logout(request)
     print ('----- LOGGED OUT -----')
     return render(request, 'home.html')
+
+def resetdatabase(request):
+    # THIS DISABLING SHOULD NEVER BE REMOVED UNLESS THERE IS NEED TO RESET THE DATABASE. 
+    # ELSE WE WILL LOSE ALL THE DATA
+    sure = False
+    if (sure):
+        deleteNonprodEntries()
+        deleteProdEntries()
+        deleteEmployeeDateTimeSlots()
+        deleteEmployeeDates()
+        deletePartSetupSequences()
+        deleteParts()
+        deleteMachineSetups()
+        deleteMachines()
+        deleteOperatorSetups()
+        deleteNonProdTasks()
+        deleteHolidays()
+        deleteSetups()
+    return render(request, 'home.html')
+
+def deleteProdEntries():
+    try:
+        with transaction.atomic():
+            tentries = TimeSheetEntryProd.objects.all()
+            for tentry in tentries:
+                tentry.delete()
+    except Exception as e:
+        log_message = 'Delete Non Production Time entry update Failed:' + str(e)
+        print (log_message)
+
+def deleteNonprodEntries():
+    try:
+        with transaction.atomic():
+            tentries = TimeSheetEntryNonProd.objects.all()
+            for tentry in tentries:
+                tentry.delete()
+    except Exception as e:
+        log_message = 'Delete Non Production Time entry update Failed:' + str(e)
+        print (log_message)
+
+def deleteEmployeeDateTimeSlots():
+    try:
+        with transaction.atomic():
+            tentries = EmployeeDateTimeSlot.objects.all()
+            for tentry in tentries:
+                tentry.delete()
+    except Exception as e:
+        log_message = 'Delete EmployeeDateTimeSlot update Failed:' + str(e)
+        print (log_message)
+
+def deleteEmployeeDates():
+    try:
+        with transaction.atomic():
+            tentries = EmployeeDate.objects.all()
+            for tentry in tentries:
+                tentry.delete()
+    except Exception as e:
+        log_message = 'Delete Non EmployeeDate entry Failed:' + str(e)
+        print (log_message)
+
+def deletePartSetupSequences():
+    try:
+        with transaction.atomic():
+            tentries = PartSetupSequence.objects.all()
+            for tentry in tentries:
+                tentry.delete()
+    except Exception as e:
+        log_message = 'Delete PartSetupSequence Failed:' + str(e)
+        print (log_message)
+
+def deleteParts():
+    try:
+        with transaction.atomic():
+            tentries = Part.objects.all()
+            for tentry in tentries:
+                tentry.delete()
+    except Exception as e:
+        log_message = 'Delete Part Failed:' + str(e)
+        print (log_message)
+
+def deleteMachineSetups():
+    try:
+        with transaction.atomic():
+            tentries = MachineSetup.objects.all()
+            for tentry in tentries:
+                tentry.delete()
+    except Exception as e:
+        log_message = 'Delete Part Failed:' + str(e)
+        print (log_message)
+
+def deleteMachines():
+    try:
+        with transaction.atomic():
+            tentries = Machine.objects.all()
+            for tentry in tentries:
+                tentry.delete()
+    except Exception as e:
+        log_message = 'Delete Part Failed:' + str(e)
+        print (log_message)
+
+def deleteOperatorSetups():
+    try:
+        with transaction.atomic():
+            tentries = OperatorSetup.objects.all()
+            for tentry in tentries:
+                tentry.delete()
+    except Exception as e:
+        log_message = 'Delete OperatorSetup Failed:' + str(e)
+        print (log_message)
+
+def deleteNonProdTasks():
+    try:
+        with transaction.atomic():
+            tentries = NonProdTask.objects.all()
+            for tentry in tentries:
+                tentry.delete()
+    except Exception as e:
+        log_message = 'Delete NonProdTask Failed:' + str(e)
+        print (log_message)
+
+def deleteHolidays():
+    try:
+        with transaction.atomic():
+            tentries = Holiday.objects.all()
+            for tentry in tentries:
+                tentry.delete()
+    except Exception as e:
+        log_message = 'Delete NonProdTask Failed:' + str(e)
+        print (log_message)
+
+def deleteSetups():
+    try:
+        with transaction.atomic():
+            tentries = Setup.objects.all()
+            for tentry in tentries:
+                tentry.delete()
+    except Exception as e:
+        log_message = 'Delete Setup Failed:' + str(e)
+        print (log_message)
 
 def index(request):
     return render(request, 'xtra_index.html')

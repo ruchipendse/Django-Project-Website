@@ -2,6 +2,7 @@ from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from inprogress.models import Setup
+from django.db import transaction
 
 import json
 import datetime
@@ -141,3 +142,5 @@ def autocommit(request):
             status.save()       
         status.committed = True            
         status.save()       
+
+
