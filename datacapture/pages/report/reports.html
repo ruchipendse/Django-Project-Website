@@ -61,26 +61,77 @@
                     <td id = "user_column_highlight" class = "user_column_highlight unselected_report_cell">{{key}}</td>
                     {% for key1, value1 in value.items %}
                     <td onclick="alert('{{key1}} - {{key}}')" onmouseenter = "mark_red(this)" onmouseleave = "unmark_red(this)"  class = "unselected_report_cell"  style="cursor: pointer;">
+                        {% if value1.absent %}
                         <table id = "{{key1}} - {{key}}" width = "100%" class = "unselected_report_cell">
                             <tr>
-                                <td id = "td_parts_expected" class = "td_parts_expected unselected_report_cell"  
+                                <td class = "td_report_cell_absent"  align = "center">-</td>
+                            </tr>
+                            <tr>
+                                <td class = "td_report_cell_absent"  align = "center">Absent</td>
+                            </tr>
+                            <tr>
+                                <td class = "td_report_cell_absent"  align = "center">-</td>
+                            </tr>
+                        </table>
+                        {% else %}
+                        <table id = "{{key1}} - {{key}}" width = "100%" class = "unselected_report_cell">
+                            <tr>
+
+                                {% if value1.efficiency_value >= 80.0 %}
+                                <td id = "td_parts_expected" class = "td_report_cell_green unselected_report_cell"  
                                         width="50%" align = "right" title="Efficiency">
                                         {{value1.efficiency}}%
                                 </td>
+                                {% elif value1.efficiency_value >= 60.0 %}
+                                <td id = "td_parts_expected" class = "td_report_cell_yellow unselected_report_cell"  
+                                        width="50%" align = "right" title="Efficiency">
+                                        {{value1.efficiency}}%
+                                </td>
+                                {% else %}
+                                <td id = "td_parts_expected" class = "td_report_cell_red unselected_report_cell"  
+                                        width="50%" align = "right" title="Efficiency">
+                                        {{value1.efficiency}}%
+                                </td>
+                                {% endif %}
                             </tr>
                             <tr>
-                                <td id = "td_parts_actual" class = "td_parts_actual unselected_report_cell"  
+                                {% if value1.prod_value >= 92.5 %}
+                                <td id = "td_parts_actual" class = "td_report_cell_green unselected_report_cell"  
                                         width="50%" align = "right" title="Production">
                                         {{value1.production}}%
                                 </td>
+                                {% elif  value1.prod_value >= 85.0 %}
+                                <td id = "td_parts_actual" class = "td_report_cell_yellow unselected_report_cell"  
+                                        width="50%" align = "right" title="Production">
+                                        {{value1.production}}%
+                                </td>
+                                {% else %}
+                                <td id = "td_parts_actual" class = "td_report_cell_red unselected_report_cell"  
+                                        width="50%" align = "right" title="Production">
+                                        {{value1.production}}%
+                                </td>
+                                {% endif %}
                             </tr>
                             <tr>
-                                <td id = "td_parts_actual" class = "td_parts_actual unselected_report_cell"  
+                                {% if value1.activity_value >= 96.0 %}
+                                <td id = "td_parts_actual" class = "td_report_cell_green unselected_report_cell"  
                                         width="50%" align = "right" title="Activity">
                                         {{value1.activity}}%
                                 </td>
+                                {% elif value1.activity_value >= 94.0 %}
+                                <td id = "td_parts_actual" class = "td_report_cell_yellow unselected_report_cell"  
+                                        width="50%" align = "right" title="Activity">
+                                        {{value1.activity}}%
+                                </td>
+                                {% else %}
+                                <td id = "td_parts_actual" class = "td_report_cell_red unselected_report_cell"  
+                                        width="50%" align = "right" title="Activity">
+                                        {{value1.activity}}%
+                                </td>
+                                {% endif %}
                             </tr>
                         </table>                        
+                        {% endif %}
                     </td>
                     {% endfor %}
                 </tr>

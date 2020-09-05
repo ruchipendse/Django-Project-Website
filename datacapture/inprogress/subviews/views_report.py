@@ -63,6 +63,12 @@ def report_download(request, report_criteria = None, report_date = None):
 """
 METHOD CALLED WHEN ADMIN CLICKS "REPORTS" LINK. 
 RETURNS DATA REPORT
+1. efficiency = (achieved qty % target qty)
+     colorcode: act >= 80% Green, bet 60-80 Yellow, below 60 Red - 
+2. Production = prod + non-prod/ (total time)
+     colorcode: act >= 92.5% Green, bet 85-92.5 Yellow, below 85 Red
+3. Activity = prod + non-prod/ total ideal time(8 hours) activity to be truncated to 100%
+     colorcode: act >= 96% Green, bet 94-96 Yellow, below94 Red
 """
 def reports(request):
     file_name = "tmp/report_data.csv"
@@ -123,14 +129,33 @@ def getReportsData(request, report_criteria, upper_date):
             entry_details_datewise_modular = {}
             for report_date in report_dates:
                 entry_details_datewise_modular[report_date] = {
-                    'efficiency'                            :"{:5.2f}".format(0),
-                    'production'                            :"{:5.2f}".format(0),
-                    'activity'                              : "{:5.2f}".format(0),
+                    'absent'                    : True,
+                    'prod_value'                : 0,
+                    'production'                : "{:5.2f}".format(0),
+
+                    'efficiency_value'          : 0,
+                    'efficiency'                : "{:5.2f}".format(0),
+
+                    'activity_value'            : 0,
+                    'activity'                  : "{:6.2f}".format(0),
                 }
 
             for status in employeeDateStatus:
                 entry_key = status.date.strftime("%Y-%m-%d")
-                entry_details_datewise_modular[entry_key] =  allTimeSheetEntriesForUserDateDeep(user, status.date)
+                if  status.is_absent:
+                    entry_details_datewise_modular[report_date] = {
+                        'absent'                    : True,
+                        'prod_value'                : 0,
+                        'production'                : "{:5.2f}".format(0),
+
+                        'efficiency_value'          : 0,
+                        'efficiency'                : "{:5.2f}".format(0),
+
+                        'activity_value'            : 0,
+                        'activity'                  : "{:6.2f}".format(0),
+                    }
+                else:
+                    entry_details_datewise_modular[entry_key] =  allTimeSheetEntriesForUserDateDeep(user, status.date)
             userwise_report_data [user.username] = entry_details_datewise_modular
     elif (report_criteria == "MACHINE"):
         #TODO: DEVELOP THE MACHINE SPECIFIC REPORT HERE
@@ -217,8 +242,14 @@ def collectTimeSheetEntriesDeep(status):
     if ((prod_time + nonprod_time) > 0):
         production = prod_time * 100/ (prod_time + nonprod_time)
     datewise_user_productivity = {
-        'efficiency'        : "{:5.2f}".format(efficiency),
+        'absent'                    : False,
+        'prod_value'        : production,
         'production'        : "{:5.2f}".format(production),
+
+        'efficiency_value'        : efficiency,
+        'efficiency'        : "{:5.2f}".format(efficiency),
+
+        'activity_value'        : activity,
         'activity'          : "{:6.2f}".format(activity),
     }
     return datewise_user_productivity

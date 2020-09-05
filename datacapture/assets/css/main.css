@@ -342,4 +342,20 @@ p {
         border: 2px solid red;
         border-collapse: collapse;
     }
+
+    .td_report_cell_green{
+        background-color: #cfffcf;
+    }
+
+    .td_report_cell_yellow{
+        background-color: #ffffcf;
+    }
+
+    .td_report_cell_red{
+        background-color: #ffcfcf;
+    }
+
+    .td_report_cell_absent{
+        background-color: #cfcfcf;
+    }
 }
