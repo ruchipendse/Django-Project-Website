@@ -34,8 +34,8 @@ def report_download(request, report_criteria = None, report_date = None):
 
     dummy1, dummy2, userwise_report_data = getReportsData(request, report_criteria, report_date)
     # userwise_report_dataJson = json.dumps(userwise_report_data)    
-
-    file_name = "tmp/report_data.csv"
+    file_name_preffix = dt.today().strftime("%Y%m%d%H%M%S")
+    file_name = "tmp/" + file_name_preffix + "user_date.csv"
     file_path = os.path.join("", file_name)
 
     report_df = pd.DataFrame.from_dict(userwise_report_data, orient="index")
@@ -43,11 +43,14 @@ def report_download(request, report_criteria = None, report_date = None):
     for i in range(len(report_df)) :
         for c in range(cols):
             element = report_df.iloc[i, c] 
-            new_element = "EFF["                                                                   \
-                            + str(element['efficiency']) + "]\nPROD["              \
-                            + str(element['production']) + "]\nACT["              \
-                            + str(element['activity'])                           \
-                        + "]"
+            if (element['absent']):
+                new_element = "\nAbsent\n"    
+            else:
+                new_element = "EF["                                                                   \
+                                + str(element['efficiency']) + "]\nPR["              \
+                                + str(element['production']) + "]\nAC["              \
+                                + str(element['activity'])                           \
+                            + "]"
 
             report_df.iloc[i, c] = new_element
     report_df.to_csv(file_path)
