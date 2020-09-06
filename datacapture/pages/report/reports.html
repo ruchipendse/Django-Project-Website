@@ -5,10 +5,8 @@
             window.location.href = "/";
         </script>
     {% endif %}
-
     <meta id="report_datesJsondata" data="{{report_datesJson}}" />
     <h2>Weekly Reports:</h2>
-
     <div class = "reports"> 
         <form name = "reportsForm" action = "reports" method = "POST">
             {% csrf_token %} 

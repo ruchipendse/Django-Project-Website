@@ -122,8 +122,9 @@ p {
 
     #avatar {
         border-radius: 50%;
-        background: white  url('../images/OnlyLogo.jpg') no-repeat center;
-        width: 100px;
+        background: #cf4fef  url('../images/NigasaviLogo_140_34.jpg') no-repeat center;
+/*        background: rgb(56, 54, 54)  url('../images/NigasaviLogo_140_34.jpg') no-repeat center; */
+        width: 140px;
         height: 100px;
         margin: 2em auto 1em auto;
     }
