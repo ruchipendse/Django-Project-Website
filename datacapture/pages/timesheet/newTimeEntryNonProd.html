@@ -132,18 +132,20 @@
             var invalidVal                      = "Select Option"
             var taskVal                      = document.getElementById('nonprodtaskselect').value
             if ( taskVal == invalidVal || taskVal == ""){
-                console.log('InValid non-prod Task')
+                alert('InValid non-prod Task');
                 return false;
             }
 
             var dateVal                         = document.getElementById('timesheetdate').value
             if (!isDateValid(dateVal)){
+                alert ('Invaldi date');
                 return false;
             }
 
             var startTime                       = document.getElementById('timesheetstart').value
             var endTime                         = document.getElementById('timesheetend').value
             if (!validInterval(dateVal, startTime, endTime)){
+                alert ('Invalid time interval');
                 return false;
             }
             return true;   // change later to true
@@ -189,16 +191,16 @@
         
             if (dateTimeStart.getTime() >= today.getTime()){
                 // THIS CAN BE BASED ON MINIMUM ENTRY TIME DURATION
-                console.log('InValid start date-time')
+                alert('InValid start date-time')
                 return false;
             }
             if (dateTimeEnd.getTime() > today.getTime()){
                 // END TIME CAN BE CURRENT TIME
-                console.log('InValid end date-time')
+                alert('InValid end date-time')
                 return false;
             }
             if (dateTimeStart.getTime() >= dateTimeEnd.getTime()){
-                console.log('InValid Time Interval')
+                alert('InValid Time Interval')
                 return false;
             }
             try {
@@ -217,10 +219,9 @@
                     if (intervalStart < first_start){
                         // before first
                         if (intervalEnd > first_start){
-                            console.log('ITS FIRST ENTRY WITH OVERLAP');
+                            alert('ITS FIRST ENTRY WITH OVERLAP');
                             return false;
                         } else {
-                            console.log('ITS FIRST ENTRY');
                             return true; // overlap with first one
                         }
                     } 
@@ -228,10 +229,9 @@
                     if (intervalStart > last_start){
                         // after last
                         if (intervalStart < last_end){
-                            console.log('ITS LAST ENTRY WITH OVERLAP');
+                            alert('ITS LAST ENTRY WITH OVERLAP');
                             return false; // overlap with last
                         } else {
-                            console.log('ITS LAST ENTRY');
                             return true; // its last entry
                         }
                     }
@@ -252,17 +252,15 @@
                     entry_after_start     = stringToTime(allTimeSheetEntries[index+2][0]);
                     entry_after_end     = stringToTime(allTimeSheetEntries[index+2][1]);
                     if (intervalStart < entry_before_end){
-                        console.log('ITS IN OVERLAP WITH PREVIOUS ENTRY');
+                        alert('ITS IN OVERLAP WITH PREVIOUS ENTRY');
                         return false;
                     } 
 
                     if (intervalEnd > entry_after_start){
-                        console.log('ITS OVERLAP WITH NEXT ENTRY');
+                        alert('ITS OVERLAP WITH NEXT ENTRY');
                         return false;
                     } 
-                    console.log('ITS VALID IN BETWEEN ENTRY');
                 } else {
-                    console.log('NO ENTRIES');
                     return true;
                 }
             } catch (error){

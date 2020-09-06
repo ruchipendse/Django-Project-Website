@@ -305,12 +305,14 @@
 
             var dateVal                         = document.getElementById('timesheetdate').value
             if (!isDateValid(dateVal)){
+                alert ('Invalid Date');
                 return false;
             }
 
             var startTime                       = document.getElementById('timesheetstart').value
             var endTime                         = document.getElementById('timesheetend').value
             if (!validInterval(dateVal, startTime, endTime)){
+                alert('Invalid time interval');
                 return false;
             }
 

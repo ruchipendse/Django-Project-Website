@@ -45,7 +45,7 @@ def gototimesheet(request):
     if request.method == "POST":
         pass
     else:
-        activeUsers = User.objects.filter(is_active=True)
+        activeUsers = User.objects.filter(is_active=True, is_superuser = False, is_staff = False)
         users = {}
         for user in activeUsers:
             userObj = {
@@ -72,11 +72,14 @@ def timesheet_entries(request, currentDate=datetime.today().strftime("%Y-%m-%d")
         uName = request.POST["username"]
         pWord = request.POST["password"]
         user = auth.authenticate(username=uName, password=pWord)
+
         if user is not None:
+            if user.is_staff or user.is_superuser:
+                messages.info(request, "User is superuser or staff")
+                return redirect("gototimesheet")
             print("USER AUTHENTICATED")
             auth.login(request, user)
         else:
-            print("USER NOT AUTHENTICATED")
             messages.info(request, "Invalid User")
             return redirect("gototimesheet")
     else:

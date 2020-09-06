@@ -141,6 +141,7 @@
             var startTime                       = document.getElementById('timesheetstart').value
             var endTime                         = document.getElementById('timesheetend').value
             if (!validInterval(dateVal, startTime, endTime)){
+                alert ('Invalid time interval');
                 return false;
             }
             return true;   // later change it to true
@@ -213,15 +214,11 @@
                 selectedEntry                       = JSON.parse(selectedEntryJSON);
                 id_selected_entry                   = selectedEntry['id'];
                 //------------ remove selected entry-------
-                console.log(allTimeSheetEntries);
                 index2 = 0;
                 while(allTimeSheetEntries[index2][2].substring(2) != id_selected_entry){
                     index2 += 1;
                 }
                 allTimeSheetEntries.splice(index2, 1)
-                for( ent in allTimeSheetEntries){
-                    console.log(allTimeSheetEntries[ent]);
-                }
 
                 no_entries = allTimeSheetEntries.length
                 if (no_entries > 0){
@@ -235,7 +232,6 @@
                             alert('Entries overlap');
                             return false;
                         } else {
-                            console.log('ITS FIRST ENTRY');
                             return true; // overlap with first one
                         }
                     } 
@@ -246,7 +242,6 @@
                             alert('Entries overlap');
                             return false; // overlap with last
                         } else {
-                            console.log('ITS LAST ENTRY');
                             return true; // its last entry
                         }
                     }
@@ -274,9 +269,7 @@
                         alert('Entries overlap');
                         return false;
                     } 
-                    console.log('ITS VALID IN BETWEEN ENTRY');
                 } else {
-                    console.log('NO ENTRIES');
                     return true;
                 }
             } catch (error){

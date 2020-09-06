@@ -284,22 +284,23 @@
 
             var partVal                         = document.getElementById('partselect').value
             if ( partVal == invalidVal || partVal == ""){
-                console.log('InValid Part')
+                alert('InValid Part');
                 return false;
             }
             var setupVal                        = document.getElementById('setupselect').value
             if ( setupVal == invalidVal || setupVal == ""){
-                console.log('InValid Setup')
+                alert('InValid Setup');
                 return false;
             }
             var machineVal                      = document.getElementById('machineselect').value
             if ( machineVal == invalidVal || machineVal == ""){
-                console.log('InValid Machine')
+                alert('InValid Machine');
                 return false;
             }
 
             var dateVal                         = document.getElementById('timesheetdate').value
             if (!isDateValid(dateVal)){
+                alert('Invalid date');
                 return false;
             }
 
@@ -354,16 +355,16 @@
 
             if (dateTimeStart.getTime() >= today.getTime()){
                 // THIS CAN BE BASED ON MINIMUM ENTRY TIME DURATION
-                console.log('InValid start date-time')
+                alert('InValid start date-time');
                 return false;
             }
             if (dateTimeEnd.getTime() > today.getTime()){
                 // END TIME CAN BE CURRENT TIME
-                console.log('InValid end date-time')
+                alert('InValid end date-time')
                 return false;
             }
             if (dateTimeStart.getTime() >= dateTimeEnd.getTime()){
-                console.log('InValid Time Interval')
+                alert('InValid Time Interval')
                 return false;
             }
 
@@ -382,10 +383,9 @@
                 if (intervalStart < first_start){
                     // before first
                     if (intervalEnd > first_start){
-                        console.log('ITS FIRST ENTRY WITH OVERLAP');
+                        alert('Entry overlapping on first entry');
                         return false;
                     } else {
-                        console.log('ITS FIRST ENTRY');
                         return true; // overlap with first one
                     }
                 } 
@@ -393,10 +393,9 @@
                 if (intervalStart > last_start){
                     // after last
                     if (intervalStart < last_end){
-                        console.log('ITS LAST ENTRY WITH OVERLAP');
+                        alert('Entry overlapping on laste entry');
                         return false; // overlap with last
                     } else {
-                        console.log('ITS LAST ENTRY');
                         return true; // its last entry
                     }
                 }
@@ -418,21 +417,19 @@
                     entry_after_start     = stringToTime(allTimeSheetEntries[index+2][0]);
                     entry_after_end     = stringToTime(allTimeSheetEntries[index+2][1]);
                     if (intervalStart < entry_before_end){
-                        console.log('ITS IN OVERLAP WITH PREVIOUS ENTRY');
+                        alert('Entry overlapping on previous entry');
                         return false;
                     } 
 
                     if (intervalEnd > entry_after_start){
-                        console.log('ITS OVERLAP WITH NEXT ENTRY');
+                        alert('Entry overlapping on next entry');
                         return false;
                     } 
-                    console.log('ITS VALID IN BETWEEN ENTRY');
                 } catch (error){
                     alert ('Error: ' + error);
                 }
 
             } else {
-                console.log('NO ENTRIES');
                 return true;
             }
             return true;
