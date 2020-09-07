@@ -45,15 +45,17 @@ def gototimesheet(request):
     if request.method == "POST":
         pass
     else:
-        activeUsers = User.objects.filter(is_active=True, is_superuser = False, is_staff = False)
+        activeOperators = Employee.objects.filter(is_active=True)
         users = {}
-        for user in activeUsers:
+        activeUsers = []
+        for operator in activeOperators:
+            activeUsers.append(operator.user)
             userObj = {
-                "username": user.username,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
+                "username": operator.user.username,
+                "first_name": operator.user.first_name,
+                "last_name": operator.user.last_name,
             }
-            users[user.username] = userObj
+            users[operator.user.username] = userObj
         activeUsersListJson = json.dumps(users)
     return render(
         request,
