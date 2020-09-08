@@ -159,7 +159,7 @@ def getReportsData(request, report_criteria, upper_date):
                     }
                 else:
                     entry_details_datewise_modular[entry_key] =  allTimeSheetEntriesForUserDateDeep(user, status.date)
-            userwise_report_data [user.username] = entry_details_datewise_modular
+            userwise_report_data [user.first_name + " " + user.last_name] = entry_details_datewise_modular
     elif (report_criteria == "MACHINE"):
         #TODO: DEVELOP THE MACHINE SPECIFIC REPORT HERE
         pass
