@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 """
 ARRIVES HERE FROM ROOT URL. NAVIGATES TO LOGIN PAGE 
 """
-
+OPFFICE_OPENING_TIME = "09:00"
 def gototimesheet_init(request):
     currentSession = request.session
     currentSession.set_expiry(0)
@@ -209,7 +209,7 @@ def processRequest(request, function_mode=None, entry_id=-1, landing=None):
         allTimeSheetEntriesJSON                     = json.dumps(allTimeSheetEntries)
         partSetupMapJSON                            = json.dumps(partSetupMap)
 
-        lastEntryEndTime = "09:00"
+        lastEntryEndTime = OPFFICE_OPENING_TIME
         if (len(allTimeSheetEntries) > 0):
             lastEntryEndTime = allTimeSheetEntries[-1][1]
 
@@ -237,7 +237,7 @@ def processRequest(request, function_mode=None, entry_id=-1, landing=None):
         allTimeSheetEntries                         = allTimeSheetEntriesForUserDate(request.user.id, currentDate)
         allTimeSheetEntriesJSON                     = json.dumps(allTimeSheetEntries)
 
-        lastEntryEndTime = "09:00"
+        lastEntryEndTime = OPFFICE_OPENING_TIME
         if (len(allTimeSheetEntries) > 0):
             lastEntryEndTime = allTimeSheetEntries[-1][1]
 

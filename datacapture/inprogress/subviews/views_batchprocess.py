@@ -14,26 +14,50 @@ from inprogress.models import (
      EmployeeDateTimeSlot, 
      TimeSheetEntryProd, 
      TimeSheetEntryNonProd, 
-     NonProdTask
+     NonProdTask,
+     Employee
      )
 from inprogress.subviews.views_report import allTimeSheetEntriesForUserDateDeep
 
+AUTO_COMMIT_EFFECTIVE_DATE = "2020-09-01"
+
+# def prepopulate():
+#     # FOR EACH PRESENT USER THERE SHOULD BE AN ENTRY IN USER-DATE TABLE FOR EACH DATE WITHIN SCOPE   
+#     #TODO: PRE-POPULATE THESE ENTRIES
+#     end_date = dt.today()
+#     no_days = 7
+#     for go_back in range(no_days):
+#         current_date = end_date - timedelta(days=go_back)
+#         users = User.objects.filter(is_active = True)
+#         for user in users:
+#             emp_date = EmployeeDate.objects.filter(user__id = user.id, date= current_date.strftime("%Y-%m-%d"))
+#             if emp_date.count() == 0:
+#                 emp_date = EmployeeDate.objects.create(user = user, date= current_date, committed = False, is_absent = False)
+#                 emp_date.save()
+
 def prepopulate():
-    # FOR EACH PRESENT USER THERE SHOULD BE AN ENTRY IN USER-DATE TABLE FOR EACH DATE WITHIN SCOPE   
-    #TODO: PRE-POPULATE THESE ENTRIES
+    # FOR EACH PRESENT USER THERE SHOULD BE AN ENTRY STARTING FROM AUTOCOMMIT EFFECTIVE DATE
     end_date = dt.today()
-    no_days = 7
-    for go_back in range(no_days):
-        current_date = end_date - timedelta(days=go_back)
-        users = User.objects.filter(is_active = True)
-        for user in users:
+    current_date = dt.strptime(AUTO_COMMIT_EFFECTIVE_DATE, "%Y-%m-%d")
+    delta = datetime.timedelta(days=1)
+
+    while current_date <= end_date:
+        operators = Employee.objects.filter(is_active = True)
+        # users = User.objects.filter(is_active = True)
+        for operator in operators:
+            user = operator.user
             emp_date = EmployeeDate.objects.filter(user__id = user.id, date= current_date.strftime("%Y-%m-%d"))
             if emp_date.count() == 0:
                 emp_date = EmployeeDate.objects.create(user = user, date= current_date, committed = False, is_absent = False)
                 emp_date.save()
+        current_date += delta
+
 
 def autocommit(request):
     prepopulate()
+    # execute_autocommit(request)
+
+def execute_autocommit(request):
     day_before                                  =  dt.today() - timedelta(days=2)
     day_before_week_day                         = day_before.strftime("%w")
     go_back = 0
