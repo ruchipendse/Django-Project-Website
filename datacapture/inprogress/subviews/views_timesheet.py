@@ -227,7 +227,7 @@ def processRequest(request, function_mode=None, entry_id=-1, landing=None):
 
     elif function_mode == "ADD_NP":
         currentDate                                 = request.POST["date_cell"]
-        allNonProdTasksQS                           = NonProdTask.objects.all()
+        allNonProdTasksQS                           = NonProdTask.objects.filter(is_active = True)
         allNonProdTasks                             = {}
         for task in allNonProdTasksQS:
             allNonProdTasks[task.id_code]           = task.as_display_line()
