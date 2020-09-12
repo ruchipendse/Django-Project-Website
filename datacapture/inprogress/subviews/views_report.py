@@ -14,6 +14,7 @@ import json
 import datetime
 from datetime import datetime as dt
 from datetime import timedelta, date
+from django.db.models import Q
 
 import pandas as pd
 #------------------------------------------------------------------
@@ -123,12 +124,16 @@ def getReportsData(request, report_criteria, upper_date):
         userwise_report_data = {}
         for op in operators:
             user = op.user
-            employeeDateStatus = EmployeeDate.objects.filter(user_id=user.id).filter(
-                date__range=[
+
+            employeeDateStatus = EmployeeDate.objects.filter(
+                Q(user_id=user.id),
+                Q(date__range=[
                     date_lowbound.strftime("%Y-%m-%d"),
-                    date_highbound.strftime("%Y-%m-%d"),
-                ],
-            ).filter(committed = True)
+                    date_highbound.strftime("%Y-%m-%d")
+                ]), 
+                (Q(committed = True) | Q(forceCommitted = True))
+            )
+
             entry_details_datewise_modular = {}
             for report_date in report_dates:
                 entry_details_datewise_modular[report_date] = {

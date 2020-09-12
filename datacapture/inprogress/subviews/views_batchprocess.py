@@ -52,8 +52,8 @@ def commit_timesheets_all_daterange(request):
     # APPLY IT TO REPORT GENERATION AS WELL
 
     testusername                = 15
-    date_lowbound               = "2020-09-08"
-    date_highbound              = "2020-09-08"
+    date_lowbound               = "2020-09-04"
+    date_highbound              = "2020-09-04"
     users = []
     users.append(testusername)
     employeeDates               = EmployeeDate.objects.filter(user_id__in=users).filter(
