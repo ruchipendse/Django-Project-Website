@@ -115,7 +115,7 @@ def timesheet_entries(request, currentDate=datetime.today().strftime("%Y-%m-%d")
 
     for status in employeeDateStatus:
 
-        entry_details_datewise_modular[str(status.date)]["committed"] = status.committed
+        entry_details_datewise_modular[str(status.date)]["committed"] = status.committed or status.forceCommitted 
         entry_details_datewise_modular[str(status.date)]["is_absent"] = status.is_absent
 
         #TODO: USE SAME CALL FOR NEW AND UPDATE PART TO PASS COLLECTION OF ENTRIES TO THE PAGE

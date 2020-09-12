@@ -102,14 +102,19 @@ class PartSetupSequence(models.Model):
 
 #-------------  PAIR OF EMPLOYEE AND DATE ----------------
 class EmployeeDate(models.Model):
-    user        = models.ForeignKey(User, on_delete = models.CASCADE)
-    date        = models.DateField()
-    committed   = models.BooleanField(default = False)
-    is_absent      = models.BooleanField(default = False)
+    user                    = models.ForeignKey(User, on_delete = models.CASCADE)
+    date                    = models.DateField()
+    committed               = models.BooleanField(default = False)
+    is_absent               = models.BooleanField(default = False)
+    forceCommitted          = models.BooleanField(default = False)
 
     def __str__(self):
-        return "[" + str(self.user) + ", " + str(self.date) + ", committed: " + str(self.committed)         \
-                + ", is_absent: " + str(self.is_absent) + "]"
+        return "["                                                  \
+                + str(self.user) + ", " + str(self.date)            \
+                + ", committed: " + str(self.committed)             \
+                + ", forceCommitted: " + str(self.forceCommitted)   \
+                + ", is_absent: " + str(self.is_absent)             \
+                + "]"
 
 #-------------  PAIR OF EMPLOYEE-DATE AND TIME SLOT ----------------
 class EmployeeDateTimeSlot(models.Model):

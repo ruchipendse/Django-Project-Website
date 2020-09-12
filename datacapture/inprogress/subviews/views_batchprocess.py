@@ -24,6 +24,7 @@ from inprogress.models import (
 
 AUTO_COMMIT_EFFECTIVE_DATE = "2020-08-31"
 OFFICE_START_TIME = datetime.time(hour=9, minute=0)
+OFFICE_CLOSE_TIME = datetime.time(hour=17, minute=30)
 
 configure_logger()
 logger = logging.getLogger(__name__)
@@ -46,9 +47,13 @@ def prepopulate(request):
         current_date += delta
 
 def commit_timesheets_all_daterange(request):
+
+    #TODO: USE HERE FORCE_COMMIT FEATURE IN PLACE OF COMMIT.
+    # APPLY IT TO REPORT GENERATION AS WELL
+
     testusername                = 15
-    date_lowbound               = "2020-09-06"
-    date_highbound              = "2020-09-07"
+    date_lowbound               = "2020-09-08"
+    date_highbound              = "2020-09-08"
     users = []
     users.append(testusername)
     employeeDates               = EmployeeDate.objects.filter(user_id__in=users).filter(
@@ -133,12 +138,12 @@ def commit_timesheet_for_user_date(request, user_date):
                         blank_time_slots.append(employee_date_time_slot)
 
                 # CHECK IF 8 HOURS TIMESHEET ENTRIES ARE THERE ELSE MARK REQUIRED SLOT FOR BLANK ENTRY
-                if slots_sorted[-1][1] <  datetime.time(hour=17, minute=0):
-                    employee_date_time_slot = EmployeeDateTimeSlot.objects.create(
-                        employeeDate=user_date,
-                        timeStart=slots_sorted[-1][1],
-                        timeEnd=datetime.time(hour=17, minute=0),
-                    )
+                if slots_sorted[-1][1] <  OFFICE_CLOSE_TIME:
+                    employee_date_time_slot     = EmployeeDateTimeSlot.objects.create(
+                                                        employeeDate    =user_date,
+                                                        timeStart=slots_sorted[-1][1],
+                                                        timeEnd=OFFICE_CLOSE_TIME,
+                                                )
                     blank_time_slots.append(employee_date_time_slot)
 
                 # ADD BLANK NON-PROD ENTRY AT BLANK SLOTS
@@ -155,7 +160,7 @@ def commit_timesheet_for_user_date(request, user_date):
                 # THERE IS NO TIMESHEET ENTRY HENCE MARK OPERATOR ABSENT
                 user_date.is_absent = True     
                 user_date.save()       
-            user_date.committed = True            
+            user_date.forceCommitted = True            
             user_date.save()       
     except Exception as e:
         # messages.info(request, 'Forced commit Failed for ' + user_date.user + ", " + user_date.date)
