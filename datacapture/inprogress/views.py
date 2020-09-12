@@ -15,7 +15,8 @@ from inprogress.subviews.views_nonprodtask import nonprodtasks, processNonProdTa
 from inprogress.subviews.views_part import parts, addNewPart, deletePart, processPart
 from inprogress.subviews.views_timesheet import gototimesheet, gototimesheet_init, timesheet_entries, processRequest, timesheetLogout
 from inprogress.subviews.views_user import users, updateUserDetails, addNewUser, deleteUser
-from inprogress.subviews.views_batchprocess import autocommit
+from inprogress.subviews.views_batchprocess import prepopulate
+# from inprogress.subviews.views_batchprocess import commit_timesheets_all_daterange
 from inprogress.models import (
      EmployeeDate, 
      EmployeeDateTimeSlot, 
@@ -37,7 +38,8 @@ def init_start(request):
     return redirect("home")
 
 def home(request):
-    autocommit(request)
+    prepopulate(request)
+    # commit_timesheets_all_daterange(request)
     return render(request, 'home.html')
 
 def timesheet_base(request):

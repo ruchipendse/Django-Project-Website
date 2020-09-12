@@ -45,7 +45,10 @@ urlpatterns = [
     path ('<path:landing>/timesheetLogout', views.timesheetLogout, name = 'timesheetLogout'),
     path ('timesheetLogout', views.timesheetLogout, name = 'timesheetLogout'),
 #---------------------BATCH PROCESSES --------
-    path ('autocommit', views.autocommit, name = 'autocommit'),
+    # path ('autocommit', views.autocommit, name = 'autocommit'),
+    # TODO: CHECK IF THIS IS NECESSARY, PROBABLY NOT
+    path ('prepopulate', views.prepopulate, name = 'prepopulate'),
+    
 
 
 
