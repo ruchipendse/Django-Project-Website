@@ -22,7 +22,7 @@ from inprogress.models import (
      Employee
      )
 
-AUTO_COMMIT_EFFECTIVE_DATE = "2020-09-01"
+AUTO_COMMIT_EFFECTIVE_DATE = "2020-08-31"
 OFFICE_START_TIME = datetime.time(hour=9, minute=0)
 
 configure_logger()
@@ -37,7 +37,6 @@ def prepopulate(request):
 
     while current_date <= end_date:
         operators = Employee.objects.filter(is_active = True)
-        # users = User.objects.filter(is_active = True)
         for operator in operators:
             user = operator.user
             emp_date = EmployeeDate.objects.filter(user__id = user.id, date= current_date.strftime("%Y-%m-%d"))
@@ -47,22 +46,30 @@ def prepopulate(request):
         current_date += delta
 
 def commit_timesheets_all_daterange(request):
-    #TODO: CALL THIS METHOD FOR DATE RANGE AND USER RANGE
-    
-    testusername = "motiram.bhadange"
-    testdate = "2020-09-05"
-    emp_date = EmployeeDate.objects.filter(user__username = testusername, date= testdate)
-    if (emp_date.count() > 0):
-        commit_timesheet_for_user_date(request, emp_date[0])
-    else:
-        log_message = 'Employee-date entry not found for: ' + testusername + ", " + testdate 
-        print (log_message)
-        logger.debug(log_message)
+    testusername                = 15
+    date_lowbound               = "2020-09-06"
+    date_highbound              = "2020-09-07"
+    users = []
+    users.append(testusername)
+    employeeDates               = EmployeeDate.objects.filter(user_id__in=users).filter(
+                                        date__range=[
+                                            date_lowbound,
+                                            date_highbound
+                                        ]
+                                    )
+    #TODO : FETCH USER-DATES AND CALL COMMIT
+    commit_sheets_selectusers_daterange(request, employeeDates)
+
+def commit_sheets_selectusers_daterange(request, user_dates):
+    for user_date in user_dates:
+        print (user_date)
+        commit_timesheet_for_user_date(request, user_date)
+
 
 """
 COMMITS TIMSHEET FOR GIVEN USER
 """
-def commit_timesheet_for_user_date(request, status):
+def commit_timesheet_for_user_date(request, user_date):
     try:
         with transaction.atomic():
             tslots = []
@@ -71,9 +78,9 @@ def commit_timesheet_for_user_date(request, status):
                 TimeSheetEntryProd.objects.select_related(
                     "employee_date_time_slot"
                 )
-                .filter(employee_date_time_slot__employeeDate__user_id = status.user.id)
+                .filter(employee_date_time_slot__employeeDate__user_id = user_date.user.id)
                 .filter(
-                    employee_date_time_slot__employeeDate__date = status.date.strftime(
+                    employee_date_time_slot__employeeDate__date = user_date.date.strftime(
                         "%Y-%m-%d"
                     )
                 )
@@ -87,9 +94,9 @@ def commit_timesheet_for_user_date(request, status):
                 TimeSheetEntryNonProd.objects.select_related(
                     "employee_date_time_slot"
                 )
-                .filter(employee_date_time_slot__employeeDate__user_id = status.user.id)
+                .filter(employee_date_time_slot__employeeDate__user_id = user_date.user.id)
                 .filter(
-                    employee_date_time_slot__employeeDate__date = status.date.strftime(
+                    employee_date_time_slot__employeeDate__date = user_date.date.strftime(
                         "%Y-%m-%d"
                     )
                 )
@@ -109,7 +116,7 @@ def commit_timesheet_for_user_date(request, status):
                 if slots_sorted[0][0] >  OFFICE_START_TIME:
                     # FIRST TIMESHEET ENTRY IS MISSING, 
                     employee_date_time_slot = EmployeeDateTimeSlot.objects.create(
-                        employeeDate=status,
+                        employeeDate=user_date,
                         timeStart=OFFICE_START_TIME,
                         timeEnd=slots_sorted[0][0],
                     )
@@ -119,7 +126,7 @@ def commit_timesheet_for_user_date(request, status):
                 for slot_index in range(1, slot_count):
                     if (slots_sorted[slot_index][0] != slots_sorted[slot_index - 1][1]):
                         employee_date_time_slot = EmployeeDateTimeSlot.objects.create(
-                            employeeDate=status,
+                            employeeDate=user_date,
                             timeStart=slots_sorted[slot_index - 1][1],
                             timeEnd=slots_sorted[slot_index][0],
                         )
@@ -128,7 +135,7 @@ def commit_timesheet_for_user_date(request, status):
                 # CHECK IF 8 HOURS TIMESHEET ENTRIES ARE THERE ELSE MARK REQUIRED SLOT FOR BLANK ENTRY
                 if slots_sorted[-1][1] <  datetime.time(hour=17, minute=0):
                     employee_date_time_slot = EmployeeDateTimeSlot.objects.create(
-                        employeeDate=status,
+                        employeeDate=user_date,
                         timeStart=slots_sorted[-1][1],
                         timeEnd=datetime.time(hour=17, minute=0),
                     )
@@ -146,12 +153,12 @@ def commit_timesheet_for_user_date(request, status):
 
             else: 
                 # THERE IS NO TIMESHEET ENTRY HENCE MARK OPERATOR ABSENT
-                status.is_absent = True     
-                status.save()       
-            status.committed = True            
-            status.save()       
+                user_date.is_absent = True     
+                user_date.save()       
+            user_date.committed = True            
+            user_date.save()       
     except Exception as e:
-        # messages.info(request, 'Forced commit Failed for ' + status.user + ", " + status.date)
+        # messages.info(request, 'Forced commit Failed for ' + user_date.user + ", " + user_date.date)
         log_message = 'Force commit Failed:' + str(e)
         print (log_message)
         logger.debug(log_message)
