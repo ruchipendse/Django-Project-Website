@@ -95,43 +95,46 @@
         function setForCommit(){
             TOTAL_MINIMUM_WORK_HOURS                         = 8.5; // TODO : THIS NEEDS TO BE DEFINED AT ONE PLACE 
             try{
-                var currentDate                         = document.getElementById('date_cell').value;
-                var entry_details_datewise_modularJSON  = document.getElementById('entry_details_datewise_modularJSONTag').getAttribute("data");
-                entry_details_datewise_modular          = JSON.parse(entry_details_datewise_modularJSON);
-                entry_details_for_date                  = entry_details_datewise_modular[currentDate];
-                entries                                 = entry_details_for_date["entries"];
-                no_of_entries                           = entries.length;
-                missingEntries                          = [];
-                if (no_of_entries > 0){
-                    // TODO: COMPUTE TOTAL DURATION FOR THE DAY. CHECK IT AGAINST ALLOWED MINIMUM THRESHOLD
-                    first_entry_start                   = stringToTime(entries[0][0]);
-                    last_entry_end                      = stringToTime(entries[no_of_entries - 1][1]);
-                    duration_secs                       = (last_entry_end - first_entry_start)/ 1000.0;
-                    duration_hours                      = duration_secs/ 3600.0;
-                    if (duration_hours >= TOTAL_MINIMUM_WORK_HOURS){
-                        for (index = 1; index < no_of_entries; index++){
-                            prev = entries[index - 1];
-                            next = entries[index];
-                            if (prev[1] != next[0]){
-                                missingEntries.push("[" + prev[1] + " to " + next[0] + "]")
+                if (!document.getElementById('absent_marker').checked){
+                    var currentDate                         = document.getElementById('date_cell').value;
+                    var entry_details_datewise_modularJSON  = document.getElementById('entry_details_datewise_modularJSONTag').getAttribute("data");
+                    entry_details_datewise_modular          = JSON.parse(entry_details_datewise_modularJSON);
+                    entry_details_for_date                  = entry_details_datewise_modular[currentDate];
+                    entries                                 = entry_details_for_date["entries"];
+                    no_of_entries                           = entries.length;
+                    missingEntries                          = [];
+                    if (no_of_entries > 0){
+                        // TODO: COMPUTE TOTAL DURATION FOR THE DAY. CHECK IT AGAINST ALLOWED MINIMUM THRESHOLD
+                        first_entry_start                   = stringToTime(entries[0][0]);
+                        last_entry_end                      = stringToTime(entries[no_of_entries - 1][1]);
+                        duration_secs                       = (last_entry_end - first_entry_start)/ 1000.0;
+                        duration_hours                      = duration_secs/ 3600.0;
+                        if (duration_hours >= TOTAL_MINIMUM_WORK_HOURS){
+                            for (index = 1; index < no_of_entries; index++){
+                                prev = entries[index - 1];
+                                next = entries[index];
+                                if (prev[1] != next[0]){
+                                    missingEntries.push("[" + prev[1] + " to " + next[0] + "]")
+                                }
                             }
-                        }
-                        if (missingEntries.length > 0){
-                            console.log(missingEntries);
-                            alert('Gap in entries present');
-                            document.getElementById("readyForSubmit").value = "FALSE";
+                            if (missingEntries.length > 0){
+                                console.log(missingEntries);
+                                alert('Gap in entries present');
+                                document.getElementById("readyForSubmit").value = "FALSE";
+                            } else {
+                                setFunctionMode("COMMIT");
+                            } 
                         } else {
-                            setFunctionMode("COMMIT");
-                        } 
+                            alert('Total duration of entries need to be minimum ' + TOTAL_MINIMUM_WORK_HOURS + " Hours");
+                            document.getElementById("readyForSubmit").value = "FALSE";
+                        }
                     } else {
-                        alert('Total duration of entries need to be minimum ' + TOTAL_MINIMUM_WORK_HOURS + " Hours");
+                        alert('No entries present');
                         document.getElementById("readyForSubmit").value = "FALSE";
                     }
                 } else {
-                    alert('No entries present');
-                    document.getElementById("readyForSubmit").value = "FALSE";
+                    setFunctionMode("COMMIT");
                 }
-
             } catch(error){
                 alert (error);
             }
@@ -371,7 +374,6 @@
             } catch (err){
                 console.log(err);
             }
-
         }
         init();
     </script>
