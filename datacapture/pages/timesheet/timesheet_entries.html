@@ -159,21 +159,20 @@
             formTag = document.getElementById("tsheetForm");
             message = "Default";
             if (absentMarker.checked){
-                deleteAllRows('tsheet_entry_table');
-                setFunctionMode('ABSENT_MARKED');
                 message= "Are you sure, you want to mark absent?"
                 var retVal = confirm(message);
                 if( retVal == true ) {
+                    deleteAllRows('tsheet_entry_table');
+                    setFunctionMode('ABSENT_MARKED');
                     formTag.submit();
                 } else {
                     absentMarker.checked = false;
                 }
             } else {
-                document.getElementById("addEntryButton").classList.add('disabled')
-                setFunctionMode('ABSENT_UNMARKED');
                 message= "Are you sure, you want to remove absent mark?"
                 var retVal = confirm(message);
                 if( retVal == true ) {
+                    setFunctionMode('ABSENT_UNMARKED');
                     formTag.submit();
                 } else {
                     absentMarker.checked = true;
@@ -234,9 +233,11 @@
             if (isAbsent) {
                 document.getElementById('absent_marker').checked        = true;
                 document.getElementById("addEntryButton").classList.add('disabled')
+                document.getElementById("addNPEntryButton").classList.add('disabled')
             } else {
                 document.getElementById('absent_marker').checked        = false;
                 document.getElementById("addEntryButton").classList.remove('disabled')
+                document.getElementById("addNPEntryButton").classList.remove('disabled')
                 if (dates_entries != null) {
                     // ITERATE OVER THE ENTRIES AND ADD TO TABLE
                     for (var entry_no = 0; entry_no < dates_entries['entries'].length; entry_no++){
