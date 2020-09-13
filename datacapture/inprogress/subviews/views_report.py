@@ -120,6 +120,7 @@ def getReportsData(request, report_criteria, upper_date):
     report_dates.sort()
 
     if (report_criteria == "USER"):
+        # USER-WISE REPORT REQUIRED
         operators = Employee.objects.filter(is_active = True)
         userwise_report_data = {}
         for op in operators:
@@ -130,14 +131,15 @@ def getReportsData(request, report_criteria, upper_date):
                 Q(date__range=[
                     date_lowbound.strftime("%Y-%m-%d"),
                     date_highbound.strftime("%Y-%m-%d")
-                ]), 
-                (Q(committed = True) | Q(forceCommitted = True))
+                ])
             )
 
             entry_details_datewise_modular = {}
             for report_date in report_dates:
                 entry_details_datewise_modular[report_date] = {
-                    'absent'                    : True,
+                    'committed'                 : False,
+                    'force_committed'           : False,
+                    'absent'                    : False,
                     'prod_value'                : 0,
                     'production'                : "{:5.2f}".format(0),
 
@@ -150,18 +152,19 @@ def getReportsData(request, report_criteria, upper_date):
 
             for status in employeeDateStatus:
                 entry_key = status.date.strftime("%Y-%m-%d")
-                if  status.is_absent:
-                    entry_details_datewise_modular[report_date] = {
-                        'absent'                    : True,
-                        'prod_value'                : 0,
-                        'production'                : "{:5.2f}".format(0),
+                entry_details_datewise_modular[entry_key]                     = {}
+                entry_details_datewise_modular[entry_key]['absent']           = status.is_absent
+                entry_details_datewise_modular[entry_key]['committed']        = status.committed
+                entry_details_datewise_modular[entry_key]['forceCommitted']   = status.forceCommitted
+                if status.is_absent:
+                    entry_details_datewise_modular[entry_key]['prod_value']       = 0
+                    entry_details_datewise_modular[entry_key]['production']       = "{:5.2f}".format(0),
 
-                        'efficiency_value'          : 0,
-                        'efficiency'                : "{:5.2f}".format(0),
+                    entry_details_datewise_modular[entry_key]['efficiency_value'] = 0,
+                    entry_details_datewise_modular[entry_key]['efficiency']       = "{:5.2f}".format(0),
 
-                        'activity_value'            : 0,
-                        'activity'                  : "{:6.2f}".format(0),
-                    }
+                    entry_details_datewise_modular[entry_key]['activity_value']   = 0,
+                    entry_details_datewise_modular[entry_key]['activity']         = "{:6.2f}".format(0),
                 else:
                     entry_details_datewise_modular[entry_key] =  allTimeSheetEntriesForUserDateDeep(user, status.date)
             userwise_report_data [user.first_name + " " + user.last_name] = entry_details_datewise_modular
@@ -196,9 +199,9 @@ def collectTimeSheetEntriesDeep(status):
     )
 
     # APPEND ALL PRODUCTION ENTRIES AS A STRING
-    target_quantity              = 0
-    achieved_quantity                = 0
-    prod_time                     = 0
+    target_quantity                 = 0
+    achieved_quantity               = 0
+    prod_time                       = 0
     for tentry in tsheetentries:
         endTime = tentry.employee_date_time_slot.timeEnd
         startTime = tentry.employee_date_time_slot.timeStart
@@ -260,5 +263,9 @@ def collectTimeSheetEntriesDeep(status):
         'activity_value'        : activity,
         'activity'          : "{:6.2f}".format(activity),
     }
+    datewise_user_productivity['absent']           = status.is_absent
+    datewise_user_productivity['committed']        = status.committed
+    datewise_user_productivity['forceCommitted']   = status.forceCommitted
+
     return datewise_user_productivity
 

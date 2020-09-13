@@ -59,7 +59,20 @@
                     <td id = "user_column_highlight" class = "user_column_highlight unselected_report_cell">{{key}}</td>
                     {% for key1, value1 in value.items %}
                     <td onclick="alert('{{key1}} - {{key}}')" onmouseenter = "mark_red(this)" onmouseleave = "unmark_red(this)"  class = "unselected_report_cell"  style="cursor: pointer;">
-                        {% if value1.absent %}
+
+                        {% if  not value1.committed and not value1.forceCommitted  %}
+                        <table id = "{{key1}} - {{key}}" width = "100%" class = "unselected_report_cell">
+                            <tr>
+                                <td class = "td_report_cell_absent"  align = "center">-</td>
+                            </tr>
+                            <tr>
+                                <td class = "td_report_cell_absent"  align = "center">Uncommitted</td>
+                            </tr>
+                            <tr>
+                                <td class = "td_report_cell_absent"  align = "center">-</td>
+                            </tr>
+                        </table>
+                        {% elif value1.absent %}
                         <table id = "{{key1}} - {{key}}" width = "100%" class = "unselected_report_cell">
                             <tr>
                                 <td class = "td_report_cell_absent"  align = "center">-</td>
