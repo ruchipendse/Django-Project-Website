@@ -162,14 +162,22 @@
                 deleteAllRows('tsheet_entry_table');
                 setFunctionMode('ABSENT_MARKED');
                 message= "Are you sure, you want to mark absent?"
+                var retVal = confirm(message);
+                if( retVal == true ) {
+                    formTag.submit();
+                } else {
+                    absentMarker.checked = false;
+                }
             } else {
                 document.getElementById("addEntryButton").classList.add('disabled')
                 setFunctionMode('ABSENT_UNMARKED');
                 message= "Are you sure, you want to remove absent mark?"
-            }
-            var retVal = confirm(message);
-            if( retVal == true ) {
-                formTag.submit();
+                var retVal = confirm(message);
+                if( retVal == true ) {
+                    formTag.submit();
+                } else {
+                    absentMarker.checked = true;
+                }
             }
         }
 
