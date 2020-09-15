@@ -24,6 +24,7 @@ from inprogress.models import (
 AUTO_COMMIT_EFFECTIVE_DATE = "2020-08-31"
 OFFICE_START_TIME = datetime.time(hour=9, minute=0)
 OFFICE_CLOSE_TIME = datetime.time(hour=17, minute=30)
+NUMBER_OF_PREV_DAYS = 6
 
 configure_logger()
 logger = logging.getLogger(__name__)
@@ -46,8 +47,6 @@ def prepopulate(request):
         current_date += delta
 
 def force_commit(request, report_criteria = None, report_date = None):
-    NUMBER_OF_PREV_DAYS = 6 # TODO: OBTAIN FROM GLOBAL PLACE
-
     operators = Employee.objects.all()
     users = []
     for operator in operators:
@@ -64,8 +63,31 @@ def force_commit(request, report_criteria = None, report_date = None):
     commit_sheets_selectusers_daterange(request, employeeDates)
 
 def force_uncommit(request, report_criteria = None, report_date = None):
-    # TODO: IMPLEMENT THIS METHOD TO FORCE_UNCOMMIT AND REMOVE FORCED ABSENT MARK
-    print ('FORCE UNCOMMIT METHOD IN PROGRESS')
+
+    operators = Employee.objects.all()
+    users = []
+    for operator in operators:
+        users.append(operator.user_id)
+
+    date_highbound = dt.strptime(report_date, "%Y-%m-%d")
+    date_lowbound = date_highbound - timedelta(days=NUMBER_OF_PREV_DAYS)  # TO
+    employeeDates               = EmployeeDate.objects.filter(user_id__in=users, forceCommitted = True).filter(
+                                        date__range=[
+                                            date_lowbound.strftime("%Y-%m-%d"),
+                                            date_highbound.strftime("%Y-%m-%d")
+                                        ]
+                                    )
+    for user_date in employeeDates:
+        try:
+            with transaction.atomic():
+                user_date.is_absent = False
+                user_date.forceCommitted = False
+                user_date.save()
+        except Exception as e:
+            # messages.info(request, 'Forced uncommit Failed for ' + user_date.user + ", " + user_date.date)
+            log_message = 'Force uncommit Failed:' + str(e)
+            print (log_message)
+            logger.debug(log_message)
 
 def commit_sheets_selectusers_daterange(request, user_dates):
     for user_date in user_dates:
@@ -168,7 +190,6 @@ def commit_timesheet_for_user_date(request, user_date):
         log_message = 'Force commit Failed:' + str(e)
         print (log_message)
         logger.debug(log_message)
-
 
 def getBlankNonProdTask():
     # CHECK IF BLANK-NON-PROD-TASK ENTRY DOES NOT EXIST CREATE IT
