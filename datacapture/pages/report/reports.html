@@ -11,6 +11,7 @@
         <form name = "reportsForm" action = "reports" method = "POST">
             {% csrf_token %} 
             <input type = "hidden" id = "selectedCriteria" name = "selectedCriteria" value = "USER"/>
+            <input type = "hidden" id = "functionMode" name = "functionMode" value = "GENERATE"/>
             <div id = 'date_div' align = 'left'>
                 <table>
                     <tr>
@@ -43,6 +44,17 @@
                         <td>
                             <a  href="report_download/USER/{{selected_date}}"> Download</a>
                         </td>
+                        {% if not all_committed %}
+                        <td>
+                            <input type="submit" id = "forceCommitButton" class="w3-button w3-blue w3-tiny" value="Force Commit"
+                            onclick = "onForceCommit();" />
+                        </td>
+                        {% else %}
+                        <td>
+                            <input type="submit" id = "forceUnCommitButton" class="w3-button w3-blue w3-tiny" value="Force Uncommit"
+                            onclick = "onForceUncommit();" />
+                        </td>
+                        {% endif%}
                     </tr>
                 </table>
             </div>
@@ -171,7 +183,7 @@
         var date_parts          = present_date.split ('-');
         var prev_date           = new Date(parseInt(date_parts[0]), parseInt(date_parts[1]) - 1, 
                                         parseInt(date_parts[2]) - 7);
-        var earliest_date       = new Date("2020-08-01");       // REMOVE THIS HARD CODING LATER
+        var earliest_date       = new Date("2020-09-01");       // REMOVE THIS HARD CODING LATER
         if (prev_date >= earliest_date){
             document.getElementById('to_date').value   = formatDate(prev_date);
         } else {
@@ -192,6 +204,14 @@
             alert ("Can not go beyond current date");
         }
         setFunctionMode('GENERATE');
+    }
+
+    function onForceCommit(){
+        setFunctionMode('FORCE_COMMIT');
+    }
+
+    function onForceUncommit(){
+        setFunctionMode('FORCE_UNCOMMIT');
     }
 
     function formatDate(date) {

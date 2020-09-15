@@ -11,7 +11,6 @@ from datetime import timedelta, date
 import logging
 
 from inprogress.loggerConfig import configure_logger
-from inprogress.subviews.views_report import allTimeSheetEntriesForUserDateDeep
 
 from inprogress.models import (
      EmployeeDate, 
@@ -46,28 +45,30 @@ def prepopulate(request):
                 emp_date.save()
         current_date += delta
 
-def commit_timesheets_all_daterange(request):
+def force_commit(request, report_criteria = None, report_date = None):
+    NUMBER_OF_PREV_DAYS = 6 # TODO: OBTAIN FROM GLOBAL PLACE
 
-    #TODO: USE HERE FORCE_COMMIT FEATURE IN PLACE OF COMMIT.
-    # APPLY IT TO REPORT GENERATION AS WELL
-
-    testusername                = 15
-    date_lowbound               = "2020-09-04"
-    date_highbound              = "2020-09-04"
+    operators = Employee.objects.all()
     users = []
-    users.append(testusername)
+    for operator in operators:
+        users.append(operator.user_id)
+
+    date_highbound = dt.strptime(report_date, "%Y-%m-%d")
+    date_lowbound = date_highbound - timedelta(days=NUMBER_OF_PREV_DAYS)  # TO
     employeeDates               = EmployeeDate.objects.filter(user_id__in=users).filter(
                                         date__range=[
-                                            date_lowbound,
-                                            date_highbound
+                                            date_lowbound.strftime("%Y-%m-%d"),
+                                            date_highbound.strftime("%Y-%m-%d")
                                         ]
                                     )
-    #TODO : FETCH USER-DATES AND CALL COMMIT
     commit_sheets_selectusers_daterange(request, employeeDates)
+
+def force_uncommit(request, report_criteria = None, report_date = None):
+    # TODO: IMPLEMENT THIS METHOD TO FORCE_UNCOMMIT AND REMOVE FORCED ABSENT MARK
+    print ('FORCE UNCOMMIT METHOD IN PROGRESS')
 
 def commit_sheets_selectusers_daterange(request, user_dates):
     for user_date in user_dates:
-        print (user_date)
         commit_timesheet_for_user_date(request, user_date)
 
 

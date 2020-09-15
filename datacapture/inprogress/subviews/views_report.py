@@ -8,6 +8,7 @@ from django.conf import settings
 from django.http import HttpResponse, Http404
 
 from inprogress.subviews.views_timesheet import allTimeSheetEntriesForUserDate
+from inprogress.subviews.views_batchprocess import force_commit, force_uncommit
 from inprogress.models import Machine, Employee, Setup, TimeSheetEntryProd, TimeSheetEntryNonProd, EmployeeDate, MachineSetup
 
 import json
@@ -87,6 +88,13 @@ def reports(request):
     target_date = dt.today()
     if ("to_date" in request.POST.keys()):
         target_date = dt.strptime(request.POST["to_date"], "%Y-%m-%d")
+
+    if ("functionMode" in request.POST.keys()):
+        functionMode = request.POST["functionMode"]
+        if functionMode == "FORCE_COMMIT":
+            force_commit(request, report_date = target_date.strftime("%Y-%m-%d"))
+        elif functionMode == "FORCE_UNCOMMIT":
+            force_uncommit(request, report_date = target_date.strftime("%Y-%m-%d"))
     week_day = target_date.strftime("%w")
     go_back = 0
     if (int(week_day) > 0):
@@ -94,19 +102,20 @@ def reports(request):
     last_sunday = target_date - timedelta(days=go_back)  # TO
     report_date = last_sunday.strftime("%Y-%m-%d")
 
-    report_dates, upper_date, userwise_report_data = getReportsData(request, report_criteria, report_date)
+    report_dates, upper_date, userwise_report_data, all_committed = getReportsData(request, report_criteria, report_date)
     report_datesJson = json.dumps(report_dates)    
     return render(request, 'report/reports.html', 
                             {
                                 'report_dates'          : report_dates,
                                 'report_datesJson'      : report_datesJson,
-                                'selected_date'            : upper_date,
+                                'selected_date'         : upper_date,
                                 'userwise_report_data'  : userwise_report_data,
+                                'all_committed'         : all_committed
                             })
 
 def getReportsData(request, report_criteria, upper_date):
     NUMBER_OF_PREV_DAYS = 6
-
+    all_committed = True
     date_highbound = dt.strptime(upper_date, "%Y-%m-%d")
     date_lowbound = date_highbound - timedelta(days=NUMBER_OF_PREV_DAYS)  # TO
     report_dates = []
@@ -151,6 +160,8 @@ def getReportsData(request, report_criteria, upper_date):
                 }
 
             for status in employeeDateStatus:
+                if all_committed :
+                    all_committed = status.committed or status.forceCommitted
                 entry_key = status.date.strftime("%Y-%m-%d")
                 entry_details_datewise_modular[entry_key]                     = {}
                 entry_details_datewise_modular[entry_key]['absent']           = status.is_absent
@@ -171,7 +182,7 @@ def getReportsData(request, report_criteria, upper_date):
     elif (report_criteria == "MACHINE"):
         #TODO: DEVELOP THE MACHINE SPECIFIC REPORT HERE
         pass
-    return report_dates, upper_date, userwise_report_data
+    return report_dates, upper_date, userwise_report_data, all_committed
 
 #-------------------------- UTILITY METHOD -----------------------
 # TODO: THIS METHOD NEEDS TO BE REUSED ALONG WITH SIMILAR METHOD FROM TIMESHEET ENTRY
