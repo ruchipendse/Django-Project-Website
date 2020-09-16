@@ -5,7 +5,8 @@
             window.location.href = "/";
         </script>
     {% endif %}
-    <meta id="report_datesJsondata" data="{{report_datesJson}}" />
+    <meta id = "report_datesJsondata"               data = "{{report_datesJson}}" />
+    <meta id = "userwise_report_entries_jsonTag"    data = "{{userwise_report_entries_json}}" />
     <h2>Weekly Reports:</h2>
     <div class = "reports"> 
         <form name = "reportsForm" action = "reports" method = "POST">
@@ -58,6 +59,17 @@
                     </tr>
                 </table>
             </div>
+            <div>  
+                <dialog id="tsheet_details"> 
+                    <table id = tsheet_table border = "1">
+                        <tr>
+                            <th>Timesheet Entry</th>
+                        </tr>
+                    </table>
+                    <button id="hide">Close</button>  
+                </dialog>  
+            </div>  
+
             <table id = "report_table"  width = 95%  class = "unselected_report_cell">
                 <tr >
                     <th  width="20%" class = "unselected_report_cell">User</th>
@@ -70,7 +82,11 @@
                 <tr>
                     <td id = "user_column_highlight" class = "user_column_highlight unselected_report_cell">{{key}}</td>
                     {% for key1, value1 in value.items %}
-                    <td onclick="alert('{{key1}} - {{key}}')" onmouseenter = "mark_red(this)" onmouseleave = "unmark_red(this)"  class = "unselected_report_cell"  style="cursor: pointer;">
+                    <td id = "user_date_cell" onclick="showDetails('{{key1}}', '{{key}}')" 
+                                    onmouseenter = "mark_red(this)" 
+                                    onmouseleave = "unmark_red(this)"  
+                                    class = "unselected_report_cell"  
+                                    style="cursor: pointer;">
 
                         {% if  not value1.committed and not value1.forceCommitted  %}
                         <table id = "{{key1}} - {{key}}" width = "100%" class = "unselected_report_cell">
@@ -162,8 +178,44 @@
             </table>
         </form>
     </div>
-
 <script>
+
+    (function() {    
+        var dialog = document.getElementById('tsheet_details');    
+        document.getElementById('hide').onclick = function() {    
+            dialog.close();    
+        };    
+    })();   
+
+    
+    function formNewTag(parentTag, tagName, attributes, attValues){
+        var tag = document.createElement(tagName);
+        for (i1 = 0; i1 < attributes.length; i1++){
+            var attribute = document.createAttribute(attributes[i1]);
+            attribute.value = attValues[i1];
+            tag.setAttributeNode(attribute); 
+            parentTag.appendChild(tag);     
+        }
+        return tag;
+    }
+
+    function showDetails(key1, key2){
+        //https://www.javatpoint.com/html-dialog-tag#:~:text=HTML%20tag%20is%20used,user%20to%20interact%20with%20it.
+        var userwise_report_entries_json    = document.getElementById('userwise_report_entries_jsonTag').getAttribute("data");
+        var userwise_report_entries         = JSON.parse(userwise_report_entries_json);
+        entries_for_user_date               = userwise_report_entries[key2][key1];
+        var tsheet_table_tag                = document.getElementById('tsheet_table');
+        
+        var rows = entries_for_user_date.length;
+        for (r = 0; r < rows; r++){
+            var row                             = tsheet_table_tag.insertRow();
+            var tdTagDate                       = row.insertCell();
+            tdTagDate.innerHTML                 = entries_for_user_date[r]
+        }
+        var dialog                          = document.getElementById('tsheet_details');    
+        dialog.show();    
+    }
+
     function mark_red(comp_table){
         comp_table.classList.remove("unselected_report_cell")
         comp_table.classList.add("selected_report_cell")
@@ -232,6 +284,7 @@
         THIS METHOD INITAITES THE STATUS OF REQUIRED FIELDS ON USERS PAGE 
     */
     function init(){
+
         var weekdays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
         var months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
         document.getElementById('to_date').setAttribute('max', new Date().toISOString().split("T")[0]);

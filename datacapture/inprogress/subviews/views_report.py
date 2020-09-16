@@ -102,7 +102,9 @@ def reports(request):
     last_sunday = target_date - timedelta(days=go_back)  # TO
     report_date = last_sunday.strftime("%Y-%m-%d")
 
-    report_dates, upper_date, userwise_report_data, all_committed = getReportsData(request, report_criteria, report_date)
+    report_dates, upper_date, userwise_report_data, userwise_report_entries, all_committed              \
+                        = getReportsData(request, report_criteria, report_date)
+    userwise_report_entries_json = json.dumps(userwise_report_entries)
     report_datesJson = json.dumps(report_dates)    
     return render(request, 'report/reports.html', 
                             {
@@ -110,6 +112,7 @@ def reports(request):
                                 'report_datesJson'      : report_datesJson,
                                 'selected_date'         : upper_date,
                                 'userwise_report_data'  : userwise_report_data,
+                                'userwise_report_entries_json'  : userwise_report_entries_json,
                                 'all_committed'         : all_committed
                             })
 
@@ -132,6 +135,7 @@ def getReportsData(request, report_criteria, upper_date):
         # USER-WISE REPORT REQUIRED
         operators = Employee.objects.filter(is_active = True)
         userwise_report_data = {}
+        userwise_report_entries = {}
         for op in operators:
             user = op.user
 
@@ -143,7 +147,8 @@ def getReportsData(request, report_criteria, upper_date):
                 ])
             )
 
-            entry_details_datewise_modular = {}
+            entry_details_datewise_modular  = {}
+            entries_datewise_modular        = {}
             for report_date in report_dates:
                 entry_details_datewise_modular[report_date] = {
                     'committed'                 : False,
@@ -178,11 +183,14 @@ def getReportsData(request, report_criteria, upper_date):
                     entry_details_datewise_modular[entry_key]['activity']         = "{:6.2f}".format(0),
                 else:
                     entry_details_datewise_modular[entry_key] =  allTimeSheetEntriesForUserDateDeep(user, status.date)
+                    entries_datewise_modular[entry_key]       =  allTimeSheetEntriesForUserDate(user.id, status.date)
             userwise_report_data [user.first_name + " " + user.last_name] = entry_details_datewise_modular
+            userwise_report_entries [user.first_name + " " + user.last_name] = entries_datewise_modular
+
     elif (report_criteria == "MACHINE"):
         #TODO: DEVELOP THE MACHINE SPECIFIC REPORT HERE
         pass
-    return report_dates, upper_date, userwise_report_data, all_committed
+    return report_dates, upper_date, userwise_report_data, userwise_report_entries, all_committed
 
 #-------------------------- UTILITY METHOD -----------------------
 # TODO: THIS METHOD NEEDS TO BE REUSED ALONG WITH SIMILAR METHOD FROM TIMESHEET ENTRY
