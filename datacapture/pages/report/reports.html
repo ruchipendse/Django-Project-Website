@@ -61,6 +61,12 @@
             </div>
             <div>  
                 <dialog id="tsheet_details"> 
+                    <table>
+                        <tr>
+                            <td><b>Name:</b> </td><td id = "tsheet_details_name"></td>
+                            <td><b>Date:</b> </td><td id = "tsheet_details_date"></td>
+                        </tr>
+                    </table>
                     <table id = tsheet_table border = "1">
                         <tr>
                             <th>Timesheet Entry</th>
@@ -199,18 +205,24 @@
         return tag;
     }
 
-    function showDetails(key1, key2){
-        //https://www.javatpoint.com/html-dialog-tag#:~:text=HTML%20tag%20is%20used,user%20to%20interact%20with%20it.
+    function showDetails(date, name){
+        //REFERENCE FOR DIALOG: https://www.javatpoint.com/html-dialog-tag#:~:text=HTML%20tag%20is%20used,user%20to%20interact%20with%20it.
         var userwise_report_entries_json    = document.getElementById('userwise_report_entries_jsonTag').getAttribute("data");
         var userwise_report_entries         = JSON.parse(userwise_report_entries_json);
-        entries_for_user_date               = userwise_report_entries[key2][key1];
+        entries_for_user_date               = userwise_report_entries[name][date];
+
+        var tsheet_details_name_tag         = document.getElementById('tsheet_details_name');
+        var tsheet_details_date_tag         = document.getElementById('tsheet_details_date');
+        tsheet_details_date_tag.innerHTML   = date
+        tsheet_details_name_tag.innerHTML   = name
+
         var tsheet_table_tag                = document.getElementById('tsheet_table');
         
-        var rows = entries_for_user_date.length;
+        var rows                            = entries_for_user_date.length;
         for (r = 0; r < rows; r++){
-            var row                             = tsheet_table_tag.insertRow();
-            var tdTagDate                       = row.insertCell();
-            tdTagDate.innerHTML                 = entries_for_user_date[r]
+            var row                         = tsheet_table_tag.insertRow();
+            var tdTagDate                   = row.insertCell();
+            tdTagDate.innerHTML             = entries_for_user_date[r]
         }
         var dialog                          = document.getElementById('tsheet_details');    
         dialog.show();    
