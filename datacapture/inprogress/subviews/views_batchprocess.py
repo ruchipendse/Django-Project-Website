@@ -54,7 +54,7 @@ def force_commit(request, report_criteria = None, report_date = None):
 
     date_highbound = dt.strptime(report_date, "%Y-%m-%d")
     date_lowbound = date_highbound - timedelta(days=NUMBER_OF_PREV_DAYS)  # TO
-    employeeDates               = EmployeeDate.objects.filter(user_id__in=users).filter(
+    employeeDates               = EmployeeDate.objects.filter(user_id__in=users, committed = False).filter(
                                         date__range=[
                                             date_lowbound.strftime("%Y-%m-%d"),
                                             date_highbound.strftime("%Y-%m-%d")
