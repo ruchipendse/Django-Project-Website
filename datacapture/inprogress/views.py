@@ -77,21 +77,29 @@ def adminLogout(request):
 def resetdatabase(request):
     # THIS DISABLING SHOULD NEVER BE REMOVED UNLESS THERE IS NEED TO RESET THE DATABASE. 
     # ELSE WE WILL LOSE ALL THE DATA
-    sure = False
-    if (sure):
-        deleteNonprodEntries()
-        deleteProdEntries()
-        deleteEmployeeDateTimeSlots()
-        deleteEmployeeDates()
-        deletePartSetupSequences()
-        deleteParts()
-        deleteMachineSetups()
-        deleteMachines()
-        deleteOperatorSetups()
-        deleteNonProdTasks()
-        deleteHolidays()
-        deleteSetups()
+    DELETE_TRANSACTIONS                 = False
+    DELETE_ENTITIES                     = False
+    if (DELETE_TRANSACTIONS):
+        deleteTransactions()
+        if (DELETE_ENTITIES):
+            deleteEntities()
     return render(request, 'home.html')
+
+def deleteTransactions():
+    deleteNonprodEntries()
+    deleteProdEntries()
+    deleteEmployeeDateTimeSlots()
+    deleteEmployeeDates()
+
+def deleteEntities():
+    deletePartSetupSequences()
+    deleteParts()
+    deleteMachineSetups()
+    deleteMachines()
+    deleteOperatorSetups()
+    deleteNonProdTasks()
+    deleteHolidays()
+    deleteSetups()
 
 def deleteProdEntries():
     try:
