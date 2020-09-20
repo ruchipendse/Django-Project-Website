@@ -12,163 +12,179 @@
     <h1>NIGASAVI</h1>
     <p>Welcome to User management page.</p>
     <div class = "parts">
-        <div id = "splitLeft" class="split left">
+        <div id = "splitLeft" class="splitleft">
             <div class="centered">
-                <table id = "usertable"  width = 95% border = 1>
-                    <tr>
-                        <th  width="25%">User Name</th>
-                        <th  width="35%">First Name</th>
-                        <th  width="35%">Last Name</th>
-                        <th  width="5%"></th>
-                    </tr>
-                    {% for u in operators %}
-                    <tr>
-                        <td>{{u.user.username}}</td>
-                        <td>{{u.user.first_name}}</td>
-                        <td>{{u.user.last_name}}</td>
-                        <td><input type = "radio" value = "{{u.user.username}}" id = "editUser" name = "editUser" 
-                            class = "selected" 
-                            onchange="userSelected('{{u.user.first_name}},{{u.user.last_name}},{{u.user.username}},{{u.user.email}}')">
-                            </td>
-                    </tr>
-                    {% endfor %}
-                </table>
-                <div align = "center">
-                    <table>
+                <form name = "usersForm" action = "processPart" method = "POST">
+                    {% csrf_token %} 
+                    <table id = "usertable"  width = 95% border = 1>
                         <tr>
-                            <td>
-                                <input type = "submit" value="Add New User"  
-                                    id = "mode"  class = "cta" onclick="toggleButton()">
-                            </td>
-                            <td>
-                                <form name = "deleteForm" action = "deleteUser" method = "POST">
-                                    {% csrf_token %} 
-                                    <input type = "hidden" name = "selectedUser" value = "NO_USER"/>
-                                    <input type = "submit" value="Delete User"  
-                                        id = "deleteButton"  class = "cta">
-                                </form>
+                            <th  width="25%">User Name</th>
+                            <th  width="35%">First Name</th>
+                            <th  width="35%">Last Name</th>
+                            <th  width="5%"></th>
+                        </tr>
+                        {% for u in operators %}
+                        <tr>
+                            <td>{{u.user.username}}</td>
+                            <td>{{u.user.first_name}}</td>
+                            <td>{{u.user.last_name}}</td>
+
+                            <td><input type = "radio" value = "{{u.user.username}}" id = "editUser{{u.user.username}}" name = "editUser" 
+                                class = "selected" 
+                                onchange= 
+                                "userSelected('{{u.user.username}}');">
                             </td>
                         </tr>
+                        {% endfor %}
                     </table>
-                </div>
+                    <div id = "buttondiv" align = "right">
+                        <input type = "hidden" id = "selectedUser" name = "selectedUser" value = "NO_SETUP"/>
+                        <input type = "hidden" id = "functionMode" name = "functionMode" value = "ADD"/>
+                        <table>
+                            <tr>
+                                <td>
+                                    <input type="submit" id = "addUserButton" class="w3-button w3-blue" value=" New "
+                                            onclick = "setFunctionMode('ADD')">
+                                </td>
+                                <td>
+                                    <input type="submit" id = "editUserButton" class="w3-button w3-blue" value="Edit"
+                                            onclick = "setFunctionMode('EDIT')">
+                                </td>
+                                <td>
+                                    <input type="submit" id = "deleteUserButton" class="w3-button w3-blue" value="Delete"
+                                            onclick = "setFunctionMode('DELETE')">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </form>
             </div>
         </div>
-      
-        <div id = "splitRight" class="split right">
+        <div id = "splitRight" class="splitright">
             <div class="centered">
-                <form action = "users" onsubmit = "return compileselections();" method = "POST">
-                    {% csrf_token %} 
-                    <input type = "hidden" id = "userOperation" name = "userOperation" value = "UPDATE"/>
-                    <input type = "hidden" id = "setupSelection" name = "setupSelection" value = ""/>
-                    <table  id = "rightsidetable" name = "rightsidetable" width = "95%">
-                        <tr>
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td><label id="labeluname" for = "userName" >User Name</label></td>
-                                        <td><input type = "text" name = "userName" id = "userName" onChange = "markDirty();"  required></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label id="labelfname" for = "firstName" >First Name</label></td>
-                                        <td><input type = "text" name = "firstName" id = "firstName" onChange = "markDirty();" required></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label id="labellname" for = "lastName" >Last Name</label></td>
-                                        <td><input type = "text" name = "lastName" id = "lastName" onChange = "markDirty();"  required></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label id="labelemail" for = "email" >email</label></td>
-                                        <td><input type = "text" name = "email" id  = "email" onChange = "markDirty();"  required></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label id="labelpword" for = "pword" >Password</label></td>
-                                        <td><input type = "password" name = "pword" id = "pword" onChange = "markDirty();"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label id="labelrpword" for = "rpword" >Repeat Password</label></td>
-                                        <td><input type = "password" name = "rpword" id = "rpword" onChange = "markDirty();"></td>
-                                    </tr>
-                                    <tr>
-                                        <td align = "right"><input type="checkbox" id="updatepword" name="updatepword" value="updatepassword"
-                                            onchange = "togglePasswordEdit();">
-                                        </td><td><label for="updatepword" id = "labelupdatepword">Reset Password</label></td>
-                                    </tr>
+                <table  id = "rightsidetable" name = "rightsidetable" width = "95%">
+                    <tr>
+                        <td>
+                            <table width = "100%">
+                                <tr>
+                                    <td><label id="labeluname" for = "userName">User Name</label></td>
+                                    <td><input type = "text" name = "userName" id = "userName" size = "30" disabled></td>
+                                </tr>
+                                <tr>
+                                    <td><label id="labelfname" for = "firstName" >First Name</label></td>
+                                    <td><input type = "text" name = "firstName" id = "firstName" size = "30" disabled></td>
+                                </tr>
+                                <tr>
+                                    <td><label id="labellname" for = "lastName" >Last Name</label></td>
+                                    <td><input type = "text" name = "lastName" id = "lastName" size = "30" disabled></td>
+                                </tr>
+                                <tr>
+                                    <td><label id="labelemail" for = "email" >email</label></td>
+                                    <td><input type = "text" name = "email" id  = "email" size = "30" disabled></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><label id="labelsetups" for = "setupList" disable ></label></td>
+                                    </td>
+                                </tr>
+                                            <tr>
+                                    <td></td>
+                                    <td id = "setupList">
+                                        <!-- LIST WILL DYNAMICALLY APPEAR HERE-->
+                                    </td>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>  
                                 </table>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <table   width = 100% >
-                                    <tr>
-                                        <td>
-                                            <label id="labelmoperations"  for="selectsetups">Assign Setups:</label>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <table id = "selectsetups" name = "selectsetups"  width = 100%>
-                                    <tr>
-                                        <td   width="45%">
-                                            <select id="totalsetups" name="totalsetups" 
-                                                    size = "5" multiple style="min-width:100%;">
-                                            </select>
-                                        </td>
-                                        <td   width="10%">
-                                            <table>
-                                                <tr>
-                                                    <td>
-                                                        <input type = "button" value = ">>" id = "selectAllSetups" 
-                                                        onclick= "selectOps('SELECT_ALL', '{{totalOperationsListJson}}');">
-                                                    </td>                                                    
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <input type = "button" value = "->" id = "selectSetups" 
-                                                        onclick = "selectOps('SELECT', '{{totalOperationsListJson}}');">
-                                                    </td>                                                    
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <input type = "button" value = "<--" id = "deselectSetups" 
-                                                        onclick = "selectOps('DESELECT', '{{totalOperationsListJson}}');">
-                                                    </td>                                                    
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <input type = "button" value = "<<" id = "deselectAllSetups" 
-                                                        onclick = "selectOps('DESELECT_ALL', '{{machinesListJson}}', '{{totalOperationsListJson}}');">
-                                                    </td>                                                    
-                                                </tr>
-                                            </table>
-                                        </td>
-                                        <td   width="45%">
-                                            <select id="selectedsetups"  name="selectedsetups" size = "5" multiple style="min-width:100%;" >
-                                            </select>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input id = "userDetailsSubmit" type="submit" class="w3-button w3-blue" value="Submit" >
-                            </td>
-                        </tr>
-                    </table>  
-                    <div id = "errormessages">
-                        {% for message in messages %}
-                        {{message}}
-                        {% endfor %}
+                </table>  
+                <div id = "errormessages">
+                    {% for message in messages %}
+                    {{message}}
+                    {% endfor %}
+                </div>  
                     </div>  
-                </form>            
+                </div>  
             </div>
         </div>
     </div>
 <script>
 
+    function init(){
+        editButton = document.getElementById('editUserButton');
+        document.getElementById('editUserButton').classList.add('disabled');
+        document.getElementById('deleteUserButton').classList.add('disabled');
+    }
+    init();
+
+    function userSelected(user){
+        document.getElementById('editUserButton').classList.remove('disabled');
+        document.getElementById('deleteUserButton').classList.remove('disabled');
+        document.forms["usersForm"]['selectedUser'].value = user;
+
+        var operatorsListJson = document.getElementById('operatorsListJsonTag').getAttribute("data");
+        var operatorsList = JSON.parse(operatorsListJson);
+        var setups = operatorsList[user]['setups'];
+        uName = document.getElementById('userName');
+        document.getElementById('userName').setAttribute('value', operatorsList[user]['username']);
+        document.getElementById('firstName').setAttribute('value', operatorsList[user]['first_name']);
+        document.getElementById('lastName').setAttribute('value', operatorsList[user]['last_name']);
+        document.getElementById('email').setAttribute('value', operatorsList[user]['email']);
+        var opTDTag = document.getElementById('setupList');
+
+        //# CLEAR PREVIOUS LIST BEFORE POPULATING
+        while (opTDTag.hasChildNodes()) {  
+            opTDTag.removeChild(opTDTag.firstChild);
+        }
+
+        // ADD ACTUAL LIST OF SETUPS AS  TABLE
+        var tableTag = document.createElement('TABLE');
+        opTDTag.appendChild(tableTag)
+
+
+        for (let [key, val] of Object.entries(setups)) {
+
+            var trTag = document.createElement('TR');
+            tableTag.appendChild(trTag)
+            var tdTag = document.createElement('TD');
+            trTag.appendChild(tdTag)
+    
+            var attType = document.createAttribute('type');
+            attType.value = 'text';
+
+            var attValue = document.createAttribute('value');
+            attValue.value = val['name'];
+
+            var attDisabled = document.createAttribute('disabled');
+            attDisabled.value = 'true';
+
+            var attSize = document.createAttribute('size');
+            attSize.value = '30';
+
+            var inputTag = document.createElement('input');
+            inputTag.setAttributeNode(attType); 
+            inputTag.setAttributeNode(attValue); 
+            inputTag.setAttributeNode(attDisabled); 
+            inputTag.setAttributeNode(attSize); 
+            tdTag.appendChild(inputTag)
+        }       
+
+        // ADD SETUPS LIST LABEL
+        var lableTag = document.getElementById('labelsetups');
+        lableTag.innerHTML = "<h3>Setups</h3>";
+
+    }
+
+    function uncheckRadioButtons(){
+        var radList = document.getElementsByName('editUser');
+        for (var i = 0; i < radList.length; i++) {
+            if(radList[i].checked) radList[i].checked = false;
+        }
+    }
+        
+/*    
     function markDirty(){
         enableSubmitButton();
     }
@@ -409,8 +425,8 @@
             selectedSetupTag.add(option);
         }
     }
-
-    /**TODO: CUSTOMIZE THE FUNCTION   **/
+*/
+    /**TODO: CUSTOMIZE THE FUNCTION  
     function selectOps(choice_mode, totalOperationsListJson){
         var allSetupsListJson = document.getElementById('allSetupsListJsonTag').getAttribute("data");
         var allSetupsList = JSON.parse(allSetupsListJson);
@@ -458,7 +474,7 @@
         }
         markDirty()
     }
-
+ 
     function prepareForUpdate(){
         if (document.getElementById("usertable").classList.contains('disabled')){
             document.getElementById("usertable").classList.remove('disabled');
@@ -477,14 +493,8 @@
         disableSubmitButton();
         document.getElementById('userOperation').value = "UPDATE";
     }
-
-    function uncheckRadioButtons(){
-        var radList = document.getElementsByName('editUser');
-        for (var i = 0; i < radList.length; i++) {
-            if(radList[i].checked) radList[i].checked = false;
-        }
-    }
-
+**/
+/*
     function prepareForNewUser(){
         if (!document.getElementById("usertable").classList.contains('disabled')){
             document.getElementById("usertable").classList.add('disabled');
@@ -509,12 +519,12 @@
         document.getElementById('userOperation').value = "NEW_USER";
         populateAllSetupsLeftSide();
     }
-
+*/
     /**
         THIS METHOD GETS CALLED WHEN ADD USER/ UPDATE USER BUTTON IS CLICKED.
         THIS METHOD TGLES THE MODE OF PAGE. 
     */
-
+/*
     function toggleButton(){
         var btnText = document.getElementById('mode');
         if (btnText.value == "Update User"){
@@ -525,34 +535,13 @@
             // THIS WILL NEVER BE THE CASE. OPTIONALLY LOG ERROR HERE
         }
     }
-
-    /**
-        THIS METHOD GETS CALLED WHEN RADIO BUTTON IS HIT. 
-        IT SETS THE USER DETAILS IN THE CORRESPONDING FIELDS
-        PARAMETER OASSED IS A STRING CONTAINING USER DETAILS.
-        TODO: THE PARAMETER IS PASSED AS COMMA SEPARATED STRING. 
-        THIS NEEDS TO BE REPLACED BY ACTUAL OBJECT.
-    */
-    function userSelected(e){
-        var fields = e.split(',');
-        username = fields[2].trim();
-        document.getElementById('firstName').value = fields[0].trim();
-        document.getElementById('lastName').value = fields[1].trim();
-        document.getElementById('userName').value = fields[2].trim();
-        document.getElementById('email').value = fields[3].trim();
-        document.forms["deleteForm"]['selectedUser'].value = fields[2].trim();
-        enableUserDetails();
-        disablePasswordDetails();
-        enableResetPassword();
-        disableSubmitButton();
-        populateOperatorSetupsLeftSide();
-        populateOperatorSetupsRightSide();
-    }
+*/
 
     /**
         THIS METHOD TAKES CARE OF ENABLING/ DISABLING PARTS FORM USER DETAILS
         BASED ON "RESET PASSWORD" CHECK BOX STATUS 
     */
+/*
     function togglePasswordEdit(){
         checkBox = document.getElementById('updatepword');
         if (checkBox.checked == true){
@@ -588,20 +577,16 @@
             }
 
             setupSelection.value = leftSideSetups + ";" + rightSideSetups
-            console.log(setupSelection.value)
+//            console.log(setupSelection.value)
         } catch (err) {
             console.log(err);
             return false;
         }
         return true;
     }
-
+*/
     /**
         THIS METHOD INITAITES THE STATUS OF REQUIRED FIELDS ON USERS PAGE 
     */
-    function init(){
-        prepareForUpdate();
-    }
-    init();
 </script>
 {% endblock %}

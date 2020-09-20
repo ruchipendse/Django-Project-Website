@@ -1,0 +1,275 @@
+{% extends 'base.html' %}
+{% block content_2 %}
+{% if not user.is_authenticated %}
+    <script>
+        window.location.href = "/";
+    </script>
+{% endif %}
+<h2>New Part:</h2>
+<div class = "parts40"> 
+    <div>
+        <div class="centered">
+            <form name = "addForm" action = "processPart"  onsubmit = "return compileselections();"  method = "POST">
+                {% csrf_token %} 
+                <input type = "hidden" id = "functionMode" name = "functionMode" value = ""/>
+                <input type = "hidden" id = "setUpSequence" name = "setUpSequence" value = ""/>
+
+                <table>
+                    <tr>
+                        <td><label id="labelpcode" for = "pcode" >Part Code</label></td>
+                        <td><input type = "text" name = "pcode" id = "pcode"  required></td>
+                    </tr>
+                    <tr>
+                        <td><label id="labelpname" for = "pname" >Part Name</label></td>
+                        <td><input type = "text" name = "pname" id = "pname" required></td>
+                    </tr>
+                    <tr>
+                        <td><label id="labelpdesc" for = "pdesc" >Part Description</label></td>
+                        <td>
+                            <textarea name = "pdesc" id = "pdesc" rows = "8" cols = "30" 
+                                        onchange = "markDirty();" required>No Description</textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                            <input type="submit" class="w3-button w3-blue" value="Submit" >
+                        </td>
+                    </tr>
+                </table> 
+            </form>
+        </div>
+    </div>
+    
+    <div>
+        <div class="centered">
+            <form name = "setupsForm" action = "#" method = "POST">
+                {% csrf_token %} 
+<!--
+                <input type = "hidden" id = "partOperation" name = "partOperation" value = "UPDATE"/>
+                <input type = "hidden" id = "setupSelection" name = "setupSelection" value = ""/>
+-->
+                <table id = "rightsidetable" name = "rightsidetable" width = "80%">
+                    <tr>
+                        <td>
+                            <table border = "1" width = "100%">
+                                <tr>
+                                    <td>
+                                        <input type="button" class="w3-button w3-block w3-round w3-teal" 
+                                                style="width:100%" value="Add Setup" 
+                                                id = "btnaddsetup"  onclick= "addSetupToSequence('{{allSetups}}');">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  width = "60%" valign = "top">
+                            <table id = "tablepart" name = "tablepart"  border = "1" width = "100%">
+                                <tr>
+                                    <th width = "94%">Setup Sequence</th>
+                                    <th width = "3%">UP</th>
+                                    <th width = "3%"></th>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <div id = "errormessages">
+                    {% for message in messages %}
+                    {{message}}
+                    {% endfor %}
+                </div>  
+            </form>            
+        </div>
+    </div>
+</div>
+
+<script>
+    function formTag(parentTag, tagName, attributes, attValues){
+
+        var tag = document.createElement(tagName);
+        for (i1 = 0; i1 < attributes.length; i1++){
+            var attribute = document.createAttribute(attributes[i1]);
+            attribute.value = attValues[i1];
+            tag.setAttributeNode(attribute); 
+            parentTag.appendChild(tag);     
+        }
+        return tag;
+    }
+
+    function formLeafTag(parentTag, tagName, attributes, attValues, innerText){
+
+        var tagLeaf = formTag(parentTag, tagName, attributes, attValues);
+        tagLeaf.innerHTML = innerText;
+        return tagLeaf;
+    }
+
+    function addSetupToSequence(totalOperationsListJson){
+        /*
+        ** REF STRUCTURE
+        <tr>
+            <td width = "91%" valign = "top">
+                <div class = "tablesetupselect">
+                <select id="setup1" name="setup1" style="min-width:100%;">
+                    <option value="process10">process10</option>
+                    <option value="process20">process20</option>
+                    <option value="process30">process30</option>
+                    <option value="process40">process40</option>
+                    </select>
+                </div>
+            </td>
+            <td width = "3%" valign = "top"><button class="dropbtn"><i class="fa fa-arrow-circle-down"></i></button></td>
+            <td width = "3%" valign = "top"><button class="btn"><i class="fa fa-trash"></i></button></td>
+        </tr>
+        */
+
+        var totalOpList = JSON.parse(totalOperationsListJson)
+        var tablesetup = document.getElementById('tablepart');
+        var rowIndex = tablesetup.rows.length;
+
+        var row = tablesetup.insertRow();
+//        var td1 = row.insertCell();
+
+        attributes = ["valign"]
+        attValues = ["top"]
+        var tagTd1 = formTag(row, "td", attributes, attValues)
+
+        //      ADD DIV TAG PARENT TD
+        attributes = ["class"]
+        attValues = ["tablesetupselect"]
+        var tagDiv = formTag(tagTd1, "div", attributes, attValues)
+
+        //      ADD SELECT TAG PARENT DIV
+        idName = "part" + rowIndex;
+        attributes = ["id", "name", "style"]
+        attValues = [idName, idName, "min-width:100%;"]
+        var tagSelect = formTag(tagDiv, "select", attributes, attValues)
+
+        //      ADD OPTION TAG PARENT SELECT
+        attributes = ["value"]
+
+        for (i = 0; i < totalOpList.length; i++){
+
+            optionText = totalOpList[i]['name']
+            var attributes = ["value"]
+            var attValues = [optionText]
+            
+            tagLeaf = formLeafTag(tagSelect, "option", attributes, attValues, optionText)
+        }
+
+        // ADD MOVE UP BUTTON
+        attributes = ["valign"]
+        attValues = ["top"]
+        var tagTd2 = formTag(row, "td", attributes, attValues)
+
+        btnUpIdName = "upbtn" + rowIndex
+        attributes = ["class", "id", "name", "onclick"]
+        attValues = ["dropbtn", btnUpIdName, btnUpIdName, "onUpBtnClicked(" + rowIndex + ");"]
+        var tagTdBtn2 = formTag(tagTd2, "button", attributes, attValues)
+
+        attributes = ["class"]
+        attValues = ["fa fa-arrow-circle-up"]
+        var tagi2 = formTag(tagTdBtn2, "i", attributes, attValues)
+
+        // ADD DELETE BUTTON
+        attributes = ["valign"]
+        attValues = ["top"]
+        var tagTd3 = formTag(row, "td", attributes, attValues)
+
+        btnDelIdName = "delbtn" + rowIndex
+
+        attributes = ["class", "id", "name", "onclick"]
+        attValues = ["dropbtn", btnDelIdName, btnDelIdName, "onDelBtnClicked(" + rowIndex + ");"]
+        var tagTdBtn3 = formTag(tagTd3, "button", attributes, attValues)
+
+        attributes = ["class"]
+        attValues = ["fa fa-trash"]
+        var tagi2 = formTag(tagTdBtn3, "i", attributes, attValues)
+    }
+
+    function reAssignRowIndex(){
+        var tablepart = document.getElementById('tablepart');
+        var rows = tablepart.rows;
+        for (i = 1; i < rows.length; i ++){
+            var cellUp = rows[i].cells[1];
+            var buttonUpTag = cellUp.childNodes[0];
+            buttonUpTag.setAttribute("onclick", "onUpBtnClicked(" + i + ");");
+            buttonUpTag.setAttribute("id", "upbtn" + i);
+            buttonUpTag.setAttribute("name", "upbtn" + i);
+
+            var cellDel = rows[i].cells[2];
+            var buttonDelTag = cellDel.childNodes[0];
+            buttonDelTag.setAttribute("onclick", "onDelBtnClicked(" + i + ");");
+            buttonDelTag.setAttribute("id", "delbtn" + i);
+            buttonDelTag.setAttribute("name", "delbtn" + i);
+        }
+    }
+
+    function insertRow(index){
+        var tablepart = document.getElementById('tablepart');
+        var row = tablepart.rows[index];
+    }
+
+    function deleteRow(index){
+        document.getElementById("tablepart").deleteRow(index);
+        reAssignRowIndex();
+    }
+
+    function onUpBtnClicked(index){
+        if (index > 1){
+            var tableTag = document.getElementById('tablepart');
+            indexDest = index - 1;
+
+            var tbodyTag = tableTag.children[0];
+            var trTagSource = tbodyTag.children[index];
+            var trTagSourceClone = trTagSource.cloneNode(true);
+            var setVal = trTagSource.children[0].children[0].children[0].value
+            trTagSourceClone.children[0].children[0].children[0].value = setVal;
+            var trTagMarker = tbodyTag.children[indexDest];
+            deleteRow(index)
+            tbodyTag.insertBefore(trTagSourceClone, trTagMarker);
+            reAssignRowIndex();
+        }
+    }
+
+    function onDelBtnClicked(index){
+        deleteRow(index);
+    }
+
+    function compileselections(){
+        /*
+        */
+        var tableTag = document.getElementById('tablepart');
+        var tbodyTag = tableTag.children[0];
+        var trTags = tbodyTag.getElementsByTagName("TR");
+        var noSetups = trTags.length;
+        setups = []
+        if (noSetups > 0){
+            for (i = 1; i < noSetups; i++){
+                var selectTag = trTags[i].children[0].children[0].children[0];
+                setups.push(selectTag.value);
+            }
+        }
+        var setUpsJSON = JSON.stringify(setups);
+        var setUpSequenceTag = document.getElementById('setUpSequence');
+        setUpSequenceTag.setAttribute("value", setUpsJSON);
+        markDirty();
+        return true;
+    }
+
+    function markDirty(){
+        document.getElementById('functionMode').value = "ADDED";
+    }
+
+    /**
+        THIS METHOD INITAITES THE STATUS OF REQUIRED FIELDS ON USERS PAGE 
+    */
+    function init(){
+    }
+
+    init();
+
+</script>
+{% endblock %}

@@ -5,29 +5,32 @@
             window.location.href = "/";
         </script>
     {% endif %}
-    <meta id="partsListJsondata" data="{{partsListJson}}" />
-    <h2>Parts:</h2>
+    <meta id="usersListJsondata" data="{{usersListJson}}" />
+    <h2>Users:</h2>
+
     <div class = "parts"> 
+
         <div class="splitleft">
             <div class="centered">
-                <form name = "partsForm" action = "processPart" method = "POST">
+                <form name = "usersForm" action = "processUser" method = "POST">
                     {% csrf_token %} 
-                    <table id = "parttable"  width = 95% border = 1>
+                    <table id = "usertable"  width = 95% border = 1>
                         <tr>
-                            <th  width="20%">Part ID</th>
-                            <th  width="auto">Part name</th>
+                            <th  width="25%">User Name</th>
+                            <th  width="35%">First Name</th>
+                            <th  width="35%">Last Name</th>
                             <th  width="5%"></th>
                         </tr>
                         {% for p in parts %}
                         <tr>
-                            <td>{{p.id_code}}</td>
-                            <td>{{p.name}}</td>
-                            <td><input type = "radio" value = "{{p.id_code}}" id = "editPart{{p.id_code}}" name = "editPart" 
+                            <td>{{u.user.username}}</td>
+                            <td>{{u.user.first_name}}</td>
+                            <td>{{u.user.last_name}}</td>
+                            <td><input type = "radio" value = "{{u.user.username}}" id = "editUser" name = "editUser" 
                                 class = "selected" 
-                                onchange= 
-                                "partSelected('{{p.id_code}}');">
+                                onchange="userSelected('{{u.user.first_name}},{{u.user.last_name}},{{u.user.username}},{{u.user.email}}')">
                                 </td>
-                        </tr>
+                            </tr>
                         {% endfor %}
                     </table>
                     <div id = "buttondiv" align = "right">

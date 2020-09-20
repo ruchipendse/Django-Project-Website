@@ -37,6 +37,7 @@ def users(request):
             "username"      : operator.user.username,
             "first_name"    : operator.user.first_name,
             "last_name"     : operator.user.last_name,
+            "email"         : operator.user.email,
             "setups"        : setupsList
         }
         operatorsList[operator.user.username] = opObj
