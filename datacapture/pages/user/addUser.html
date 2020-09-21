@@ -9,34 +9,64 @@
 <div class = "parts40"> 
     <div>
         <div class="centered">
-            <form name = "addForm" action = "processPart"  onsubmit = "return compileselections();"  method = "POST">
+            <form id = "addForm" name = "addForm" action = "processUser"  onsubmit = "return compileselections();"  method = "POST">
                 {% csrf_token %} 
                 <input type = "hidden" id = "functionMode" name = "functionMode" value = ""/>
                 <input type = "hidden" id = "setUpSequence" name = "setUpSequence" value = ""/>
 
                 <table>
                     <tr>
-                        <td><label id="labelpcode" for = "pcode" >Part Code</label></td>
-                        <td><input type = "text" name = "pcode" id = "pcode"  required></td>
+                        <td><label id="labelusername" for = "firstname" >First Name</label></td>
+                        <td><input  type = "text" name = "firstname" id = "firstname"  required
+                                     pattern="[A-Za-z]*" ></td>
+                    </tr>
+                    <!-- placeholder="123-45-678" -->
+                    <tr>
+                        <td><label id="labellastname" for = "lastname" >Last Name</label></td>
+                        <td><input type = "text" name = "lastname" id = "lastname"  required pattern="[A-Za-z]*"></td>
                     </tr>
                     <tr>
-                        <td><label id="labelpname" for = "pname" >Part Name</label></td>
-                        <td><input type = "text" name = "pname" id = "pname" required></td>
+                        <td><label id="labelusername" for = "username" >User Name</label></td>
+                        <td><input type = "text" name = "username" id = "username"  required pattern="[a-z0-9]*+.[a-z0-9]*"></td>
                     </tr>
                     <tr>
-                        <td><label id="labelpdesc" for = "pdesc" >Part Description</label></td>
+                        <td><label id="labelemail" for = "email" >Mail Id</label></td>
                         <td>
-                            <textarea name = "pdesc" id = "pdesc" rows = "8" cols = "30" 
-                                        onchange = "markDirty();" required>No Description</textarea>
-                        </td>
+                            <!-- <input type = "text" name = "email" id = "email"  required ></td> -->
+
+                            <input type="email" id="email" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2, 4}$"> 
+
                     </tr>
+                    <tr>
+                        <td><label id="labelpword" for = "password" >Password</label></td>
+                        <td><input type = "password" name = "password" id = "password"  required></td>
+                    </tr>
+                    <tr>
+                        <td><label id="labelrpword" for = "rpassword" >Repeat Password</label></td>
+                        <td><input type = "password" name = "rpassword" id = "rpassword"  required></td>
+                    </tr>
+
                     <tr>
                         <td>
                         </td>
                         <td>
-                            <input type="submit" class="w3-button w3-blue" value="Submit" >
+                            <table>
+                                <tr>
+                                    <td><input id = "adduser" name = "adduser" type="submit" class="w3-button w3-blue" value="Submit"></td>
+                                    <td><input id = "cancelbtn" name = "cancelbtn" type="submit" class="w3-button w3-blue" 
+                                        onclick = "setCancel()" value="Cancel"></td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
+
+                    <!-- <tr>
+                        <td>
+                        </td>
+                        <td>
+                            <input type="submit" class="w3-button w3-blue" value="Submit">
+                        </td>
+                    </tr> -->
                 </table> 
             </form>
         </div>
@@ -66,7 +96,7 @@
                     </tr>
                     <tr>
                         <td  width = "60%" valign = "top">
-                            <table id = "tablepart" name = "tablepart"  border = "1" width = "100%">
+                            <table id = "tableuser" name = "tableuser"  border = "1" width = "100%">
                                 <tr>
                                     <th width = "94%">Setup Sequence</th>
                                     <th width = "3%">UP</th>
@@ -87,6 +117,38 @@
 </div>
 
 <script>
+
+    
+    function setCancel(){
+        document.getElementById('firstname').removeAttribute('required');
+        document.getElementById('lastname').removeAttribute('required');
+        document.getElementById('username').removeAttribute('required');
+        document.getElementById('email').removeAttribute('required');
+        document.getElementById('password').removeAttribute('required');
+        document.getElementById('rpassword').removeAttribute('required');
+        console.log(document.getElementById('addForm'));
+        document.getElementById('addForm').removeAttribute("onsubmit")
+        document.getElementById('functionMode').value = "CANCEL";
+    }
+
+    function markDirty(){
+        document.getElementById('functionMode').value = "ADDED";
+    }
+
+    function enableSubmitButton(){
+        if (document.getElementById("userDetailsSubmit").classList.contains('disabled')){
+            document.getElementById("userDetailsSubmit").classList.remove('disabled');
+        }
+    }
+
+    function disableSubmitButton(){
+        if (!document.getElementById("userDetailsSubmit").classList.contains('disabled')){
+            document.getElementById("userDetailsSubmit").classList.add('disabled');
+        }
+    }
+
+
+    // TODO: IMPLEMENT CROSS CHECK OF REPEAT PASSWORD
     function formTag(parentTag, tagName, attributes, attValues){
 
         var tag = document.createElement(tagName);
@@ -126,7 +188,7 @@
         */
 
         var totalOpList = JSON.parse(totalOperationsListJson)
-        var tablesetup = document.getElementById('tablepart');
+        var tablesetup = document.getElementById('tableuser');
         var rowIndex = tablesetup.rows.length;
 
         var row = tablesetup.insertRow();
@@ -190,7 +252,7 @@
     }
 
     function reAssignRowIndex(){
-        var tablepart = document.getElementById('tablepart');
+        var tablepart = document.getElementById('tableuser');
         var rows = tablepart.rows;
         for (i = 1; i < rows.length; i ++){
             var cellUp = rows[i].cells[1];
@@ -208,18 +270,18 @@
     }
 
     function insertRow(index){
-        var tablepart = document.getElementById('tablepart');
+        var tablepart = document.getElementById('tableuser');
         var row = tablepart.rows[index];
     }
 
     function deleteRow(index){
-        document.getElementById("tablepart").deleteRow(index);
+        document.getElementById("tableuser").deleteRow(index);
         reAssignRowIndex();
     }
 
     function onUpBtnClicked(index){
         if (index > 1){
-            var tableTag = document.getElementById('tablepart');
+            var tableTag = document.getElementById('tableuser');
             indexDest = index - 1;
 
             var tbodyTag = tableTag.children[0];
@@ -239,9 +301,14 @@
     }
 
     function compileselections(){
-        /*
-        */
-        var tableTag = document.getElementById('tablepart');
+        var passwordTag = document.getElementById('password');
+        var rpasswordTag = document.getElementById('rpassword');
+        if (passwordTag.value != rpasswordTag.value){
+            alert ('Two Passwords do not match')
+            return false;
+        }
+
+        var tableTag = document.getElementById('tableuser');
         var tbodyTag = tableTag.children[0];
         var trTags = tbodyTag.getElementsByTagName("TR");
         var noSetups = trTags.length;
@@ -257,10 +324,6 @@
         setUpSequenceTag.setAttribute("value", setUpsJSON);
         markDirty();
         return true;
-    }
-
-    function markDirty(){
-        document.getElementById('functionMode').value = "ADDED";
     }
 
     /**

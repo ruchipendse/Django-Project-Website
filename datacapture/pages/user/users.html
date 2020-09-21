@@ -14,7 +14,7 @@
     <div class = "parts">
         <div id = "splitLeft" class="splitleft">
             <div class="centered">
-                <form name = "usersForm" action = "processPart" method = "POST">
+                <form name = "usersForm" action = "processUser" method = "POST">
                     {% csrf_token %} 
                     <table id = "usertable"  width = 95% border = 1>
                         <tr>
@@ -111,6 +111,10 @@
         </div>
     </div>
 <script>
+
+    function setFunctionMode(fMode){
+        document.getElementById('functionMode').value =  fMode;
+    }
 
     function init(){
         editButton = document.getElementById('editUserButton');

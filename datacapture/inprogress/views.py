@@ -14,7 +14,7 @@ from inprogress.subviews.views_report import reports, report_download
 from inprogress.subviews.views_nonprodtask import nonprodtasks, processNonProdTask
 from inprogress.subviews.views_part import parts, addNewPart, deletePart, processPart
 from inprogress.subviews.views_timesheet import gototimesheet, gototimesheet_init, timesheet_entries, processRequest, timesheetLogout
-from inprogress.subviews.views_user import users, updateUserDetails, addNewUser, deleteUser
+from inprogress.subviews.views_user import users, addNewUser, deleteUser, processUser
 from inprogress.subviews.views_batchprocess import prepopulate
 # from inprogress.subviews.views_batchprocess import commit_timesheets_all_daterange
 from inprogress.models import (

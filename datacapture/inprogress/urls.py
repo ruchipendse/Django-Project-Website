@@ -11,7 +11,9 @@ urlpatterns = [
 
 #-------------------- USER --------------
     path ('users', views.users, name = 'users') ,
+    path ('addNewUser', views.addNewUser, name = 'addNewUser'),
     path ('deleteUser', views.deleteUser, name = 'deleteUser'),
+    path ('processUser', views.processUser, name = 'processUser'),
 
 #-------------------- MACHINE --------------
     path ('machines', views.machines, name = 'machines') ,
