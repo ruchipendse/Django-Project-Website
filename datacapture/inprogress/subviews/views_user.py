@@ -118,7 +118,10 @@ def addNewUser(request):
                                                 password = password, 
                                                 email = email, 
                                                 first_name = firstname, 
-                                                last_name = lastname)
+                                                last_name = lastname,
+                                                is_superuser = False,
+                                                is_staff = False
+                                                )
                     newEmployee = Employee.objects.create(user = user)
 
                     if (len(setupSequence) > 0):

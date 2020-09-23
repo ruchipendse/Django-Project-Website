@@ -53,13 +53,22 @@
                     <tr>
                         <td><label id="labelpword" for = "password" >Password</label></td>
                         <td>
-                            <input  type = "password" name = "password" id = "password"  size = "30">
+                            <input  type = "password" name = "password" id = "password"  size = "30"
+                            onchange = "markDirty();">
                         </td>
                     </tr>
                     <tr>
-                        <td><label id="labelrpword" for = "rpassword" >Repeat Password</label></td>
+                        <td><label id="labelrpword" for = "rpassword" >Re-type</label></td>
                         <td>
                             <input type = "password" name = "rpassword" id = "rpassword" size = "30">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align = "right"><input type="checkbox" id="updatepword" name="updatepword" value="updatepassword"
+                            onchange = "togglePasswordEdit();">
+                        </td>
+                        <td>
+                            <label for="updatepword" id = "labelupdatepword">Reset Password</label>
                         </td>
                     </tr>
                     <tr>
@@ -153,6 +162,72 @@
         document.getElementById('edituserbtn').classList.remove('disabled');
     }
 
+    /**
+        THIS METHOD TAKES CARE OF ENABLING/ DISABLING USERS FORM USER DETAILS
+        BASED ON "RESET PASSWORD" CHECK BOX STATUS 
+    */
+    function togglePasswordEdit(){
+        checkBox = document.getElementById('updatepword');
+        if (checkBox.checked == true){
+            enablePasswordDetails();
+        }
+        else {
+            disablePasswordDetails();
+        }
+    }        
+
+    function enablePasswordDetails(){
+        pwordField = document.getElementById('password');
+        rpwordField = document.getElementById('rpassword');
+        pwordLabel = document.getElementById('labelpword');
+        rpwordLabel = document.getElementById('labelrpword');
+
+        pwordField.required = true;
+        rpwordField.required = true;
+
+        pwordField.value = "";
+        rpwordField.value = "";
+
+        if (pwordField.classList.contains('disabled')){
+            pwordField.classList.remove('disabled');
+        }
+        if (rpwordField.classList.contains('disabled')){
+            rpwordField.classList.remove('disabled');
+        }
+        if (pwordLabel.classList.contains('disabled')){
+            pwordLabel.classList.remove('disabled');
+        }
+        if (rpwordLabel.classList.contains('disabled')){
+            rpwordLabel.classList.remove('disabled');
+        }
+    }
+
+    function disablePasswordDetails(){
+        pwordField = document.getElementById('password');
+        rpwordField = document.getElementById('rpassword');
+        pwordLabel = document.getElementById('labelpword');
+        rpwordLabel = document.getElementById('labelrpword');
+
+        pwordField.required = false;
+        rpwordField.required = false;
+
+        pwordField.value = "";
+        rpwordField.value = "";
+
+        if (!pwordField.classList.contains('disabled')){
+            pwordField.classList.add('disabled');
+        }
+        if (!rpwordField.classList.contains('disabled')){
+            rpwordField.classList.add('disabled');
+        }
+        if (!pwordLabel.classList.contains('disabled')){
+            pwordLabel.classList.add('disabled');
+        }
+        if (!rpwordLabel.classList.contains('disabled')){
+            rpwordLabel.classList.add('disabled');
+        }
+    }
+
     function formTag(parentTag, tagName, attributes, attValues){
 
         var tag = document.createElement(tagName);
@@ -174,12 +249,10 @@
 
     function addSetupToSequence(totalSetupsListJson, selectedSetup){
 
-        // TODO: THIS FUNCTION NEEDS TO BE RECTIFIED
         var totalOpList = JSON.parse(totalSetupsListJson)
         var tablesetup = document.getElementById('tablesetup');
         var rowIndex = tablesetup.rows.length;
         var row = tablesetup.insertRow();
-//        var td1 = row.insertCell();
 
         attributes = ["valign"]
         attValues = ["top"]
@@ -327,8 +400,8 @@
         }
         document.getElementById('edituserbtn').classList.add('disabled');
         document.getElementById('username').classList.add('disabled');
-        document.getElementById('password').classList.add('disabled');
-        document.getElementById('rpassword').classList.add('disabled');
+
+        disablePasswordDetails();
     }
 
     init();
