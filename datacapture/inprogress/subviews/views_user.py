@@ -136,73 +136,62 @@ def addNewUser(request):
         logger.debug('Add-User Failed. reason: ' + str(e))
 
 def updateUserDetails(request):
-    pass
+    try:
+        firstname = request.POST['firstname']
+        lastname = request.POST['lastname']
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        rpassword = request.POST['rpassword']
+        setupSequenceJSON = request.POST['setUpSequence']
+        setupSequence = json.loads(setupSequenceJSON)   # SETUP SEQUENCE TO BE SET
 
-    #TODO: IMPLEMENT UPDATE FUNCTONALITY
+        with transaction.atomic():
+            operator = Employee.objects.prefetch_related('setups').get(user__username = username)
+            user = operator.user
+            if user is not None:
+                if (user.first_name != firstname):
+                    user.first_name = firstname
+                if (user.last_name != lastname):
+                    user.last_name = lastname
+                if (user.username != username):
+                    user.username = username
+                if (user.email != email):
+                    user.email = email
 
-    # try:
-    #     part_code = request.POST['pcode']
-    #     part_name = request.POST['pname']
-    #     part_desc = request.POST['pdesc']
-    #     setupSequenceJSON = request.POST['setUpSequence']
-    #     setupSequence = json.loads(setupSequenceJSON)   # SETUP SEQUENCE TO BE SET
+                if (password != "" and password == rpassword):
+                    user.set_password(password)
 
-    #     with transaction.atomic():
-    #         part = Part.objects.get(id_code = part_code)
-    #         part.name = part_name
-    #         part.desc = part_desc
-    #         part.save()
-    #         partSetupSequences = PartSetupSequence.objects.filter(part_id = part.id).order_by('sequence')
-    #         srcLen = len(setupSequence)
-    #         dstLen = partSetupSequences.count()
+                setupsForOperator =  operator.setups.values()
+                existingOperatorSetups = set([])
+                for setup in setupsForOperator:
+                    existingOperatorSetups.add(setup['name'])
+                setupsToBeAdded = set(setupSequence) - existingOperatorSetups
+                setupsToBeRemoved = existingOperatorSetups - set(setupSequence)
+                if (len(setupsToBeAdded) > 0):
+                    # ADD OPERATORS
+                    for setupName in setupsToBeAdded:
+                        setupToBeAdded = Setup.objects.get(name = setupName)
+                        operator.setups.add(setupToBeAdded)
 
-    #         if srcLen > 0:
-    #             if dstLen > 0:
-    #                 if dstLen < srcLen: # FEW OPERATIONS HAVE BEEN ADDED
-    #                     # UPDATE EXISTING LENGTH
-    #                     for index, partOpSequence in enumerate(partSetupSequences):
-    #                         if (partOpSequence.setup_id != Setup.objects.get(name = setupSequence[index]).id):
-    #                             partOpSequence.setup_id = Setup.objects.get(name = setupSequence[index]).id
-    #                             partOpSequence.save()
-    #                     # ADD EXTRAS
-    #                     for furtherindex, extra in enumerate(setupSequence[index + 1:], start = index + 1):
-    #                         PartSetupSequence.objects.create(part_id = part.id,
-    #                                                                     setup_id = Setup.objects.get(name = setupSequence[furtherindex]).id,
-    #                                                                     sequence = furtherindex).save()
-
-    #                 elif dstLen > srcLen:   # OPERATIONS HAVE BEEN REMOVED
-    #                     # REMOVE EXTRA FROM DST
-    #                     tobeRemoved = partSetupSequences[len(setupSequence):]
-    #                     for tobe in tobeRemoved:
-    #                         tobe.delete()
-
-    #                     # UPDATE EXISTING LENGTH
-    #                     for index, partOpSequence in enumerate(partSetupSequences):
-    #                         if (partOpSequence.setup_id != Setup.objects.get(name = setupSequence[index]).id):
-    #                             partOpSequence.setup_id = Setup.objects.get(name = setupSequence[index]).id
-    #                             partOpSequence.save()
-
-    #                 else:
-    #                     # UPDATE EXISTING LENGTH
-    #                     for index, partOpSequence in enumerate(partSetupSequences):
-    #                         if (partOpSequence.setup_id != Setup.objects.get(name = setupSequence[index]).id):
-    #                             partOpSequence.setup_id = Setup.objects.get(name = setupSequence[index]).id
-    #                             partOpSequence.save()
-
-    #             else: # ALL OPERATIONS HAVE BEEN NEWLY ADDED
-    #                 # ADD EXTRAS
-    #                 for furtherindex, extra in enumerate(setupSequence):
-    #                     PartSetupSequence.objects.create(part_id = part.id,
-    #                                                                 setup_id = Setup.objects.get(name = setupSequence[furtherindex]).id,
-    #                                                                 sequence = furtherindex).save()
-
-    #         else:   # EITHER THERE ARE NO OPERATIONS OR ALL OPERATIONS REMOVED
-    #             for toBeRemoved in partSetupSequences:
-    #                 toBeRemoved.delete()
-    #     logger.info('Part Updated')
-    # except Exception as e:
-    #     messages.info(request, 'Update-Part Failed')
-    #     logger.debug('Update-Part failed. Reason: ' + str(e))
+                if (len(setupsToBeRemoved) > 0):
+                    # REMOVE OPERATORS
+                    for setupName in setupsToBeRemoved:
+                        setupToBeRemoved = Setup.objects.get(name = setupName)
+                        operator.setups.remove(setupToBeRemoved)
+        
+                for su in operator.setups.values():
+                    print ('Final Setup: ', su['name'])
+                user.save()
+                # operator.save()       # NOT SURE IF THIS IS REQUIRED
+                logger.info('User ' + user.username+ ' saved')
+            else:
+                messages.info(request, 'User not found')
+                logger.debug('User not found')
+    except Exception as e:
+        messages.info(request, 'Undate-User Failed')
+        logger.debug('Undate-User Failed. reason: ' + str(e))
+    return redirect('users')
 
 
 def deleteUser(request):
@@ -225,118 +214,6 @@ def deleteUser(request):
     #     messages.info(request, 'Delete-Part Failed')
     #     logger.debug('Delete-Part failed. Reason: ' + str(e))
 
-#--------------------------------------------
-# def updateUserDetails(request):
-#     try:
-#         f_name = request.POST['firstName']
-#         l_name = request.POST['lastName']
-#         uname = request.POST['userName']
-#         em = request.POST['email']
-#         pword = request.POST['pword']
-#         cpword = request.POST['rpword']
-#         setupString = request.POST['setupSelection']
-
-#         with transaction.atomic():
-#             operator = Employee.objects.prefetch_related('setups').get(user__username = uname)
-#             user = operator.user
-#             if user is not None:
-#                 if (user.first_name != f_name):
-#                     user.first_name = f_name
-#                 if (user.last_name != l_name):
-#                     user.last_name = l_name
-#                 if (user.username != uname):
-#                     user.username = uname
-#                 if (user.email != em):
-#                     user.email = em
-
-#                 if (pword != "" and pword == cpword):
-#                     user.set_password(pword)
-
-#                 setupSelectionParts = setupString.split(";")
-#                 rightPart = setupSelectionParts[1][:-1]
-#                 rightSideSetups = set([])
-#                 if len(rightPart) > 0:
-#                     rightSideSetups = set(rightPart.split(","))
-
-#                 setupsForOperator =  operator.setups.values()
-#                 existingOperatorSetups = set([])
-#                 for setup in setupsForOperator:
-#                     existingOperatorSetups.add(setup['name'])
-#                 setupsToBeAdded = set(rightSideSetups) - existingOperatorSetups
-#                 setupsToBeRemoved = existingOperatorSetups - set(rightSideSetups)
-
-#                 if (len(setupsToBeAdded) > 0):
-#                     # ADD OPERATORS
-#                     for setupName in setupsToBeAdded:
-#                         setupToBeAdded = Setup.objects.get(name = setupName)
-#                         operator.setups.add(setupToBeAdded)
-
-#                 if (len(setupsToBeRemoved) > 0):
-#                     # REMOVE OPERATORS
-#                     for setupName in setupsToBeRemoved:
-#                         setupToBeRemoved = Setup.objects.get(name = setupName)
-#                         operator.setups.remove(setupToBeRemoved)
-#                 user.save()
-#                 operator.save()
-#                 logger.info('User saved')
-#             else:
-#                 messages.info(request, 'User not found')
-#                 logger.debug('User not found')
-#     except Exception as e:
-#         messages.info(request, 'Undate-User Failed')
-#         logger.debug('Undate-User Failed. reason: ' + str(e))
-
-#     return redirect('users')
-
-# def addNewUser(request):
-#     try:
-#         f_name = request.POST['firstName']
-#         l_name = request.POST['lastName']
-#         uname = request.POST['userName']
-#         em = request.POST['email']
-#         pword = request.POST['pword']
-#         cpword = request.POST['rpword']
-#         setupString = request.POST['setupSelection']
-
-#         if (pword == cpword):
-#             with transaction.atomic():
-#                 if User.objects.filter(username = uname).exists():
-#                     messages.info(request, 'User name taken')
-#                     return redirect('users')
-#                 elif User.objects.filter(email = em).exists():
-#                     messages.info(request, 'email taken')
-#                     return redirect('users')
-#                 else:
-#                     user = User.objects.create_user(username = uname, 
-#                                                 password = pword, 
-#                                                 email = em, 
-#                                                 first_name = f_name, 
-#                                                 last_name = l_name)
-#                     newEmployee = Employee.objects.create(user = user)
-
-#                     setupSelectionParts = setupString.split(";")
-#                     rightPart = setupSelectionParts[1][:-1]
-#                     rightSideSetups = set([])
-#                     if len(rightPart) > 0:
-#                         rightSideSetups = set(rightPart.split(","))
-
-#                     setupsToBeAdded = set(rightSideSetups)
-
-#                     if (len(setupsToBeAdded) > 0):
-#                         # ADD SETUPS
-#                         for setup in setupsToBeAdded:
-#                             setupToBeAdded = Setup.objects.get(name = setup)
-#                             newEmployee.setups.add(setupToBeAdded)
-#                     newEmployee.save()
-#             logger.info('User added')
-#         else:
-#             messages.info(request, 'password does not match')
-#             logger.debug('password does not match ')
-#     except Exception as e:
-#         messages.info(request, 'Add-User Failed')
-#         logger.debug('Add-User Failed. reason: ' + str(e))
-    
-#     return redirect('users')
 
 # def deleteUser(request):
 #     try:

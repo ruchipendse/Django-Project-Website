@@ -8,7 +8,7 @@
 
 <meta id="allSetupsTag" data="{{allSetups}}" />
 <meta id="setupsParamJSONTag" data="{{setupSequenceJSON}}" />
-<h2>Edit Part:</h2>
+<h2>Edit Operator:</h2>
 <div class = "parts40"> 
     <div>
         <div class="centered">
@@ -22,40 +22,45 @@
                         <td><label id="labeluname" for = "username">User Name</label></td>
                         <td>
                             <input type = "text" name = "username" id = "username" size = "30" 
-                                value = "{{selectedUser.username}}" required pattern="[a-z0-9]*[.]?[a-z0-9]*">
+                                value = "{{selectedUser.username}}" required pattern="[a-z0-9]*[.]?[a-z0-9]*"
+                                >
                         </td>
                     </tr>
                     <tr>
                         <td><label id="labelfname" for = "firstname" >First Name</label></td>
                         <td>
                             <input type = "text" name = "firstname" id = "firstname" size = "30" 
-                                value = "{{selectedUser.first_name}}" required pattern="[A-Za-z]*">
+                                value = "{{selectedUser.first_name}}" required pattern="[A-Za-z]*"
+                                onchange = "markDirty();">
                         </td>
                     </tr>
                     <tr>
                         <td><label id="labellname" for = "lastname" >Last Name</label></td>
                         <td>
                             <input type = "text" name = "lastname" id = "lastname" size = "30" 
-                                value = "{{selectedUser.last_name}}" required pattern="[A-Za-z]*">
+                                value = "{{selectedUser.last_name}}" required pattern="[A-Za-z]*"
+                                onchange = "markDirty();">
                         </td>
                     </tr>
                     <tr>
                         <td><label id="labelemail" for = "email" >email</label></td>
                         <td>
                             <input type = "text" name = "email" id = "email" size = "30" 
-                                value = "{{selectedUser.email}}" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
+                                value = "{{selectedUser.email}}" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required
+                                onchange = "markDirty();">
                         </td>
                     </tr>
                     <tr>
                         <td><label id="labelpword" for = "password" >Password</label></td>
                         <td>
-                            <input  type = "password" name = "password" id = "password"  size = "30"
-                                    disabled>
+                            <input  type = "password" name = "password" id = "password"  size = "30">
                         </td>
                     </tr>
                     <tr>
                         <td><label id="labelrpword" for = "rpassword" >Repeat Password</label></td>
-                        <td><input type = "password" name = "rpassword" id = "rpassword" size = "30" disabled></td>
+                        <td>
+                            <input type = "password" name = "rpassword" id = "rpassword" size = "30">
+                        </td>
                     </tr>
                     <tr>
                         <td>
@@ -170,24 +175,6 @@
     function addSetupToSequence(totalSetupsListJson, selectedSetup){
 
         // TODO: THIS FUNCTION NEEDS TO BE RECTIFIED
-
-        /*
-        ** REF STRUCTURE
-        <tr>
-            <td width = "91%" valign = "top">
-                <div class = "tablepartselect">
-                <select id="part1" name="part1" style="min-width:100%;">
-                    <option value="process10">process10</option>
-                    <option value="process20">process20</option>
-                    <option value="process30">process30</option>
-                    <option value="process40">process40</option>
-                    </select>
-                </div>
-            </td>
-            <td width = "3%" valign = "top"><button class="dropbtn"><i class="fa fa-arrow-circle-down"></i></button></td>
-            <td width = "3%" valign = "top"><button class="btn"><i class="fa fa-trash"></i></button></td>
-        </tr>
-        */
         var totalOpList = JSON.parse(totalSetupsListJson)
         var tablesetup = document.getElementById('tablesetup');
         var rowIndex = tablesetup.rows.length;
@@ -204,7 +191,7 @@
         var tagDiv = formTag(tagTd1, "div", attributes, attValues)
 
         //      ADD SELECT TAG PARENT DIV
-        idName = "part" + rowIndex;
+        idName = "user" + rowIndex;
         attributes = ["id", "name", "onchange", "style"]
         attValues = [idName, idName, "markDirty();", "min-width:100%;"]
         var tagSelect = formTag(tagDiv, "select", attributes, attValues)
@@ -254,7 +241,7 @@
             // MEANING ITS ADDING SETUP
             tagSelect.value = selectedSetup;
         }
-//        markDirty();
+        markDirty();
     }
 
     function reAssignRowIndex(){
@@ -309,9 +296,6 @@
     }
 
     function compileselections(){
-        /*
-        */
-        alert ('Wait');
         var tableTag = document.getElementById('tablesetup');
         var tbodyTag = tableTag.children[0];
         var trTags = tbodyTag.getElementsByTagName("TR");
@@ -343,6 +327,8 @@
         }
         document.getElementById('edituserbtn').classList.add('disabled');
         document.getElementById('username').classList.add('disabled');
+        document.getElementById('password').classList.add('disabled');
+        document.getElementById('rpassword').classList.add('disabled');
     }
 
     init();
