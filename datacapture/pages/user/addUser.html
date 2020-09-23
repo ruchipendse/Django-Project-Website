@@ -17,33 +17,45 @@
                 <table>
                     <tr>
                         <td><label id="labelusername" for = "firstname" >First Name</label></td>
-                        <td><input  type = "text" name = "firstname" id = "firstname"  required
-                                     pattern="[A-Za-z]*" ></td>
+                        <td>
+                            <input  type = "text" name = "firstname" id = "firstname"  
+                                    required pattern="[A-Za-z]*" size = "30" >
+                        </td>
                     </tr>
-                    <!-- placeholder="123-45-678" -->
                     <tr>
                         <td><label id="labellastname" for = "lastname" >Last Name</label></td>
-                        <td><input type = "text" name = "lastname" id = "lastname"  required pattern="[A-Za-z]*"></td>
+                        <td>
+                            <input  type = "text" name = "lastname" id = "lastname" placeholder="firstname.lastname"
+                                    required pattern="[A-Za-z]*" size = "30">
+                        </td>
                     </tr>
                     <tr>
                         <td><label id="labelusername" for = "username" >User Name</label></td>
-                        <td><input type = "text" name = "username" id = "username"  required pattern="[a-z0-9]*+.[a-z0-9]*"></td>
+                        <td>
+                            <input  type = "text" name = "username" id = "username"  
+                                    required pattern="[a-z0-9]*[.]?[a-z0-9]*" size = "30">
+                        </td>
                     </tr>
                     <tr>
                         <td><label id="labelemail" for = "email" >Mail Id</label></td>
                         <td>
-                            <!-- <input type = "text" name = "email" id = "email"  required ></td> -->
-
-                            <input type="email" id="email" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2, 4}$"> 
-
+                            <input  type="email" id="email" name="email" 
+                                    required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" size = "30"> 
+                        </td>
                     </tr>
                     <tr>
                         <td><label id="labelpword" for = "password" >Password</label></td>
-                        <td><input type = "password" name = "password" id = "password"  required></td>
+                        <td>
+                            <input  type = "password" name = "password" id = "password"  
+                                    required size = "30">
+                        </td>
                     </tr>
                     <tr>
                         <td><label id="labelrpword" for = "rpassword" >Repeat Password</label></td>
-                        <td><input type = "password" name = "rpassword" id = "rpassword"  required></td>
+                        <td>
+                            <input  type = "password" name = "rpassword" id = "rpassword"  
+                                    required size = "30">
+                        </td>
                     </tr>
 
                     <tr>
@@ -52,34 +64,24 @@
                         <td>
                             <table>
                                 <tr>
-                                    <td><input id = "adduser" name = "adduser" type="submit" class="w3-button w3-blue" value="Submit"></td>
+                                    <td>
+                                        <input id = "adduser" name = "adduser" type="submit" class="w3-button w3-blue" value="Submit">
+                                    </td>
                                     <td><input id = "cancelbtn" name = "cancelbtn" type="submit" class="w3-button w3-blue" 
                                         onclick = "setCancel()" value="Cancel"></td>
                                 </tr>
                             </table>
                         </td>
                     </tr>
-
-                    <!-- <tr>
-                        <td>
-                        </td>
-                        <td>
-                            <input type="submit" class="w3-button w3-blue" value="Submit">
-                        </td>
-                    </tr> -->
                 </table> 
             </form>
         </div>
     </div>
     
-    <div>
+    <div align="center">
         <div class="centered">
             <form name = "setupsForm" action = "#" method = "POST">
                 {% csrf_token %} 
-<!--
-                <input type = "hidden" id = "partOperation" name = "partOperation" value = "UPDATE"/>
-                <input type = "hidden" id = "setupSelection" name = "setupSelection" value = ""/>
--->
                 <table id = "rightsidetable" name = "rightsidetable" width = "80%">
                     <tr>
                         <td>
@@ -121,12 +123,20 @@
     
     function setCancel(){
         document.getElementById('firstname').removeAttribute('required');
+        document.getElementById('firstname').removeAttribute('pattern');
+
         document.getElementById('lastname').removeAttribute('required');
+        document.getElementById('lastname').removeAttribute('pattern');
+
         document.getElementById('username').removeAttribute('required');
+        document.getElementById('username').removeAttribute('pattern');
+
         document.getElementById('email').removeAttribute('required');
+        document.getElementById('email').removeAttribute('pattern');
+
         document.getElementById('password').removeAttribute('required');
         document.getElementById('rpassword').removeAttribute('required');
-        console.log(document.getElementById('addForm'));
+
         document.getElementById('addForm').removeAttribute("onsubmit")
         document.getElementById('functionMode').value = "CANCEL";
     }

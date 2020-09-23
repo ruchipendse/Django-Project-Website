@@ -74,14 +74,14 @@ def processUser(request):
         return render(request, 'user/addUser.html', {'allSetups':totalSetupsListJson})
 
     elif mode == 'EDIT':
-        operator = Employee.objects.get(user__username = request.POST['selectedPart'])
-        setupsValues = OperatorSetup.objects.select_related('setup').filter(operator__user__username = operator.username).order_by('sequence')
+        operator = Employee.objects.get(user__username = request.POST['selectedUser'])
+        setupsValues = OperatorSetup.objects.select_related('setup').filter(operator__user__username = operator.user.username)
         setups = []
         for su in setupsValues:
             setups.append(su.setup.name)
         setupsJSON = json.dumps(setups)    
         return render(request, 'user/editUser.html', {'allSetups':totalSetupsListJson, 
-                                                'selectedUser': operator, 
+                                                'selectedUser': operator.user, 
                                                 'setupSequenceJSON': setupsJSON})
 
     elif mode == 'DELETE':
@@ -137,6 +137,9 @@ def addNewUser(request):
 
 def updateUserDetails(request):
     pass
+
+    #TODO: IMPLEMENT UPDATE FUNCTONALITY
+
     # try:
     #     part_code = request.POST['pcode']
     #     part_name = request.POST['pname']

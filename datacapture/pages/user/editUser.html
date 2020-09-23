@@ -12,28 +12,50 @@
 <div class = "parts40"> 
     <div>
         <div class="centered">
-            <form name = "editForm" id = "editForm" action = "processPart"  onsubmit = "return compileselections();"  method = "POST">
+            <form name = "editForm" id = "editForm" action = "processUser"  onsubmit = "return compileselections();"  method = "POST">
                 {% csrf_token %} 
                 <input type = "hidden" id = "functionMode" name = "functionMode" value = "UNEDITED"/>
                 <input type = "hidden" id = "setUpSequence" name = "setUpSequence" value = ""/>
 
                 <table>
                     <tr>
-                        <td><label id="labelpcode" for = "pcode" >Part Code</label></td>
-                        <td><input type = "text" name = "pcode" id = "pcode" 
-                                value = "{{selectedPart.id_code}}" required></td>
-                    </tr>
-                    <tr>
-                        <td><label id="labelpname" for = "pname" >Part Name</label></td>
-                        <td><input type = "text" name = "pname" id = "pname"  
-                                value = "{{selectedPart.name}}" onchange = "markDirty();" required></td>
-                    </tr>
-                    <tr>
-                        <td><label id="labelpdesc" for = "pdesc" >Part Description</label></td>
+                        <td><label id="labeluname" for = "username">User Name</label></td>
                         <td>
-                            <textarea name = "pdesc" id = "pdesc" rows = "8" cols = "30"  
-                                onchange = "markDirty();" required>{{selectedPart.desc}}</textarea>
+                            <input type = "text" name = "username" id = "username" size = "30" 
+                                value = "{{selectedUser.username}}" required pattern="[a-z0-9]*[.]?[a-z0-9]*">
                         </td>
+                    </tr>
+                    <tr>
+                        <td><label id="labelfname" for = "firstname" >First Name</label></td>
+                        <td>
+                            <input type = "text" name = "firstname" id = "firstname" size = "30" 
+                                value = "{{selectedUser.first_name}}" required pattern="[A-Za-z]*">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label id="labellname" for = "lastname" >Last Name</label></td>
+                        <td>
+                            <input type = "text" name = "lastname" id = "lastname" size = "30" 
+                                value = "{{selectedUser.last_name}}" required pattern="[A-Za-z]*">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label id="labelemail" for = "email" >email</label></td>
+                        <td>
+                            <input type = "text" name = "email" id = "email" size = "30" 
+                                value = "{{selectedUser.email}}" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label id="labelpword" for = "password" >Password</label></td>
+                        <td>
+                            <input  type = "password" name = "password" id = "password"  size = "30"
+                                    disabled>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label id="labelrpword" for = "rpassword" >Repeat Password</label></td>
+                        <td><input type = "password" name = "rpassword" id = "rpassword" size = "30" disabled></td>
                     </tr>
                     <tr>
                         <td>
@@ -42,7 +64,7 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <input type="submit" id = "editpartbtn" name = "editpartbtn"  class="w3-button w3-blue" 
+                                        <input type="submit" id = "edituserbtn" name = "edituserbtn"  class="w3-button w3-blue" 
                                                 value="Submit" >
                                     </td>
                                     <td>
@@ -58,19 +80,13 @@
         </div>
     </div>
     
-    <div>
+    <div align="center">
         <div class="centered">
             <form name = "setupsForm" action = "#" method = "POST">
                 {% csrf_token %} 
-                <input type = "hidden" id = "partSetup" name = "partSetup" value = "UPDATE"/>
-                <input type = "hidden" id = "setupSelection" name = "setupSelection" value = ""/>
                 <table id = "rightsidetable" name = "rightsidetable" width = "80%">
                     <tr>
                         <td>
-                            <!-- <input type="button" class="w3-button w3-block w3-round w3-teal" 
-                                    style="width:90%" value="Add Part" 
-                                    id = "btnaddpart"  onclick= "addSetupToSequence('{{allSetups}}', null);"> -->
-
                             <table border = "1" width = "100%">
                                 <tr>
                                     <td>
@@ -80,7 +96,6 @@
                                     </td>
                                 </tr>
                             </table>
-        
                         </td>
                     </tr>
                     <tr>
@@ -106,9 +121,31 @@
 </div>
 
 <script>
+
+    function setCancel(){
+        document.getElementById('firstname').removeAttribute('required');
+        document.getElementById('firstname').removeAttribute('pattern');
+
+        document.getElementById('lastname').removeAttribute('required');
+        document.getElementById('lastname').removeAttribute('pattern');
+
+        document.getElementById('username').removeAttribute('required');
+        document.getElementById('username').removeAttribute('pattern');
+
+        document.getElementById('email').removeAttribute('required');
+        document.getElementById('email').removeAttribute('pattern');
+
+        document.getElementById('password').removeAttribute('required');
+
+        document.getElementById('rpassword').removeAttribute('required');
+
+        document.getElementById('editForm').removeAttribute("onsubmit")
+        document.getElementById('functionMode').value = "CANCEL";
+    }
+
     function markDirty(){
         document.getElementById('functionMode').value = "EDITED";
-        document.getElementById('editpartbtn').classList.remove('disabled');
+        document.getElementById('edituserbtn').classList.remove('disabled');
     }
 
     function formTag(parentTag, tagName, attributes, attValues){
@@ -131,6 +168,9 @@
     }
 
     function addSetupToSequence(totalSetupsListJson, selectedSetup){
+
+        // TODO: THIS FUNCTION NEEDS TO BE RECTIFIED
+
         /*
         ** REF STRUCTURE
         <tr>
@@ -214,7 +254,7 @@
             // MEANING ITS ADDING SETUP
             tagSelect.value = selectedSetup;
         }
-        markDirty();
+//        markDirty();
     }
 
     function reAssignRowIndex(){
@@ -271,6 +311,7 @@
     function compileselections(){
         /*
         */
+        alert ('Wait');
         var tableTag = document.getElementById('tablesetup');
         var tbodyTag = tableTag.children[0];
         var trTags = tbodyTag.getElementsByTagName("TR");
@@ -288,14 +329,6 @@
         return true;
     }
 
-    function setCancel(){
-        document.getElementById('pcode').removeAttribute('required');
-        document.getElementById('pname').removeAttribute('required');
-        document.getElementById('pdesc').removeAttribute('required');
-        document.getElementById('editForm').removeAttribute("onsubmit")
-        document.getElementById('functionMode').value = "CANCEL";
-    }
-
     /**
         THIS METHOD INITAITES THE STATUS OF REQUIRED FIELDS ON USERS PAGE 
     */
@@ -308,8 +341,8 @@
             // POPULATE SETUP SEQUENCE
             addSetupToSequence(allSetupsJSON, setups[count]);
         }
-        document.getElementById('editpartbtn').classList.add('disabled');
-        document.getElementById('pcode').classList.add('disabled');
+        document.getElementById('edituserbtn').classList.add('disabled');
+        document.getElementById('username').classList.add('disabled');
     }
 
     init();
