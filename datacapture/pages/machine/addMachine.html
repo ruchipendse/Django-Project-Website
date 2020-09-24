@@ -18,17 +18,24 @@
                 <table>
                     <tr>
                         <td><label id="labelmcode" for = "mcode" >Id Code</label></td>
-                        <td><input type = "text" name = "mcode" id = "mcode"></td>
+                        <td>
+                            <input  type = "text" name = "mcode" id = "mcode" 
+                                    pattern="[A-Za-z0-9]*" maxlength = "10" size = "30"  required>
+                        </td>
+
                     </tr>
                     <tr>
                         <td><label id="labelmname" for = "mname" >Name</label></td>
-                        <td><input type = "text" name = "mname" id = "mname"></td>
+                        <td>
+                            <input  type = "text" name = "mname" id = "mname"
+                                    pattern="[A-Za-z0-9-_]*" maxlength = "30" size = "30"  required/>
+                        </td>
                     </tr>
                     <tr>
                         <td><label id="labelmdesc" for = "mdesc" >Description</label></td>
                         <td>
                             <textarea name = "mdesc" id = "mdesc" rows = "8" cols = "30" 
-                                        onchange = "markDirty();" required>No Description</textarea>
+                                        onchange = "markDirty();" placeholder = "Add Description"></textarea>
                         </td>
                     </tr>
                     <tr>
@@ -41,7 +48,8 @@
                                         <input type="submit" class="w3-button w3-blue" value="Submit" onclick = "setFunctionalMode('ADDED');" >
                                     </td>
                                     <td>
-                                        <input type="submit" class="w3-button w3-blue" value="Cancel" onclick = "setFunctionalMode('CANCEL');">
+                                        <input id = "cancelbtn" name = "cancelbtn" type="submit" class="w3-button w3-blue" 
+                                            onclick = "setCancel()" value="Cancel"/>
                                     </td>
                                 </tr>
                             </table>
@@ -93,8 +101,20 @@
 </div>
 
 <script>
-    function formTag(parentTag, tagName, attributes, attValues){
+    function setCancel(){
+        document.getElementById('mcode').removeAttribute('required');
+        
+        document.getElementById('mname').removeAttribute('required');
+        document.getElementById('mname').removeAttribute('pattern');
 
+        document.getElementById('mdesc').removeAttribute('required');
+        document.getElementById('mdesc').removeAttribute('pattern');
+
+        document.getElementById('addForm').removeAttribute("onsubmit")
+        document.getElementById('functionMode').value = "CANCEL";
+    }
+
+    function formTag(parentTag, tagName, attributes, attValues){
         var tag = document.createElement(tagName);
         for (i1 = 0; i1 < attributes.length; i1++){
             var attribute = document.createAttribute(attributes[i1]);
@@ -113,24 +133,6 @@
     }
 
     function addSetupToSequence(totalSetupsListJson){
-        /*
-        ** REF STRUCTURE
-        <tr>
-            <td width = "91%" valign = "top">
-                <div class = "tablesetupselect">
-                <select id="setup1" name="setup1" style="min-width:100%;">
-                    <option value="process10">process10</option>
-                    <option value="process20">process20</option>
-                    <option value="process30">process30</option>
-                    <option value="process40">process40</option>
-                    </select>
-                </div>
-            </td>
-            <td width = "3%" valign = "top"><button class="dropbtn"><i class="fa fa-arrow-circle-down"></i></button></td>
-            <td width = "3%" valign = "top"><button class="btn"><i class="fa fa-trash"></i></button></td>
-        </tr>
-        */
-
         var totalSetupList = JSON.parse(totalSetupsListJson)
         var tablesetup = document.getElementById('tablesetups');
         var rowIndex = tablesetup.rows.length;

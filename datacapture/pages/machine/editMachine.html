@@ -13,7 +13,7 @@
 <div class = "parts40"> 
     <div>
         <div class="centered">
-            <form name = "addForm" action = "processMachine"  onsubmit = "return compileselections();"  method = "POST">
+            <form name = "editForm" action = "processMachine"  onsubmit = "return compileselections();"  method = "POST">
                 {% csrf_token %} 
                 <input type = "hidden" id = "functionMode" name = "functionMode" value = ""/>
                 <input type = "hidden" id = "setUpSequence" name = "setUpSequence" value = ""/>
@@ -22,17 +22,23 @@
                 <table>
                     <tr>
                         <td><label id="labelmcode" for = "mcode" >Id Code</label></td>
-                        <td><input type = "text" name = "mcode" id = "mcode" value = "{{selectedMachine.id_code}}"></td>
+                        <td>
+                            <input  type = "text" name = "mcode" id = "mcode" value = "{{selectedMachine.id_code}}"
+                                    pattern="[A-Za-z0-9]*" maxlength = "10" size = "30"  required/>
+                        </td>
                     </tr>
                     <tr>
                         <td><label id="labelmname" for = "mname" >Name</label></td>
-                        <td><input type = "text" name = "mname" id = "mname" value = "{{selectedMachine.name}}"></td>
+                        <td>
+                            <input  type = "text" name = "mname" id = "mname" value = "{{selectedMachine.name}}"
+                                    onchange = "markDirty();" pattern="[A-Za-z0-9-_]*" maxlength = "30" size = "30"  required>
+                        </td>
                     </tr>
                     <tr>
                         <td><label id="labelmdesc" for = "mdesc" >Description</label></td>
                         <td>
                             <textarea name = "mdesc" id = "mdesc" rows = "8" cols = "30"  
-                                onchange = "markDirty();" required>{{selectedMachine.desc}}</textarea>
+                                onchange = "markDirty();">{{selectedMachine.desc}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -45,7 +51,8 @@
                                         <input type="submit" class="w3-button w3-blue" value="Submit" onclick = "setFunctionalMode('EDITED');" >
                                     </td>
                                     <td>
-                                        <input type="submit" class="w3-button w3-blue" value="Cancel" onclick = "setFunctionalMode('CANCEL');">
+                                        <input id = "cancelbtn" name = "cancelbtn" type="submit" class="w3-button w3-blue" 
+                                            onclick = "setCancel()" value="Cancel"/>
                                     </td>
                                 </tr>
                             </table>
@@ -97,6 +104,20 @@
 </div>
 
 <script>
+
+    function setCancel(){
+        document.getElementById('mcode').removeAttribute('required');
+        
+        document.getElementById('mname').removeAttribute('required');
+        document.getElementById('mname').removeAttribute('pattern');
+
+        document.getElementById('mdesc').removeAttribute('required');
+        document.getElementById('mdesc').removeAttribute('pattern');
+
+        document.getElementById('editForm').removeAttribute("onsubmit")
+        document.getElementById('functionMode').value = "CANCEL";
+    }
+
     function formTag(parentTag, tagName, attributes, attValues){
 
         var tag = document.createElement(tagName);
