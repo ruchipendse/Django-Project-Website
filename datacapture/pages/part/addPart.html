@@ -17,25 +17,32 @@
                 <table>
                     <tr>
                         <td><label id="labelpcode" for = "pcode" >Part Code</label></td>
-                        <td><input type = "text" name = "pcode" id = "pcode"  required></td>
+                        <td>
+                            <input  type = "text" name = "pcode" id = "pcode" onchange = "markDirty();"
+                                    pattern="[A-Za-z0-9]*" maxlength = "10" size = "30"  required/>
+                        </td>
                     </tr>
                     <tr>
                         <td><label id="labelpname" for = "pname" >Part Name</label></td>
-                        <td><input type = "text" name = "pname" id = "pname" required></td>
+                        <td><input  type = "text" name = "pname" id = "pname" required onchange = "markDirty();" 
+                                    pattern="[A-Za-z0-9-_]*" maxlength = "30" size = "30"  required/>
+                        </td>
                     </tr>
                     <tr>
                         <td><label id="labelpdesc" for = "pdesc" >Part Description</label></td>
                         <td>
                             <textarea name = "pdesc" id = "pdesc" rows = "8" cols = "30" 
-                                        onchange = "markDirty();" required>No Description</textarea>
+                                        onchange = "markDirty();"  placeholder = "Add Description"></textarea>
                         </td>
                     </tr>
                     <tr>
                         <td>
                         </td>
                         <td>
-                            <input type="submit" class="w3-button w3-blue" value="Submit" >
-                        </td>
+                            <td><input id = "addpartbtn" name = "addpartbtn" type="submit" class="w3-button w3-blue" value="Submit"></td>
+                            <td><input id = "cancelbtn" name = "cancelbtn" type="submit" class="w3-button w3-blue" 
+                                onclick = "setCancel()" value="Cancel"></td>
+                </td>
                     </tr>
                 </table> 
             </form>
@@ -46,10 +53,6 @@
         <div class="centered">
             <form name = "setupsForm" action = "#" method = "POST">
                 {% csrf_token %} 
-<!--
-                <input type = "hidden" id = "partOperation" name = "partOperation" value = "UPDATE"/>
-                <input type = "hidden" id = "setupSelection" name = "setupSelection" value = ""/>
--->
                 <table id = "rightsidetable" name = "rightsidetable" width = "80%">
                     <tr>
                         <td>
@@ -87,6 +90,21 @@
 </div>
 
 <script>
+
+    function setCancel(){
+        document.getElementById('pcode').removeAttribute('required');
+        document.getElementById('pcode').removeAttribute('pattern');
+
+        document.getElementById('pname').removeAttribute('required');
+        document.getElementById('pname').removeAttribute('pattern');
+
+        document.getElementById('pdesc').removeAttribute('required');
+        document.getElementById('pdesc').removeAttribute('pattern');
+
+        document.getElementById('addForm').removeAttribute("onsubmit")
+        document.getElementById('functionMode').value = "CANCEL";
+    }
+
     function formTag(parentTag, tagName, attributes, attValues){
 
         var tag = document.createElement(tagName);

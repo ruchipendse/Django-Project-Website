@@ -20,19 +20,23 @@
                 <table>
                     <tr>
                         <td><label id="labelpcode" for = "pcode" >Part Code</label></td>
-                        <td><input type = "text" name = "pcode" id = "pcode" 
-                                value = "{{selectedPart.id_code}}" required></td>
+                        <td>
+                            <input type = "text" name = "pcode" id = "pcode" value = "{{selectedPart.id_code}}"
+                                    pattern="[A-Za-z0-9]*" maxlength = "10" size = "30"  required>
+                        </td>
                     </tr>
                     <tr>
                         <td><label id="labelpname" for = "pname" >Part Name</label></td>
-                        <td><input type = "text" name = "pname" id = "pname"  
-                                value = "{{selectedPart.name}}" onchange = "markDirty();" required></td>
+                        <td>
+                            <input  type = "text" name = "pname" id = "pname" value = "{{selectedPart.name}}" 
+                                    onchange = "markDirty();" pattern="[A-Za-z0-9-_]*" maxlength = "30" size = "30" required/>
+                        </td>
                     </tr>
                     <tr>
                         <td><label id="labelpdesc" for = "pdesc" >Part Description</label></td>
                         <td>
                             <textarea name = "pdesc" id = "pdesc" rows = "8" cols = "30"  
-                                onchange = "markDirty();" required>{{selectedPart.desc}}</textarea>
+                                onchange = "markDirty();">{{selectedPart.desc}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -106,6 +110,21 @@
 </div>
 
 <script>
+
+    function setCancel(){
+        document.getElementById('pcode').removeAttribute('required');
+        document.getElementById('pcode').removeAttribute('pattern');
+
+        document.getElementById('pname').removeAttribute('required');
+        document.getElementById('pname').removeAttribute('pattern');
+
+        document.getElementById('pdesc').removeAttribute('required');
+        document.getElementById('pdesc').removeAttribute('pattern');
+
+        document.getElementById('editForm').removeAttribute("onsubmit")
+        document.getElementById('functionMode').value = "CANCEL";
+    }
+
     function markDirty(){
         document.getElementById('functionMode').value = "EDITED";
         document.getElementById('editpartbtn').classList.remove('disabled');

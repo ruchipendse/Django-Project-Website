@@ -17,11 +17,18 @@
                 <table>
                     <tr>
                         <td><label id="labelscode" for = "scode" >Setup Code</label></td>
-                        <td><input type = "text" name = "scode" id = "scode" onchange = "markDirty();" required></td>
+                        <td>
+                            <input  type = "text" name = "scode" id = "scode" onchange = "markDirty();"
+                                    pattern="[A-Za-z0-9]*" maxlength = "10" size = "30"  required>
+                        </td>
                     </tr>
                     <tr>
                         <td><label id="labelsname" for = "sname" >Setup Name</label></td>
-                        <td><input type = "text" name = "sname" id = "sname" onchange = "markDirty();" required></td>
+                        <td>
+                            <input  type = "text" name = "sname" id = "sname" onchange = "markDirty();"
+                                    pattern="[A-Za-z0-9-_]*" maxlength = "30" size = "30"  required/>
+
+                        </td>
                     </tr>
                     <tr>
                         <td><label id="labelsdesc" for = "sdesc" >Setup Description</label></td>
@@ -130,9 +137,14 @@
 
     function setCancel(){
         document.getElementById('scode').removeAttribute('required');
-        console.log(document.getElementById('scode'))
+        document.getElementById('scode').removeAttribute('pattern');
+
         document.getElementById('sname').removeAttribute('required');
+        document.getElementById('sname').removeAttribute('pattern');
+
         document.getElementById('sdesc').removeAttribute('required');
+        document.getElementById('sdesc').removeAttribute('pattern');
+
         document.getElementById('addForm').removeAttribute("onsubmit")
         document.getElementById('functionMode').value = "CANCEL";
     }

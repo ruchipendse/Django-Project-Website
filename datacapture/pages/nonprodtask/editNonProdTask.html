@@ -15,19 +15,24 @@
                 <table>
                     <tr>
                         <td><label id="labelscode" for = "scode" >Non-Prod Task Code</label></td>
-                        <td><input type = "text" name = "scode" id = "scode" 
-                                value = "{{selectedNonProdTask.id_code}}" required></td>
+                        <td>
+                            <input  type = "text" name = "scode" id = "scode" value = "{{selectedNonProdTask.id_code}}"
+                                    pattern="[A-Za-z0-9]*" maxlength = "10" size = "30"  required>
+                            />
+                        </td>
                     </tr>
                     <tr>
                         <td><label id="labelsname" for = "sname" >Non-Prod Task  Name</label></td>
-                        <td><input type = "text" name = "sname" id = "sname"  
-                                value = "{{selectedNonProdTask.name}}" onchange = "markDirty();" required></td>
+                        <td>
+                            <input  type = "text" name = "sname" id = "sname" value = "{{selectedNonProdTask.name}}" 
+                                    onchange = "markDirty();" pattern="[A-Za-z0-9-_]*" maxlength = "30" size = "30"  required>
+                        </td>
                     </tr>
                     <tr>
                         <td><label id="labelsdesc" for = "sdesc" >Non-Prod Task  Description</label></td>
                         <td>
                             <textarea name = "sdesc" id = "sdesc" rows = "8" cols = "30"  
-                                onchange = "markDirty();" required>{{selectedNonProdTask.desc}}</textarea>
+                                onchange = "markDirty();">{{selectedNonProdTask.desc}}</textarea>
                         </td>
                     </tr>
                     <tr>
@@ -72,8 +77,14 @@
 
     function setCancel(){
         document.getElementById('scode').removeAttribute('required');
+        document.getElementById('scode').removeAttribute('pattern');
+
         document.getElementById('sname').removeAttribute('required');
+        document.getElementById('sname').removeAttribute('pattern');
+
         document.getElementById('sdesc').removeAttribute('required');
+        document.getElementById('sdesc').removeAttribute('pattern');
+
         document.getElementById('editForm').removeAttribute("onsubmit")
         document.getElementById('functionMode').value = "CANCEL";
     }
