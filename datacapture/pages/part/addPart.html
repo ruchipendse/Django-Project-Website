@@ -16,22 +16,22 @@
 
                 <table>
                     <tr>
-                        <td><label id="labelpcode" for = "pcode" >Part Code</label></td>
+                        <td><label id="labelpcode" for = "pcode" >Id</label></td>
                         <td>
                             <input  type = "text" name = "pcode" id = "pcode" onchange = "markDirty();"
-                                    pattern="[A-Za-z0-9]*" maxlength = "10" size = "30"  required/>
+                                    pattern="[A-Za-z0-9-]*" maxlength = "15" size = "20"  required/>
                         </td>
                     </tr>
                     <tr>
-                        <td><label id="labelpname" for = "pname" >Part Name</label></td>
+                        <td><label id="labelpname" for = "pname" >Name</label></td>
                         <td><input  type = "text" name = "pname" id = "pname" required onchange = "markDirty();" 
-                                    pattern="[A-Za-z0-9-_]*" maxlength = "30" size = "30"  required/>
+                                    pattern="[A-Za-z0-9-_]*" maxlength = "20" size = "20"  required/>
                         </td>
                     </tr>
                     <tr>
-                        <td><label id="labelpdesc" for = "pdesc" >Part Description</label></td>
+                        <td><label id="labelpdesc" for = "pdesc" >Description</label></td>
                         <td>
-                            <textarea name = "pdesc" id = "pdesc" rows = "8" cols = "30" 
+                            <textarea name = "pdesc" id = "pdesc" rows = "8" cols = "21" 
                                         onchange = "markDirty();"  placeholder = "Add Description"></textarea>
                         </td>
                     </tr>

@@ -20,7 +20,7 @@
                         <td><label id="labelmcode" for = "mcode" >Id Code</label></td>
                         <td>
                             <input  type = "text" name = "mcode" id = "mcode" 
-                                    pattern="[A-Za-z0-9]*" maxlength = "10" size = "30"  required>
+                                    pattern="[A-Za-z0-9-]*" maxlength = "10" size = "20"  required>
                         </td>
 
                     </tr>
@@ -28,13 +28,13 @@
                         <td><label id="labelmname" for = "mname" >Name</label></td>
                         <td>
                             <input  type = "text" name = "mname" id = "mname"
-                                    pattern="[A-Za-z0-9-_]*" maxlength = "30" size = "30"  required/>
+                                    pattern="[A-Za-z0-9-_]*" maxlength = "20" size = "20"  required/>
                         </td>
                     </tr>
                     <tr>
                         <td><label id="labelmdesc" for = "mdesc" >Description</label></td>
                         <td>
-                            <textarea name = "mdesc" id = "mdesc" rows = "8" cols = "30" 
+                            <textarea name = "mdesc" id = "mdesc" rows = "8" cols = "20" 
                                         onchange = "markDirty();" placeholder = "Add Description"></textarea>
                         </td>
                     </tr>
@@ -80,7 +80,7 @@
                     </tr>
                     <tr>
                         <td  width = "60%" valign = "top">
-                            <table id = "tablesetups" name = "tablemachine"  border = "1" width = "100%">
+                            <table id = "tablesetups" name = "tablesetups"  border = "1" width = "100%">
                                 <tr>
                                     <th width = "75%">Setup Sequence</th>
                                     <th width = "20%">Cycle Time</th>

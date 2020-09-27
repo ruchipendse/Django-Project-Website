@@ -16,7 +16,7 @@ class Employee (models.Model):
         return "[" + self.user.username + "]" 
 
 class Setup(models.Model):
-    id_code = models.CharField(max_length = 4)
+    id_code = models.CharField(max_length = 20)
     name = models.CharField(max_length = 100)
     desc = models.TextField()
     is_active   = models.BooleanField(default = True)
@@ -28,7 +28,7 @@ class Setup(models.Model):
         
 #-------------  HOLIDAYS ----------------
 class Holiday(models.Model):
-    id_code     = models.CharField(max_length = 4)
+    id_code     = models.CharField(max_length = 15)
     desc        = models.TextField()
     date        = models.DateField()
     is_working  = models.BooleanField(default = False)
@@ -39,7 +39,7 @@ class Holiday(models.Model):
 
 #-------------  NON PRODUCTION TASK ----------------
 class NonProdTask(models.Model):
-    id_code                 = models.CharField(max_length = 4)
+    id_code                 = models.CharField(max_length = 15)
     name                    = models.CharField(max_length = 100)
     desc                    = models.TextField(default = '')
     is_active               = models.BooleanField(default = True)
@@ -59,7 +59,7 @@ class OperatorSetup(models.Model):
         return "[" + str(self.operator) + ", " + str(self.setup) + "]" 
 
 class Machine(models.Model):
-    id_code         = models.CharField(max_length = 4)
+    id_code         = models.CharField(max_length = 15)
     name            = models.CharField(max_length = 100)
     img             = models.ImageField(upload_to = 'machine_pics')
     desc            = models.TextField()
@@ -80,7 +80,7 @@ class MachineSetup(models.Model):
 
 #-------------  PART ----------------
 class Part(models.Model):
-    id_code = models.CharField(max_length = 4)
+    id_code = models.CharField(max_length = 15)
     name = models.CharField(max_length = 100)
     img = models.ImageField(upload_to = 'machine_pics')
     desc = models.TextField()
