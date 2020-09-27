@@ -61,26 +61,24 @@
             <div class="centered">
                 <table>
                     <tr>
-                        <td><label id="labelpcode" for = "mcode" disabled>Id Code</label></td>
-                        <td><input type = "text" name = "mcode" id = "mcode" disabled></td>
+                        <td><label id="labelpcode" for = "mcode" disabled>Id</label></td>
+                        <td><input type = "text" name = "mcode" id = "mcode" maxlength="15" size = "20" disabled></td>
                     </tr>
                     <tr>
                         <td><label id="labelpname" for = "mname" >Name</label></td>
-                        <td><input type = "text" name = "mname" id = "mname" disabled></td>
+                        <td><input type = "text" name = "mname" id = "mname" maxlength="20" size = "20" disabled></td>
                     </tr>
                     <tr>
                         <td><label id="labelpdesc" for = "mdesc" >Description</label></td>
                         <td>
-                            <textarea name = "mdesc" id = "mdesc" rows = "8" cols = "30"  disabled></textarea>
+                            <textarea name = "mdesc" id = "mdesc" rows = "8" cols = "21"  disabled></textarea>
                         </td>
                     </tr>
                     <tr>
-                        <td></td>
-                        <td><label id="labelpops" for = "mdesc" disable ></label></td>
+                        <td colspan = "2"><label id="labelpops" for = "mdesc" disable ></label></td>
                     </tr>
                     <tr>
-                        <td></td>
-                        <td id = "setupList">
+                        <td id = "setupList"  colspan = "2">
                             <!-- LIST WILL DYNAMICALLY APPEAR HERE-->
                         </td>
                     </tr>
@@ -153,10 +151,14 @@
             var attDisabled = document.createAttribute('disabled');
             attDisabled.value = 'true';
 
+            var attSize = document.createAttribute('size');
+            attSize.value = '42';
+
             var inputTag = document.createElement('input');
             inputTag.setAttributeNode(attType); 
             inputTag.setAttributeNode(attValue); 
             inputTag.setAttributeNode(attDisabled); 
+            inputTag.setAttributeNode(attSize); 
             tdTag.appendChild(inputTag)
 
             //------- TD CYCLE TIME-----------
@@ -185,7 +187,11 @@
             inputTagCycle.setAttributeNode(attTypeCycle); 
             inputTagCycle.setAttributeNode(attValueCycle); 
             inputTagCycle.setAttributeNode(attDisabledCycle); 
+    
+            var attTdAlignCycle = document.createAttribute('align');
+            attTdAlignCycle.value = 'right';
 
+//            tdTagCycle.setAttributeNode(attTdAlignCycle); 
             tdTagCycle.appendChild(inputTagCycle)
     }       
         // ADD SETUPS LIST LABEL

@@ -21,23 +21,23 @@
 
                 <table>
                     <tr>
-                        <td><label id="labelmcode" for = "mcode" >Id Code</label></td>
+                        <td><label id="labelmcode" for = "mcode" >Id</label></td>
                         <td>
                             <input  type = "text" name = "mcode" id = "mcode" value = "{{selectedMachine.id_code}}"
-                                    pattern="[A-Za-z0-9]*" maxlength = "10" size = "30"  required/>
+                                    pattern="[A-Za-z0-9]*" maxlength = "15" size = "20"  required/>
                         </td>
                     </tr>
                     <tr>
                         <td><label id="labelmname" for = "mname" >Name</label></td>
                         <td>
                             <input  type = "text" name = "mname" id = "mname" value = "{{selectedMachine.name}}"
-                                    onchange = "markDirty();" pattern="[A-Za-z0-9-_]*" maxlength = "30" size = "30"  required>
+                                    onchange = "markDirty();" pattern="[A-Za-z0-9-_]*" maxlength = "20" size = "20"  required>
                         </td>
                     </tr>
                     <tr>
                         <td><label id="labelmdesc" for = "mdesc" >Description</label></td>
                         <td>
-                            <textarea name = "mdesc" id = "mdesc" rows = "8" cols = "30"  
+                            <textarea name = "mdesc" id = "mdesc" rows = "8" cols = "21"  
                                 onchange = "markDirty();">{{selectedMachine.desc}}</textarea>
                         </td>
                     </tr>
@@ -85,8 +85,8 @@
                         <td  width = "60%" valign = "top">
                             <table id = "tablesetups" name = "tablemachine"  border = "1" width = "100%">
                                 <tr>
-                                    <th width = "75%">Setup Sequence</th>
-                                    <th width = "20%">Cycle Time</th>
+                                    <th width = "75%">Setup</th>
+                                    <th width = "20%">Cycle</th>
                                     <th width = "5%">Del</th>
                                 </tr>
                             </table>
@@ -199,6 +199,8 @@
             var attValues = [optionText]
             
             tagLeaf = formLeafTag(tagSelect, "option", attributes, attValues, optionText)
+            tagLeaf.style.fontSize ="15px";
+            tagSelect.style.fontSize ="15px";
         }
 
         // ADD SECOND TD
