@@ -9,6 +9,9 @@ urlpatterns = [
     path ('resetdatabase', views.resetdatabase, name = 'resetdatabase'),
 #    path ('metadeta', views.home, name = 'home'), init_start
 
+#-------------------- CSV_DATA --------------
+    path ('load', views.load, name = 'load') ,
+
 #-------------------- USER --------------
     path ('users', views.users, name = 'users') ,
     path ('addNewUser', views.addNewUser, name = 'addNewUser'),
