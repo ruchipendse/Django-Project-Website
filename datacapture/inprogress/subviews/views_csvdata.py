@@ -16,6 +16,8 @@ from inprogress.loggerConfig import configure_logger
 from inprogress.models import (
     Part,
     PartSetupSequence,
+    Machine,
+    MachineSetup,
     #  EmployeeDate, 
     #  EmployeeDateTimeSlot, 
     #  TimeSheetEntryProd, 
@@ -29,26 +31,24 @@ logger = logging.getLogger(__name__)
 
 def load(request):
     load_setups(request)
+    load_machines(request)
     return redirect("home")
 
 def load_setups(request):
-# TODO: THIS CODE IS NOT WORKING
-
     with open('tmp/PartsList.csv', newline='') as csvfile:
         part_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in part_reader:
             part_id = row[0]
             part_name = row[1]
             part_desc = row[1]
-            setups = []
 
             try:
                 with transaction.atomic():
-                    new_part = Part.objects.filter(id_code = row[0])
+                    new_part = Part.objects.filter(id_code = part_id)
                     if not new_part.exists():
-                        new_part = Part.objects.create(id_code = row[0], 
-                                                    name = row[1], 
-                                                    desc = row[1])
+                        new_part = Part.objects.create(id_code = part_id, 
+                                                    name = part_name, 
+                                                    desc = part_desc)
                         new_part.save()
                     else:
                         new_part = new_part[0]
@@ -58,8 +58,8 @@ def load_setups(request):
                         new_setup = Setup.objects.filter(id_code = setup_id)
                         if not new_setup.exists():
                             new_setup = Setup.objects.create(id_code = setup_id,
-                                                    name = setup_name,
-                                                    desc = setup_name
+                                                    name = part_name + "_" + setup_name,
+                                                    desc = part_name + "_" + setup_name
                                                 )
                             new_setup.save()
                         else:
@@ -79,3 +79,45 @@ def load_setups(request):
                 messages.info(request, 'Upload-Part Failed', str(e))
                 logger.debug('Upload-Part failed. Reason: ' + str(e))
 
+def load_machines(request):
+    with open('tmp/MachinesList.csv', newline='') as csvfile:
+        machine_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+        for row in machine_reader:
+            machine_id = row[0]
+            machine_name = row[1]
+            machine_desc = row[1]
+
+            try:
+                with transaction.atomic():
+                    new_machine = Machine.objects.filter(id_code = machine_id)
+                    if not new_machine.exists():
+                        new_machine = Machine.objects.create(id_code = machine_id, 
+                                                    name = machine_name, 
+                                                    desc = machine_desc)
+                        new_machine.save()
+                    else:
+                        new_machine = new_machine[0]
+                    for setup_str in row[2:]:
+                        setup_id = setup_str.split('@')[0]
+                        setup_cycle_time = setup_str.split('@')[1]
+                        setups = Setup.objects.filter(id_code = setup_id)
+                        if setups.count() > 0:
+                            setup = setups[0]
+                        else:
+                            pass
+                            setup = None
+                            raise Exception("Setup not found: id [" + setup_id + "]")                            
+                        machine_setup = MachineSetup.objects.filter(machine = new_machine, setup = setup)
+                        if not machine_setup.exists():
+                            machine_setup = MachineSetup.objects.create(
+                                                    machine         = new_machine,
+                                                    setup           = setup,
+                                                    cycle_time      = int(float(setup_cycle_time))
+                            )
+                            machine_setup.save()
+                        else:
+                            machine_setup = machine_setup[0]
+                        
+            except Exception as e:
+                messages.info(request, 'Upload-Machine Failed', str(e))
+                logger.debug('Upload-Machine failed. Reason: ' + str(e))
