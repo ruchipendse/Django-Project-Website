@@ -12,23 +12,27 @@
             <div class="centered">
                 <form name = "partsForm" action = "processPart" method = "POST">
                     {% csrf_token %} 
-                    <table id = "parttable"  width = 95% border = 1>
-                        <tr>
-                            <th  width="30%">Id</th>
-                            <th  width="auto">Name</th>
-                            <th  width="5%"></th>
-                        </tr>
-                        {% for p in parts %}
-                        <tr>
-                            <td>{{p.id_code}}</td>
-                            <td>{{p.name}}</td>
-                            <td><input type = "radio" value = "{{p.id_code}}" id = "editPart{{p.id_code}}" name = "editPart" 
-                                class = "selected" 
-                                onchange= 
-                                "partSelected('{{p.id_code}}');">
+                    <table  id = "parttable" 
+                            style = "width: calc(100% - 17px); border-spacing: 0; border: 2px solid black;">
+                        <thead style = "width: calc(100% - 17px); display: block; height: 25px; overflow-y: auto; ">
+                            <tr>
+                                <th  style="width : 150px; border-right: 2px solid black;" >Id</th>
+                                <th  style="width : 350px; border-right: 2px solid black;">Name</th>
+                                <th  style="width : 30px; border-right: 2px solid black;"></th>
+                            </tr>
+                        </thead>
+                        <tbody style = "max-height: 340px; display: block; overflow-y: auto; overflow-x: hidden; border-top: 2px solid black;">
+                            {% for p in parts %}
+                            <tr>
+                                <td style="width : 150px; border-right: 2px solid black;">{{p.id_code}}</td>
+                                <td style="width : 350px; border-right: 2px solid black;">{{p.name}}</td>
+                                <td style="width : 30px; border-right: 2px solid black;">
+                                    <input type = "radio" value = "{{p.id_code}}" id = "editPart{{p.id_code}}" name = "editPart" 
+                                    class = "selected" onchange = "partSelected('{{p.id_code}}');">
                                 </td>
-                        </tr>
-                        {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
                     </table>
                     <div id = "buttondiv" align = "right">
 

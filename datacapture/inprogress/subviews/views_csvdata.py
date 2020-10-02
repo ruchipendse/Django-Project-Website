@@ -18,12 +18,11 @@ from inprogress.models import (
     PartSetupSequence,
     Machine,
     MachineSetup,
-    #  EmployeeDate, 
+    Employee, 
     #  EmployeeDateTimeSlot, 
     #  TimeSheetEntryProd, 
     #  TimeSheetEntryNonProd, 
     #  NonProdTask,
-    #  Employee
      )
 
 configure_logger()
@@ -76,7 +75,8 @@ def load_setups(request):
                             part_setup = part_setup[0]
                         
             except Exception as e:
-                messages.info(request, 'Upload-Part Failed', str(e))
+                messages.info(request, 'Upload Failed Id: ' + part_id)
+                print('Part Failed Id: ' + part_id + 'name: ' + part_name, str(e))
                 logger.debug('Upload-Part failed. Reason: ' + str(e))
 
 def load_machines(request):
@@ -121,3 +121,50 @@ def load_machines(request):
             except Exception as e:
                 messages.info(request, 'Upload-Machine Failed', str(e))
                 logger.debug('Upload-Machine failed. Reason: ' + str(e))
+
+def load_users(request):
+    with open('tmp/OperatorsList.csv', newline='') as csvfile:
+        operator_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+        for row in operator_reader:
+            operator_firstname = row[0]
+            operator_lastname = row[1]
+            username = operator_firstname + "." + operator_lastname
+            while User.objects.filter(username = username).exists():
+                username = username + "1"
+            try:
+                with transaction.atomic():
+                    new_operator = Employee.objects.create(username = username, 
+                                                first_name = operator_firstname, 
+                                                last_name = operator_lastname
+                                                )
+
+                    new_operator.save()
+                    #TODO: CREATE SCROLLABLE TABLE FOR PARTS
+                    #REF: https://www.geeksforgeeks.org/how-to-create-table-with-100-width-with-vertical-scroll-inside-table-body-in-html/
+                    #page parts.html
+                    
+                    # for setup_str in row[2:]:
+                    #     setup_id = setup_str.split('@')[0]
+                    #     setup_cycle_time = setup_str.split('@')[1]
+                    #     setups = Setup.objects.filter(id_code = setup_id)
+                    #     if setups.count() > 0:
+                    #         setup = setups[0]
+                    #     else:
+                    #         pass
+                    #         setup = None
+                    #         raise Exception("Setup not found: id [" + setup_id + "]")                            
+                    #     machine_setup = MachineSetup.objects.filter(machine = new_machine, setup = setup)
+                    #     if not machine_setup.exists():
+                    #         machine_setup = MachineSetup.objects.create(
+                    #                                 machine         = new_machine,
+                    #                                 setup           = setup,
+                    #                                 cycle_time      = int(float(setup_cycle_time))
+                    #         )
+                    #         machine_setup.save()
+                    #     else:
+                    #         machine_setup = machine_setup[0]
+                        
+            except Exception as e:
+                messages.info(request, 'Upload-Machine Failed', str(e))
+                logger.debug('Upload-Machine failed. Reason: ' + str(e))
+
