@@ -19,10 +19,7 @@ from inprogress.models import (
     Machine,
     MachineSetup,
     Employee, 
-    #  EmployeeDateTimeSlot, 
-    #  TimeSheetEntryProd, 
-    #  TimeSheetEntryNonProd, 
-    #  NonProdTask,
+    OperatorSetup,
      )
 
 configure_logger()
@@ -31,6 +28,7 @@ logger = logging.getLogger(__name__)
 def load(request):
     load_setups(request)
     load_machines(request)
+    load_users(request)
     return redirect("home")
 
 def load_setups(request):
@@ -128,44 +126,46 @@ def load_users(request):
         for row in operator_reader:
             operator_firstname = row[0]
             operator_lastname = row[1]
-            username = operator_firstname + "." + operator_lastname
+            username = operator_firstname.lower() + "." + operator_lastname.lower()
             while User.objects.filter(username = username).exists():
                 username = username + "1"
+
+            new_setups = []
+            for setup_id in row[2:]:
+                setups = Setup.objects.filter(id_code = setup_id)
+                if setups.count() > 0:
+                    setup = setups[0]
+                else:
+                    pass
+                    setup = None
+                    raise Exception("Setup not found: id [" + setup_id + "]")                            
+                new_setups.append(setup)
+
             try:
                 with transaction.atomic():
-                    new_operator = Employee.objects.create(username = username, 
+                    user = User.objects.create_user(username = username, 
+                                                password = "electra1234", 
+                                                email = "abc@nigasavi.com", 
                                                 first_name = operator_firstname, 
-                                                last_name = operator_lastname
+                                                last_name = operator_lastname,
+                                                is_superuser = False,
+                                                is_staff = False
                                                 )
-
-                    new_operator.save()
-                    #TODO: CREATE SCROLLABLE TABLE FOR PARTS
-                    #REF: https://www.geeksforgeeks.org/how-to-create-table-with-100-width-with-vertical-scroll-inside-table-body-in-html/
-                    #REF: https://stackoverflow.com/questions/36928369/html-css-table-misaligned-columns
-                    #page parts.html
-                    
-                    # for setup_str in row[2:]:
-                    #     setup_id = setup_str.split('@')[0]
-                    #     setup_cycle_time = setup_str.split('@')[1]
-                    #     setups = Setup.objects.filter(id_code = setup_id)
-                    #     if setups.count() > 0:
-                    #         setup = setups[0]
-                    #     else:
-                    #         pass
-                    #         setup = None
-                    #         raise Exception("Setup not found: id [" + setup_id + "]")                            
-                    #     machine_setup = MachineSetup.objects.filter(machine = new_machine, setup = setup)
-                    #     if not machine_setup.exists():
-                    #         machine_setup = MachineSetup.objects.create(
-                    #                                 machine         = new_machine,
-                    #                                 setup           = setup,
-                    #                                 cycle_time      = int(float(setup_cycle_time))
-                    #         )
-                    #         machine_setup.save()
-                    #     else:
-                    #         machine_setup = machine_setup[0]
+                    newEmployee = Employee.objects.create(user = user)
+                    newEmployee.save()
+                    for new_setup in new_setups:
+                        operator_setups = OperatorSetup.objects.filter(operator = newEmployee, setup = new_setup)
+                        if operator_setups.count() > 0:
+                            operator_setup = operator_setups[0]
+                        else:
+                            operator_setup = OperatorSetup.objects.create(
+                                                    operator         = newEmployee,
+                                                    setup           = new_setup,
+                            )
+                    operator_setup.save()
+                    logger.info('User added: ' + user.username)
                         
             except Exception as e:
-                messages.info(request, 'Upload-Machine Failed', str(e))
-                logger.debug('Upload-Machine failed. Reason: ' + str(e))
+                messages.info(request, 'Upload-User ['+ username +'] Failed', str(e))
+                logger.debug('Upload-User ['+ username +'] failed. Reason: ' + str(e))
 
