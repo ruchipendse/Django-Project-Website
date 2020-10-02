@@ -141,6 +141,7 @@ def load_users(request):
                     new_operator.save()
                     #TODO: CREATE SCROLLABLE TABLE FOR PARTS
                     #REF: https://www.geeksforgeeks.org/how-to-create-table-with-100-width-with-vertical-scroll-inside-table-body-in-html/
+                    #REF: https://stackoverflow.com/questions/36928369/html-css-table-misaligned-columns
                     #page parts.html
                     
                     # for setup_str in row[2:]:

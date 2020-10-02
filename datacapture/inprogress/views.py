@@ -78,13 +78,20 @@ def adminLogout(request):
 def resetdatabase(request):
     # THIS DISABLING SHOULD NEVER BE REMOVED UNLESS THERE IS NEED TO RESET THE DATABASE. 
     # ELSE WE WILL LOSE ALL THE DATA
-    DELETE_TRANSACTIONS                 = False
-    DELETE_ENTITIES                     = False
+    DELETE_TRANSACTIONS                     = False
+    DELETE_ENTITIES                         = False
+    DELETE_OPERATORS                        = False
     if (DELETE_TRANSACTIONS):
         deleteTransactions()
         if (DELETE_ENTITIES):
             deleteEntities()
+            if (DELETE_OPERATORS):
+                deleteOperators()
     return render(request, 'home.html')
+
+def deleteOperators():
+    deleteEmployees()
+    deleteUsers()
 
 def deleteTransactions():
     deleteNonprodEntries()
@@ -101,6 +108,26 @@ def deleteEntities():
     deleteNonProdTasks()
     deleteHolidays()
     deleteSetups()
+
+def deleteUsers():
+    try:
+        with transaction.atomic():
+            users = User.objects.filter(is_superuser = False)
+            for user in users:
+                user.delete()
+    except Exception as e:
+        log_message = 'Delete Employee Failed:' + str(e)
+        print (log_message)
+
+def deleteEmployees():
+    try:
+        with transaction.atomic():
+            employees = Employee.objects.all()
+            for employee in employees:
+                employee.delete()
+    except Exception as e:
+        log_message = 'Delete Employee Failed:' + str(e)
+        print (log_message)
 
 def deleteProdEntries():
     try:
