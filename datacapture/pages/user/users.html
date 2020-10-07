@@ -15,26 +15,32 @@
             <div class="centered">
                 <form name = "usersForm" action = "processUser" method = "POST">
                     {% csrf_token %} 
-                    <table id = "usertable"  width = 95% border = 1>
-                        <tr>
-                            <th  width="25%">User Name</th>
-                            <th  width="35%">First Name</th>
-                            <th  width="35%">Last Name</th>
-                            <th  width="5%"></th>
-                        </tr>
-                        {% for u in operators %}
-                        <tr>
-                            <td>{{u.user.username}}</td>
-                            <td>{{u.user.first_name}}</td>
-                            <td>{{u.user.last_name}}</td>
+                    <table  id = "usertable" 
+                        style = "width: calc(100% - 17px); border-spacing: 0; border: 2px solid black;">
+                        <thead style = "width: calc(100% - 17px); display: block; height: 25px; overflow-y: auto; ">
+                            <tr>
+                                <th  style="width : 250px; border-right: 2px solid black;" >User Name</th>
+                                <th  style="width : 125px; border-right: 2px solid black;" >First Name</th>
+                                <th  style="width : 125px; border-right: 2px solid black;" >Last Name</th>
+                                <th  style="width : 30px; border-right: 2px solid black;" ></th>
+                            </tr>
+                        </thead>
+                        <tbody style = "max-height: 340px; display: block; overflow-y: auto; overflow-x: hidden; border-top: 2px solid black;">
+                            {% for u in operators %}
+                            <tr>
+                                <td style="width : 250px; border-right: 2px solid black;">{{u.user.username}}</td>
+                                <td style="width : 125px; border-right: 2px solid black;">{{u.user.first_name}}</td>
+                                <td style="width : 125px; border-right: 2px solid black;">{{u.user.last_name}}</td>
 
-                            <td><input type = "radio" value = "{{u.user.username}}" id = "editUser{{u.user.username}}" name = "editUser" 
-                                class = "selected" 
-                                onchange= 
-                                "userSelected('{{u.user.username}}');">
-                            </td>
-                        </tr>
-                        {% endfor %}
+                                <td style="width : 30px; border-right: 2px solid black;">
+                                    <input type = "radio" value = "{{u.user.username}}" id = "editUser{{u.user.username}}" name = "editUser" 
+                                    class = "selected" 
+                                    onchange= 
+                                    "userSelected('{{u.user.username}}');">
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
                     </table>
                     <div id = "buttondiv" align = "right">
                         <input type = "hidden" id = "selectedUser" name = "selectedUser" value = "NO_SETUP"/>
