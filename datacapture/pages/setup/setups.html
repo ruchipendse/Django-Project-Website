@@ -8,29 +8,41 @@
     <meta id="setupsListJsondata" data="{{setupsListJson}}" />
     <h2>Setups:</h2>
 
-    <div class = "parts"> 
+    <div class = "setups"> 
 
         <div class="splitleft">
             <div class="centered">
                 <form name = "setupsForm" action = "processSetup" method = "POST">
                     {% csrf_token %} 
-                    <table id = "setuptable"  width = 95% border = 1>
-                        <tr>
-                            <th  width="35%">Id</th>
-                            <th  width="auto">Name</th>
-                            <th  width="5%"></th>
-                        </tr>
-                        {% for s in setups %}
-                        <tr>
-                            <td>{{s.id_code}}</td>
-                            <td>{{s.name}}</td>
-                            <td><input type = "radio" value = "{{s.id_code}}" id = "editSetup{{s.id_code}}" name = "editSetup" 
-                                class = "selected" 
-                                onchange= 
-                                "setupSelected('{{s.id_code}}');">
+                    <table  id = "setuptable" 
+                            style = "width: calc(100% - 17px); border-spacing: 0; border: 2px solid black;">
+                        <thead style = "width: calc(100% - 17px); display: block; height: 25px; overflow-y: auto; ">
+                            <tr>
+                                <th  style="width : 170px;" >Id</th>
+                                <th  style="width : 350px;">Name</th>
+                                <th  style="width : 30px;"></th>
+<!-- THIS NEEDS TO IDENTIFY SCROLL BAR DYNAMICALLY AND ADJUST
+                                <th  style="width : 150px; border-right: 2px solid black;" >Id</th>
+                                <th  style="width : 350px; border-right: 2px solid black;">Name</th>
+                                <th  style="width : 30px; border-right: 2px solid black;"></th>
+ -->
+                            </tr>
+                        </thead>
+                        <tbody style = "max-height: 340px; display: block; overflow-y: auto; overflow-x: hidden; border-top: 2px solid black;">
+                            {% for s in setups %}
+                            <tr>
+                                <!-- <td>{{s.id_code}}</td>
+                                <td>{{s.name}}</td>
+                                <td> -->
+                                <td style="width : 170px; border-right: 2px solid black;">{{s.id_code}}</td>
+                                <td style="width : 350px; border-right: 2px solid black;">{{s.name}}</td>
+                                <td style="width : 30px; border-right: 2px solid black;">
+                                    <input  type = "radio" value = "{{s.id_code}}" id = "editSetup{{s.id_code}}" name = "editSetup" 
+                                            class = "selected" onchange= "setupSelected('{{s.id_code}}');">
                                 </td>
-                        </tr>
-                        {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
                     </table>
                     <div id = "buttondiv" align = "right">
 
@@ -62,16 +74,16 @@
                 <table>
                     <tr>
                         <td><label id="labelscode" for = "scode" disabled>Id</label></td>
-                        <td><input type = "text" name = "scode" id = "scode" size = "40" disabled></td>
+                        <td><input type = "text" name = "scode" id = "scode" size = "35" disabled></td>
                     </tr>
                     <tr>
                         <td><label id="labelsname" for = "sname" >Name</label></td>
-                        <td><input type = "text" name = "sname" id = "sname" size = "40" disabled></td>
+                        <td><input type = "text" name = "sname" id = "sname" size = "35" disabled></td>
                     </tr>
                     <tr>
                         <td valign = "top"><label id="labelsdesc" for = "sdesc" >Description</label></td>
                         <td>
-                            <textarea name = "sdesc" id = "sdesc" rows = "8" cols = "41"  disabled></textarea>
+                            <textarea name = "sdesc" id = "sdesc" rows = "8" cols = "36"  disabled></textarea>
                         </td>
                     </tr>
                     <tr>
