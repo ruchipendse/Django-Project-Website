@@ -15,23 +15,32 @@
             <div class="centered">
                 <form name = "nonprodtasksForm" action = "processNonProdTask" method = "POST">
                     {% csrf_token %} 
-                    <table id = "nonprodtasktable"  width = 95% border = 1>
-                        <tr>
-                            <th  width="20%">Non-prod task ID</th>
-                            <th  width="auto">Non-prod task name</th>
-                            <th  width="5%"></th>
-                        </tr>
-                        {% for nps in nonprodtasks %}
-                        <tr>
-                            <td>{{nps.id_code}}</td>
-                            <td>{{nps.name}}</td>
-                            <td><input type = "radio" value = "{{nps.id_code}}" id = "editNonprodTask{{nps.id_code}}" name = "editNonprodTask" 
-                                class = "selected" 
-                                onchange= 
-                                "nonprodtaskSelected('{{nps.id_code}}');">
-                                </td>
-                        </tr>
-                        {% endfor %}
+                    <table  id = "nonprodtasktable" 
+                            style = "width: calc(100% - 17px); border-spacing: 0; border: 2px solid black;">
+                        <thead style = "width: calc(100% - 17px); display: block; height: 25px; overflow-y: auto; ">
+                            <tr>
+                                <th  style="width : 150px;" >Id</th>
+                                <th  style="width : 350px;">Name</th>
+                                <th  style="width : 30px;"></th>
+<!-- THIS NEEDS TO IDENTIFY SCROLL BAR DYNAMICALLY AND ADJUST
+                                <th  style="width : 150px; border-right: 2px solid black;" >Id</th>
+                                <th  style="width : 350px; border-right: 2px solid black;">Name</th>
+                                <th  style="width : 30px; border-right: 2px solid black;"></th>
+ -->
+                            </tr>
+                        </thead>
+                        <tbody style = "max-height: 340px; display: block; overflow-y: auto; overflow-x: hidden; border-top: 2px solid black;">
+                            {% for nps in nonprodtasks %}
+                            <tr>
+                                <td style="width : 150px; border-right: 2px solid black;">{{nps.id_code}}</td>
+                                <td style="width : 350px; border-right: 2px solid black;">{{nps.name}}</td>
+                                <td style="width : 30px; border-right: 2px solid black;">
+                                    <input  type = "radio" value = "{{nps.id_code}}" id = "editNonprodTask{{nps.id_code}}" 
+                                            name = "editNonprodTask" class = "selected" onchange= "nonprodtaskSelected('{{nps.id_code}}');">
+                                    </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
                     </table>
                     <div id = "buttondiv" align = "right">
 
@@ -62,17 +71,17 @@
             <div class="centered">
                 <table>
                     <tr>
-                        <td><label id="labelscode" for = "scode" disabled>Non-prod Task Code</label></td>
-                        <td><input type = "text" name = "scode" id = "scode" disabled></td>
+                        <td><label id="labelscode" for = "scode" disabled>Id</label></td>
+                        <td><input type = "text" name = "scode" id = "scode" size = "20"  disabled></td>
                     </tr>
                     <tr>
-                        <td><label id="labelsname" for = "sname" >Non-prod Task Name</label></td>
-                        <td><input type = "text" name = "sname" id = "sname" disabled></td>
+                        <td><label id="labelsname" for = "sname" >Name</label></td>
+                        <td><input type = "text" name = "sname" id = "sname" size = "20"  disabled></td>
                     </tr>
                     <tr>
-                        <td><label id="labelsdesc" for = "sdesc" >Non-prod Task Description</label></td>
+                        <td><label id="labelsdesc" for = "sdesc" >Description</label></td>
                         <td>
-                            <textarea name = "sdesc" id = "sdesc" rows = "8" cols = "30"  disabled></textarea>
+                            <textarea name = "sdesc" id = "sdesc" rows = "8" cols = "21"  disabled></textarea>
                         </td>
                     </tr>
                     <tr>
@@ -86,7 +95,8 @@
     </div>
 
 <script>
-
+    // TODO: ADD SCROLL BAR TO LIST
+    // APPLY FIELD WIDTHS TO PAGE
     function setFunctionMode(fMode){
         document.getElementById('functionMode').value =  fMode;
     }

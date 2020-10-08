@@ -17,7 +17,7 @@
                         <td><label id="labelscode" for = "scode" >Non-Prod Task Code</label></td>
                         <td>
                             <input  type = "text" name = "scode" id = "scode" value = "{{selectedNonProdTask.id_code}}"
-                                    pattern="[A-Za-z0-9]*" maxlength = "10" size = "30"  required>
+                                    pattern="[A-Za-z0-9-]*" maxlength = "20" size = "30"  required>
                             />
                         </td>
                     </tr>
@@ -31,7 +31,7 @@
                     <tr>
                         <td><label id="labelsdesc" for = "sdesc" >Non-Prod Task  Description</label></td>
                         <td>
-                            <textarea name = "sdesc" id = "sdesc" rows = "8" cols = "30"  
+                            <textarea name = "sdesc" id = "sdesc" rows = "8" cols = "31"  
                                 onchange = "markDirty();">{{selectedNonProdTask.desc}}</textarea>
                         </td>
                     </tr>

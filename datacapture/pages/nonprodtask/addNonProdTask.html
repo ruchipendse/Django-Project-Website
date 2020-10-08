@@ -16,14 +16,14 @@
 
                 <table>
                     <tr>
-                        <td><label id="labelscode" for = "scode" >Setup Code</label></td>
+                        <td><label id="labelscode" for = "scode" >Id</label></td>
                         <td>
                             <input  type = "text" name = "scode" id = "scode" onchange = "markDirty();"
-                                    pattern="[A-Za-z0-9]*" maxlength = "10" size = "30"  required>
+                                    pattern="[A-Za-z0-9-]*" maxlength = "20" size = "30"  required/>
                         </td>
                     </tr>
                     <tr>
-                        <td><label id="labelsname" for = "sname" >Setup Name</label></td>
+                        <td><label id="labelsname" for = "sname" >Name</label></td>
                         <td>
                             <input  type = "text" name = "sname" id = "sname" onchange = "markDirty();"
                                     pattern="[A-Za-z0-9-_]*" maxlength = "30" size = "30"  required/>
@@ -31,10 +31,10 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><label id="labelsdesc" for = "sdesc" >Setup Description</label></td>
+                        <td><label id="labelsdesc" for = "sdesc" >Description</label></td>
                         <td>
-                            <textarea name = "sdesc" id = "sdesc" rows = "8" cols = "30" 
-                                        onchange = "markDirty();" required>No Description</textarea>
+                            <textarea name = "sdesc" id = "sdesc" rows = "8" cols = "31" 
+                                        onchange = "markDirty();"  placeholder = "Add Description" required></textarea>
                         </td>
                     </tr>
                     <tr>
