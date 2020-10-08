@@ -20,6 +20,7 @@ from inprogress.models import (
     MachineSetup,
     Employee, 
     OperatorSetup,
+    NonProdTask,
      )
 
 configure_logger()
@@ -33,8 +34,27 @@ def load(request):
     return redirect("home")
 
 def load_np_tasks(request):
-    pass
-    # TODO: IMPLEMENT LOADING NP-TASKS HERE
+    with open('tmp/NPTasksList.csv', newline='') as csvfile:
+        nptask_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+        for row in nptask_reader:
+            nptask_id = row[0]
+            nptask_name = row[1]
+            nptask_desc = row[2]
+
+            try:
+                with transaction.atomic():
+                    new_nptask = NonProdTask.objects.filter(id_code = nptask_id)
+                    if not new_nptask.exists():
+                        new_nptask = NonProdTask.objects.create(id_code = nptask_id, 
+                                                    name = nptask_name, 
+                                                    desc = nptask_desc)
+                        new_nptask.save()
+                    else:
+                        new_nptask = new_nptask[0]
+            except Exception as e:
+                messages.info(request, 'Upload Failed Id: ' + nptask_id)
+                print('NPTask Failed Id: ' + nptask_id + 'name: ' + nptask_name, str(e))
+                logger.debug('Upload-NPTask failed. Reason: ' + str(e))
 
 def load_setups(request):
     # THIS PART LOADS PARTS AND SETUPS TOGETHER DUE TO THEIR DEPENDENCY
