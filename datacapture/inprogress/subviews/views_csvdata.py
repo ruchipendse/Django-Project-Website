@@ -26,12 +26,18 @@ configure_logger()
 logger = logging.getLogger(__name__)
 
 def load(request):
+    load_np_tasks(request)
     load_setups(request)
     load_machines(request)
     load_users(request)
     return redirect("home")
 
+def load_np_tasks(request):
+    pass
+    # TODO: IMPLEMENT LOADING NP-TASKS HERE
+
 def load_setups(request):
+    # THIS PART LOADS PARTS AND SETUPS TOGETHER DUE TO THEIR DEPENDENCY
     with open('tmp/PartsList.csv', newline='') as csvfile:
         part_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in part_reader:
