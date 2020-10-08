@@ -14,23 +14,29 @@
             <div class="centered">
                 <form name = "machinesForm" action = "processMachine" method = "POST">
                     {% csrf_token %} 
-                    <table id = "machinetable"  width = 95% border = 1>
-                        <tr>
-                            <th  width="20%">Machine ID</th>
-                            <th  width="auto">Machine name</th>
-                            <th  width="5%"></th>
-                        </tr>
-                        {% for m in machines %}
-                        <tr>
-                            <td>{{m.id_code}}</td>
-                            <td>{{m.name}}</td>
-                            <td><input type = "radio" value = "{{m.id_code}}" id = "editPart{{m.id_code}}" name = "editMachine" 
-                                class = "selected" 
-                                onchange= 
-                                "machineSelected('{{m.id_code}}');">
-                                </td>
-                        </tr>
-                        {% endfor %}
+                    <table  id = "machinetable" 
+                        style = "width: calc(100% - 17px); border-spacing: 0; border: 2px solid black;">
+                        <thead style = "width: calc(100% - 17px); display: block; height: 25px; overflow-y: auto; ">
+                            <tr>
+                                <th  style="width : 150px; border-right: 2px solid black;" >Id</th>
+                                <th  style="width : 350px; border-right: 2px solid black;">Name</th>
+                                <th  style="width : 30px; border-right: 2px solid black;"></th>
+                            </tr>
+                        </thead>
+                        <tbody style = "max-height: 340px; display: block; overflow-y: auto; overflow-x: hidden; border-top: 2px solid black;">
+                            {% for m in machines %}
+                            <tr>
+                                <td style="width : 150px; border-right: 2px solid black;">{{m.id_code}}</td>
+                                <td style="width : 350px; border-right: 2px solid black;">{{m.name}}</td>
+                                <td style="width : 30px; border-right: 2px solid black;">
+                                <input type = "radio" value = "{{m.id_code}}" id = "editPart{{m.id_code}}" name = "editMachine" 
+                                    class = "selected" 
+                                    onchange= 
+                                    "machineSelected('{{m.id_code}}');">
+                                    </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
                     </table>
                     <div id = "buttondiv" align = "right">
 
@@ -88,7 +94,7 @@
     </div>
 
 <script>
-
+    // TODO: ADD SCROLLABLE TABLE
     function setFunctionMode(fMode){
         document.getElementById('functionMode').value =  fMode;
     }
