@@ -152,24 +152,13 @@ def load_users(request):
         for row in operator_reader:
             operator_firstname = row[0]
             operator_lastname = row[1]
-            username = operator_firstname.lower() + "." + operator_lastname.lower()
-            while User.objects.filter(username = username).exists():
-                username = username + "1"
-
-            new_setups = []
-            for setup_id in row[2:]:
-                setups = Setup.objects.filter(id_code = setup_id)
-                if setups.count() > 0:
-                    setup = setups[0]
-                else:
-                    pass
-                    setup = None
-                    raise Exception("Setup not found: id [" + setup_id + "]")                            
-                new_setups.append(setup)
-
+            username = row[2]
             try:
                 with transaction.atomic():
-                    user = User.objects.create_user(username = username, 
+                    new_user = None
+                    new_users = User.objects.filter(username = username)
+                    if new_users.count() == 0:
+                        new_user = User.objects.create_user(username = username, 
                                                 password = "electra1234", 
                                                 email = "abc@nigasavi.com", 
                                                 first_name = operator_firstname, 
@@ -177,21 +166,33 @@ def load_users(request):
                                                 is_superuser = False,
                                                 is_staff = False
                                                 )
-                    newEmployee = Employee.objects.create(user = user)
-                    newEmployee.save()
-                    for new_setup in new_setups:
-                        operator_setups = OperatorSetup.objects.filter(operator = newEmployee, setup = new_setup)
-                        if operator_setups.count() > 0:
-                            operator_setup = operator_setups[0]
+                    else:
+                        new_user = new_users[0]
+                    operators = Employee.objects.filter(user = new_user)
+                    if operators.count() == 0:
+                        operator = Employee.objects.create(user = new_user)
+                        operator.save()
+                    else:
+                        operator = operators[0]
+
+                    for setup_id in row[3:]:
+                        setups = Setup.objects.filter(id_code = setup_id)
+                        if setups.count() > 0:
+                            setup = setups[0]
+                            operator_setups = OperatorSetup.objects.filter(operator = operator, setup = setup)
+                            if operator_setups.count() > 0:
+                                operator_setup = operator_setups[0]
+                            else:
+                                operator_setup = OperatorSetup.objects.create(
+                                                    operator    = operator,
+                                                    setup       = setup
+                                )
+                                operator_setup.save()
                         else:
-                            operator_setup = OperatorSetup.objects.create(
-                                                    operator         = newEmployee,
-                                                    setup           = new_setup,
-                            )
-                    operator_setup.save()
-                    logger.info('User added: ' + user.username)
+                            setup = None
+                            raise Exception("Setup not found: id [" + setup_id + "]")                            
+                    logger.debug('Upload-User ['+ username +'] Successful.')
                         
             except Exception as e:
-                messages.info(request, 'Upload-User ['+ username +'] Failed', str(e))
-                logger.debug('Upload-User ['+ username +'] failed. Reason: ' + str(e))
-
+                logger.debug('UPLOAD-USER ['+ username +'] failed. Reason: ' + str(e))
+                print('UPLOAD-USER ['+ username +'] failed. Reason: ' + str(e))
