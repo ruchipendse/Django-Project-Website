@@ -152,11 +152,15 @@ p {
     }
 
     aside {
-        background: #DCE1F6;
+        background: white;
         grid-template-columns : auto;
         grid-template-rows: 30% auto;
         padding: 0;
 
+    }
+    #logo {
+        padding: 0px;
+        margin: 0px;
     }
 
     main {
@@ -166,11 +170,11 @@ p {
     }
 
     #avatar {
-        border-radius: 50%;
-        background: #cf4fef  url('../images/NigasaviLogo_140_34.jpg') no-repeat center;
-        width: 140px;
-        height: 100px;
-        margin: 2em auto 1em auto;
+        border-radius: 5%;
+        background: url('../images/logo_200_29.jpg') no-repeat center;
+        width: 202px;
+        height: 31px;
+        margin: 2em 1em 1em auto; 
     }
 
     figure {
@@ -207,7 +211,7 @@ p {
     }
 
     nav {
-        background: none;
+        background:  #efefef;
     }
 
     .cta {
