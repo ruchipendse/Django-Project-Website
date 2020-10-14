@@ -13,7 +13,7 @@
 <div class = "parts40"> 
     <div>
         <div class="centered">
-            <form name = "editForm" action = "processMachine"  onsubmit = "return compileselections();"  method = "POST">
+            <form name = "editForm" id = "editForm" action = "processMachine"  onsubmit = "return compileselections();"  method = "POST">
                 {% csrf_token %} 
                 <input type = "hidden" id = "functionMode" name = "functionMode" value = ""/>
                 <input type = "hidden" id = "setUpSequence" name = "setUpSequence" value = ""/>
