@@ -108,19 +108,21 @@ p {
     }
     aside {
         background: white;
-        grid-template-rows: 30% auto;
-        padding: 0;
+        grid-template-columns: auto;
+        grid-template-rows: 30% auto auto;
+        padding: 1em;
     }
 
     #logo {
         padding: 0px;
         margin: 0px;
+        width: 202px;
+        height: 31px;
     }
     
     main {
         padding-left: 1em;
         background: #dfdfef;
-        /* background: white url('../images/bg.jpg') no-repeat bottom right; */
         background-size: 30%;
     }
 
@@ -158,7 +160,7 @@ p {
     }
 
     ul li a:hover {
-        background: white;
+        background:  #cfdfff;
     }
 
     a:hover, a:active {
@@ -166,7 +168,7 @@ p {
     }
    
     nav {
-        background:  #efefef;
+        background:  white;
     }
 
     .cta {
