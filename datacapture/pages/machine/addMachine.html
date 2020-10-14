@@ -247,12 +247,27 @@
                     setups.push(machine_setup_cycle);
                 }
             }
+            if (duplicates(setups)){
+                alert ('duplicate setups found');
+                return false;
+            }
             var setUpsJSON = JSON.stringify(setups);
             var setUpSequenceTag = document.getElementById('setUpSequence');
             setUpSequenceTag.setAttribute("value", setUpsJSON);
             markDirty();
         }
         return true;
+    }
+
+    function duplicates(setups){
+        //TODO: WORK HERE
+        console.log('setups: ' + setups);
+        var setupNames = [];
+        for (pair in setups){
+            setupNames.push((setups[pair])['setup']);
+        }
+        uniqueSetups = new Set(setupNames);
+        return (uniqueSetups.size < setups.length);
     }
 
     function setFunctionalMode(mode){

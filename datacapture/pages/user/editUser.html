@@ -380,10 +380,19 @@
                 setups.push(selectTag.value);
             }
         }
+        if (duplicates(setups)){
+            alert ('duplicate setups found');
+            return false;
+        }
         var setUpsJSON = JSON.stringify(setups);
         var setUpSequenceTag = document.getElementById('setUpSequence');
         setUpSequenceTag.setAttribute("value", setUpsJSON);
         return true;
+    }
+
+    function duplicates(setupNames){
+        uniqueSetups = new Set(setupNames);
+        return (uniqueSetups.size < setups.length);
     }
 
     /**
