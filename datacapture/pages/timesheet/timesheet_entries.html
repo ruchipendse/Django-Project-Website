@@ -29,7 +29,7 @@
                 </tr>
             </table>
         </div>
-        <table width = 100% >
+        <table width = 70% >
             <tr>
                 <td>
                     <div id = "absent_mark_div" align = "left">
@@ -39,37 +39,44 @@
                 </td>
                 <td align = "right">
                     <div class="w3-bar">
-                        <button type="submit" id = "addEntryButton"  class="w3-button w3-green w3-small w3-border-black" onclick = "setFunctionMode('ADD_PR')">PROD+</button>
-                        <button type="submit" id = "addNPEntryButton"  class="w3-button w3-green w3-small w3-border-black" onclick = "setFunctionMode('ADD_NP')">NPROD+</button>
+                        <button type="submit" id = "addEntryButton"  
+                                class="w3-button w3-green w3-small w3-border-black" onclick = "setFunctionMode('ADD_PR')">PROD+</button>
+                        <button type="submit" id = "addNPEntryButton"  
+                                class="w3-button w3-green w3-small w3-border-black" onclick = "setFunctionMode('ADD_NP')">NPROD+</button>
                     </div>
                 </td>
             </tr>
         </table>
-        <table id = "tsheet_entry_table" border="1" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
-            <tr>
-                <th  width="auto">
-                    <div id = "column-heading" class = "column_heading">
-                        Timesheet Entries
-                    </div>
-                </th>
-                <th  width="5%">
-                    <!-- <button type="submit" id = "addEntryButton"  class="w3-button w3-green" onclick = "setFunctionMode('ADD')">+</button> -->
-                </th>
-            </tr>
+        <table id = "tsheet_entry_table" border="2" cellpadding="0" cellspacing="0" width="70%" style="border-collapse:collapse;">
+            <thead>
+                <tr>
+                    <th  width="auto">
+                        <div id = "column-heading" class = "column_heading">
+                            Timesheet Entries
+                        </div>
+                    </th>
+                    <th  width="5%">
+                        <!-- <button type="submit" id = "addEntryButton"  class="w3-button w3-green" onclick = "setFunctionMode('ADD')">+</button> -->
+                    </th>
+                </tr>
+            </thead>
+            <tbody id = "tsheet_entry_table_body">
+                <!-- ADD HERE ENTRY ROWS -->
+            </tbody>
         </table>
-        <div id = "buttondiv" align = "right">
+        <div id = "buttondiv" align = "left">
             <input type = "hidden" id = "selectedEntry" name = "selectedEntry" value = "NO_ENTRY"/>
             <input type = "hidden" id = "functionMode" name = "functionMode" value = "ADD"/>
             <input type = "hidden" id = "currentDate" name = "currentDate" value = ""/>
             <input type = "hidden" id = "readyForSubmit" name = "readyForSubmit" value = "TRUE"/>
 
-            <table>
+            <table width = "70%">
                 <tr>
                     <td>
                     </td>
                     <td>
                     </td>
-                    <td>
+                    <td align = "right">
                         <input type="submit" id = "commitEntryButton" class="w3-button w3-blue" value="Commit"
                                         onclick = "setForCommit('COMMIT')">
                                         <!-- onclick = "setFunctionMode('COMMIT')"> -->
@@ -215,12 +222,13 @@
         }
 
         function deleteAllRows(tableName){
-            var entryTable      = document.getElementById(tableName);
-            var tableTBody      = entryTable.getElementsByTagName('tbody')[0];
-            var tableRows       = tableTBody.getElementsByTagName('tr');
-            var rowCount        = tableRows.length;
-            for (var x=rowCount-1; x>0; x--) {
-                tableTBody.removeChild(tableRows[x]);
+            var entryTableBody      = document.getElementById("tsheet_entry_table_body");
+            var entryTableTRs      = document.getElementsByName("entry_tr");
+            if (entryTableTRs != null){
+                var rowCount        = entryTableTRs.length;
+                for (var x=rowCount-1; x>=0; x--) {
+                    entryTableBody.removeChild(entryTableTRs[x]);
+                }
             }
         }
 
@@ -229,6 +237,7 @@
             entry_details_datewise          = JSON.parse(entry_details_datewiseJSON);
             var required_date_key           = formatDate(required_date);
             var entryTable                  = document.getElementById('tsheet_entry_table');
+            var entryTableBody                  = document.getElementById('tsheet_entry_table_body');
             deleteAllRows('tsheet_entry_table');
             dates_entries                   = entry_details_datewise[required_date_key];
             isAbsent                        = dates_entries['is_absent'] == true;
@@ -244,32 +253,30 @@
                 if (dates_entries != null) {
                     // ITERATE OVER THE ENTRIES AND ADD TO TABLE
                     for (var entry_no = 0; entry_no < dates_entries['entries'].length; entry_no++){
-                        var row                 = entryTable.insertRow();
-                        var tdEntry             = row.insertCell();
-                        var tdButton            = row.insertCell();
+                        
+                        attributes              = ["name" ];
+                        attValues               = ["entry_tr"];
+                        var tagEntryTR         = formNewTag(entryTableBody, "tr", attributes, attValues);
+                        
+                        attributes              = ["name" ];
+                        attValues               = ["entry_td"];
+                        var tdEntry             = formNewTag(tagEntryTR, "td", attributes, attValues);
+                        
+                        attributes              = ["name" ];
+                        attValues               = ["button_td"];
+                        var tdButton            = formNewTag(tagEntryTR, "td", attributes, attValues);
 
-                        var entry_id            = dates_entries['entries'][entry_no][2]
-                        var entry_details       = dates_entries['entries'][entry_no][3]
-                        entry_id_code       = "_" + entry_id.substring(0,2);
-                        entry_id_number     = entry_id.substring(2);
+                        var entry_id            = dates_entries['entries'][entry_no][2];
+                        entry_id_code           = "_" + entry_id.substring(0,2);
+                        entry_id_number         = entry_id.substring(2);
 
                         //ref: <button type="submit" id = "addEntryButton"  class="w3-button w3-green" onclick = "setFunctionMode('ADD')">+</button>
-                        if (isCommitted){
-                            attributes          = ["type",      "id",               "class",            "onclick",                          "disabled"  ]
-                            attValues           = ["submit",    "deleteEntryButton","w3-button w3-teal","deleteEntry('DELETE" + entry_id_code + "', " + entry_id_number + ");" ]
-                            tdEntry.innerHTML   = entry_details;
+                        if (entry_id_code == "_PR"){
+                            addEntryDetails(tdEntry, dates_entries['entries'][entry_no]);
                         } else {
-                            attributes          = ["type",      "id",               "class",            "onclick",                         ]
-                            attValues           = ["submit",    "deleteEntryButton","w3-button w3-teal","deleteEntry('DELETE" + entry_id_code + "', " + entry_id_number + ");" ]
-                            linkstr             =  "<a onclick = 'setParams(\"" + entry_id_code + "\", " 
-                                                                                + entry_id_number + ", \"" 
-                                                                                + required_date_key + "\");' >" 
-                                                   + entry_details + "</a>";
-                            tdEntry.innerHTML   = linkstr
+                            addNPEntryDetails(tdEntry, dates_entries['entries'][entry_no]);
                         }
-
-                        var tagButton           = formNewTag(tdButton, "button", attributes, attValues)
-                        tagButton.innerHTML     = "-"
+                        addButtons(tdButton, entry_id_code, entry_id_number, required_date_key);
                     }
                 } else {
                     alert ('dates_entries null')
@@ -302,6 +309,160 @@
             setFunctionMode('EDIT' + entry_id_code);
             formTag = document.getElementById("tsheetForm");
             formTag.submit();
+        }
+
+        function addButtons(tdButton, entry_id_code, entry_id_number, required_date_key){
+
+            attributes              = ["border", "width" ];
+            attValues               = ["1", "100%"];
+            var tblButtonsTag   = formNewTag(tdButton, "table", attributes, attValues);
+
+            // ----- add edit button
+            var rowEditButton         = tblButtonsTag.insertRow();
+            tdAttributes              = ["width"];
+            tdAttValues               = ["100%"];
+            var tdEditButton         = formNewTag(rowEditButton, "td", tdAttributes, tdAttValues);
+            btnAttributes          = ["type",      "id",               "class",            
+                                            "onclick", "disabled"  ]
+            btnAttValues           = ["submit",    "editEntryButton","w3-button w3-teal",
+                                            "editEntry('EDIT" + entry_id_code + "', " + entry_id_number + ");" ]
+
+            var tagEditButton           = formNewTag(tdEditButton, "button", btnAttributes, btnAttValues)
+            tagEditButton.innerHTML     = "E"
+
+            // ----- add delete button
+            var rowDeleteButton         = tblButtonsTag.insertRow();
+            tdAttributes              = ["width"];
+            tdAttValues               = ["100%"];
+            var tdDelButton         = formNewTag(rowDeleteButton, "td", tdAttributes, tdAttValues);
+            btnAttributes          = ["type",      "id",               "class",            
+                                            "onclick", "disabled"  ]
+            btnAttValues           = ["submit",    "editEntryButton","w3-button w3-teal",
+                                            "editEntry('EDIT" + entry_id_code + "', " + entry_id_number + ");" ]
+
+            var tagDelButton           = formNewTag(tdDelButton, "button", btnAttributes, btnAttValues)
+            tagDelButton.innerHTML     = "-"
+
+        }
+
+        function addNPEntryDetails(tdEntry, entryDetails){
+            var start                   = entryDetails[0];
+            var end                     = entryDetails[1];
+            var npTask                  = entryDetails[3];
+            var details                 = entryDetails[4];
+
+            attributes                  = ["border", "width" ];
+            attValues                   = ["1", "100%"];
+            var tagDetailTableTag       = formNewTag(tdEntry, "table", attributes, attValues);
+
+            var rowDuration             = tagDetailTableTag.insertRow();
+
+            attributes                  = ["width" ];
+            attValues                   = ["25%"];
+            var tdDurDesc               = formNewTag(rowDuration, "td", attributes, attValues);
+            tdDurDesc.innerText         = "Duration";
+            attributes                  = ["width" ];
+            attValues                   = ["75%"];
+            var tdDurVal                = formNewTag(rowDuration, "td", attributes, attValues);
+            tdDurVal.innerText          = start + " to " + end;
+
+            var rowNpTask               = tagDetailTableTag.insertRow();
+            attributes                  = ["width" ];
+            attValues                   = ["25%"];
+            var tdNpTaskDesc            = formNewTag(rowNpTask, "td", attributes, attValues);
+            tdNpTaskDesc.innerText      = "Non-productive Task";
+            attributes                  = ["width" ];
+            attValues                   = ["75%"];
+            var tdNpTaskVal             = formNewTag(rowNpTask, "td", attributes, attValues);
+            tdNpTaskVal.innerText       = npTask;
+
+            var rowTaskDetails          = tagDetailTableTag.insertRow();
+            attributes                  = ["width" ];
+            attValues                   = ["25%"];
+            var tdTaskDetailsDesc       = formNewTag(rowTaskDetails, "td", attributes, attValues);
+            tdTaskDetailsDesc.innerText = "Task Details";
+            attributes                  = ["width" ];
+            attValues                   = ["75%"];
+            var tdTaskDetailsVal        = formNewTag(rowTaskDetails, "td", attributes, attValues);
+            tdTaskDetailsVal.innerText  = details;
+            return tagDetailTableTag;
+
+        }
+
+        function addEntryDetails(tdEntry, entryDetails){
+            var start               = entryDetails[0];
+            var end                 = entryDetails[1];
+            var part                = entryDetails[3];
+            var setup               = entryDetails[4];
+            var machine             = entryDetails[5];
+            var quantity            = entryDetails[6];
+            var rejected            = entryDetails[7];
+
+            attributes              = ["border", "width" ];
+            attValues               = ["1", "100%"];
+            var tagDetailTableTag   = formNewTag(tdEntry, "table", attributes, attValues);
+
+            var rowDuration         = tagDetailTableTag.insertRow();
+
+            attributes              = ["width" ];
+            attValues               = ["25%"];
+            var tdDurDesc           = formNewTag(rowDuration, "td", attributes, attValues);
+            tdDurDesc.innerText     = "Duration";
+            attributes              = ["width" ];
+            attValues               = ["75%"];
+            var tdDurVal            = formNewTag(rowDuration, "td", attributes, attValues);
+            tdDurVal.innerText      = start + " to " + end;
+
+            var rowPart             = tagDetailTableTag.insertRow();
+            attributes              = ["width" ];
+            attValues               = ["25%"];
+            var tdPartDesc          = formNewTag(rowPart, "td", attributes, attValues);
+            tdPartDesc.innerText    = "Part";
+            attributes              = ["width" ];
+            attValues               = ["75%"];
+            var tdPartVal           = formNewTag(rowPart, "td", attributes, attValues);
+            tdPartVal.innerText     = part;
+
+            var rowSetup            = tagDetailTableTag.insertRow();
+            attributes              = ["width" ];
+            attValues               = ["25%"];
+            var tdSetupDesc         = formNewTag(rowSetup, "td", attributes, attValues);
+            tdSetupDesc.innerText   = "Setup";
+            attributes              = ["width" ];
+            attValues               = ["75%"];
+            var tdSetupVal          = formNewTag(rowSetup, "td", attributes, attValues);
+            tdSetupVal.innerText    = setup;
+
+            var rowMachine          = tagDetailTableTag.insertRow();
+            attributes              = ["width" ];
+            attValues               = ["25%"];
+            var tdMachineDesc       = formNewTag(rowMachine, "td", attributes, attValues);
+            tdMachineDesc.innerText = "Machine";
+            attributes              = ["width" ];
+            attValues               = ["75%"];
+            var tdMachineVal        = formNewTag(rowMachine, "td", attributes, attValues);
+            tdMachineVal.innerText  = machine;
+
+            var rowQuantity          = tagDetailTableTag.insertRow();
+            attributes              = ["width" ];
+            attValues               = ["25%"];
+            var tdQuantityDesc       = formNewTag(rowQuantity, "td", attributes, attValues);
+            tdQuantityDesc.innerText = "Quantity Produced";
+            attributes              = ["width" ];
+            attValues               = ["75%"];
+            var tdQuantityVal        = formNewTag(rowQuantity, "td", attributes, attValues);
+            tdQuantityVal.innerText  = quantity;
+
+            var rowRejected          = tagDetailTableTag.insertRow();
+            attributes              = ["width" ];
+            attValues               = ["25%"];
+            var tdRejectedDesc       = formNewTag(rowRejected, "td", attributes, attValues);
+            tdRejectedDesc.innerText = "Quantity Rejected";
+            attributes              = ["width" ];
+            attValues               = ["75%"];
+            var tdRejectedVal        = formNewTag(rowRejected, "td", attributes, attValues);
+            tdRejectedVal.innerText  = rejected;
+            return tagDetailTableTag;
         }
 
         function prevDate(){

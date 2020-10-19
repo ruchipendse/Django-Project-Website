@@ -607,7 +607,11 @@ def collectTimeSheetEntries(status):
                 tentry.employee_date_time_slot.timeStart.strftime("%H:%M"),
                 tentry.employee_date_time_slot.timeEnd.strftime("%H:%M"),
                 "PR" + str(tentry.id), 
-                tentry.as_display_line()
+                tentry.part.name,
+                tentry.setup.name,
+                tentry.machine.name,
+                tentry.quantityHandled,
+                tentry.quantityRejected
             )
         )
 
@@ -631,7 +635,8 @@ def collectTimeSheetEntries(status):
                 tentry_np.employee_date_time_slot.timeStart.strftime("%H:%M"),
                 tentry_np.employee_date_time_slot.timeEnd.strftime("%H:%M"),
                 "NP" + str(tentry_np.id), 
-                tentry_np.as_display_line()
+                tentry_np.nonprod_task.name,
+                tentry_np.description
             )
         )
     return entry_details_date_user_wise
