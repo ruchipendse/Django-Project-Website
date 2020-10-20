@@ -164,6 +164,11 @@
             document.getElementById("selectedEntry").value = entry_id;
         }
 
+        function editEntry(function_mode, entry_id){
+            setFunctionMode(function_mode);
+            document.getElementById("selectedEntry").value = entry_id;
+        }
+
         function mark_absent(absentMarker){
 
             formTag = document.getElementById("tsheetForm");
@@ -322,6 +327,8 @@
             tdAttributes              = ["width"];
             tdAttValues               = ["100%"];
             var tdEditButton         = formNewTag(rowEditButton, "td", tdAttributes, tdAttValues);
+
+            /* ------------ ORIGINAL START ------------
             btnAttributes          = ["type",      "id",               "class",            
                                             "onclick", "disabled"  ]
             btnAttValues           = ["submit",    "editEntryButton","w3-button w3-teal",
@@ -329,12 +336,25 @@
 
             var tagEditButton           = formNewTag(tdEditButton, "button", btnAttributes, btnAttValues)
             tagEditButton.innerHTML     = "E"
+            ------------ ORIGINAL END------------*/
+            /** NED BUTTON START **/
+            attributesDel = ["type", "class", "id", "name", "onclick", "style"]
+            attValuesDel = ["submit", "dropbtn", "EDIT-BUTTON", "EDIT-BUTTON", "editEntry('EDIT" + entry_id_code + "', " + entry_id_number + ");"
+                                , "min-width:100%;"]
+            var tagEditButton = formNewTag(tdEditButton, "button", attributesDel, attValuesDel)
+            attributestagEditButton = ["class"]
+            attValuestagEditButton = ["fa fa-edit"]
+            var tagi2 = formNewTag(tagEditButton, "i", attributestagEditButton, attValuestagEditButton)
+
+            /** NED BUTTON END **/
 
             // ----- add delete button
             var rowDeleteButton         = tblButtonsTag.insertRow();
             tdAttributes              = ["width"];
             tdAttValues               = ["100%"];
             var tdDelButton         = formNewTag(rowDeleteButton, "td", tdAttributes, tdAttValues);
+
+            /* ------------ ORIGINAL START ------------
             btnAttributes          = ["type",      "id",               "class",            
                                             "onclick", "disabled"  ]
             btnAttValues           = ["submit",    "editEntryButton","w3-button w3-teal",
@@ -342,6 +362,34 @@
 
             var tagDelButton           = formNewTag(tdDelButton, "button", btnAttributes, btnAttValues)
             tagDelButton.innerHTML     = "-"
+            ------------ ORIGINAL END------------*/
+            /** NED BUTTON START **/
+            attributesDel = ["type", "class", "id", "name", "onclick", "style"]
+            attValuesDel = ["submit", "dropbtn", "DEL-BUTTON", "DEL-BUTTON", "deleteEntry('DELETE" + entry_id_code + "', " + entry_id_number + ");"
+                                , "min-width:100%;"]
+            var tagDelButton = formNewTag(tdDelButton, "button", attributesDel, attValuesDel)
+            attributestagTdBtn3 = ["class"]
+            attValuestagTdBtn3 = ["fa fa-trash"]
+            var tagi2 = formNewTag(tagDelButton, "i", attributestagTdBtn3, attValuestagTdBtn3)
+
+            /** NED BUTTON END **/
+
+            /*-------- REF CODE --------------
+            // ADD DELETE BUTTON
+            attributesTd = ["valign", "width"]
+            attValuesTd = ["top", "5%"]
+            var tagTd3 = formTag(row, "td", attributesTd, attValuesTd)
+
+            btnDelIdName = "delbtn" + rowIndex
+
+            attributesDel = ["class", "id", "name", "onclick", "style"]
+            attValuesDel = ["dropbtn", btnDelIdName, btnDelIdName, "onDelBtnClicked(" + rowIndex + ");", "min-width:100%;"]
+            var tagTdBtn3 = formTag(tagTd3, "button", attributesDel, attValuesDel)
+            attributestagTdBtn3 = ["class"]
+            attValuestagTdBtn3 = ["fa fa-trash"]
+            var tagi2 = formTag(tagTdBtn3, "i", attributestagTdBtn3, attValuestagTdBtn3)
+
+*/
 
         }
 
@@ -431,7 +479,7 @@
             attributes              = ["width" ];
             attValues               = ["75%"];
             var tdSetupVal          = formNewTag(rowSetup, "td", attributes, attValues);
-            tdSetupVal.innerText    = setup;
+            tdSetupVal.innerText    = setup.split('_')[1];
 
             var rowMachine          = tagDetailTableTag.insertRow();
             attributes              = ["width" ];

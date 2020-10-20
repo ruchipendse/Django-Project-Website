@@ -194,8 +194,8 @@
 
                 setupsForPart               = partsForUser[selectedPart]['setups']
                 for (setup_id in setupsForPart){
-                    var strLabel            = setup_id + ':' + setupsForPart[setup_id]['name']
-
+                    completeName            =  setupsForPart[setup_id]['name']
+                    var strLabel            = completeName.split('_')[1]
                     var optionTag           = document.createElement('option');
                     var attValue            = document.createAttribute('value');
                     attValue.value          = setup_id;
@@ -239,8 +239,7 @@
                 machinesForSelectedSetup            = machinesForSetups[selectedSetup]['machines']
 
                 for (machine_id in machinesForSelectedSetup){
-                    var strLabel            = machine_id + ':' + machinesForSelectedSetup[machine_id]['name']
-
+                    var strLabel            = machinesForSelectedSetup[machine_id]['name']
                     var optionTag           = document.createElement('option');
                     var attValue            = document.createAttribute('value');
                     attValue.value          = machinesForSelectedSetup[machine_id]['id_code'];
@@ -483,7 +482,7 @@
             selectPartTag.appendChild(optionTag);     
 
             for (part_id in partsForUser){
-                var strLabel                    = part_id + ":" + partsForUser[part_id]['name']
+                var strLabel                    = partsForUser[part_id]['name']
                 var optionTag                   = document.createElement('option');
                 var attValue                    = document.createAttribute('value');
                 attValue.value                  = part_id;
