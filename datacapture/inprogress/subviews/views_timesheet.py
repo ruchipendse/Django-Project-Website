@@ -31,7 +31,13 @@ logger = logging.getLogger(__name__)
 """
 ARRIVES HERE FROM ROOT URL. NAVIGATES TO LOGIN PAGE 
 """
-OPFFICE_OPENING_TIME = "09:00"
+OFFICE_OPENING_TIME                = "09:00"
+OFFICE_LUNCH_START_STRING          = "12:30"
+OFFICE_LUNCH_END_STRING            = "13:00"
+
+OFFICE_LUNCH_START                 = datetime.strptime(OFFICE_LUNCH_START_STRING,"%H:%M")
+OFFICE_LUNCH_END                   = datetime.strptime(OFFICE_LUNCH_END_STRING,"%H:%M")
+
 def gototimesheet_init(request):
     currentSession = request.session
     currentSession.set_expiry(0)
@@ -209,7 +215,7 @@ def processRequest(request, function_mode=None, entry_id=-1, landing=None):
         allTimeSheetEntriesJSON                     = json.dumps(allTimeSheetEntries)
         partSetupMapJSON                            = json.dumps(partSetupMap)
 
-        lastEntryEndTime = OPFFICE_OPENING_TIME
+        lastEntryEndTime = OFFICE_OPENING_TIME
         if (len(allTimeSheetEntries) > 0):
             lastEntryEndTime = allTimeSheetEntries[-1][1]
 
@@ -237,7 +243,7 @@ def processRequest(request, function_mode=None, entry_id=-1, landing=None):
         allTimeSheetEntries                         = allTimeSheetEntriesForUserDate(request.user.id, currentDate)
         allTimeSheetEntriesJSON                     = json.dumps(allTimeSheetEntries)
 
-        lastEntryEndTime = OPFFICE_OPENING_TIME
+        lastEntryEndTime = OFFICE_OPENING_TIME
         if (len(allTimeSheetEntries) > 0):
             lastEntryEndTime = allTimeSheetEntries[-1][1]
 
@@ -429,7 +435,6 @@ def addTimeEntryDetails(request):
                 tsEntry = TimeSheetEntryProd.objects.create(
                     part=selectedPart,
                     employee_date_time_slot=employee_date_time_slot,
-                    # employeeDate        = employeeDateStatus,
                     setup=selectedSetup,
                     machine=selectedMachine,
                     quantityHandled=selectedQuantityHandled,
@@ -439,7 +444,10 @@ def addTimeEntryDetails(request):
                 logger.info('Time entry saved')
                 #TODO: IF THIS IS FIRST ENTRY, ADD LUNCH BREAK ENTRY (12.30-13.00)
                 if (isFirstEntryAdded(employeeDateStatus)):
-                    addLunchBreak(employeeDateStatus)
+                    end                     = datetime.strptime(tsEntry.employee_date_time_slot.timeEnd,"%H:%M")    
+                    if end <= OFFICE_LUNCH_START:
+                        # ITS VALID PRE LUNCH ENTRY, HENCE ADD LUNCH TIME
+                        addLunchBreak(employeeDateStatus)
                 logger.info('Production Time entry saved')
         except Exception as e:
             messages.info(request, 'Tme entry Failed')
@@ -642,6 +650,10 @@ def collectTimeSheetEntries(status):
     return entry_details_date_user_wise
 
 def addLunchBreak(employeeDateStatus):
+    # IF THE FIRST ENTRY DOES NOT OVERLAP ON LUNCH BREAK TIME SLOT, 
+    #   THEN ADD LUNCH BREAK TIME SLOT 
+    #   ELSE IGNORE
+
     non_prod_lunch_break = NonProdTask.objects.filter(id_code = "NPLN")
     lunch_break = None
     if non_prod_lunch_break.count() == 0:
@@ -651,8 +663,8 @@ def addLunchBreak(employeeDateStatus):
         lunch_break = non_prod_lunch_break[0]
     employee_date_time_slot = EmployeeDateTimeSlot.objects.create(
         employeeDate=employeeDateStatus,
-        timeStart = "12:30",
-        timeEnd = "13:00",
+        timeStart = OFFICE_LUNCH_START_STRING,
+        timeEnd = OFFICE_LUNCH_END_STRING,
     )
 
     tsEntry = TimeSheetEntryNonProd.objects.create(

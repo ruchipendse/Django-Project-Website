@@ -50,17 +50,17 @@
         <table id = "tsheet_entry_table" border="2" cellpadding="0" cellspacing="0" width="70%" style="border-collapse:collapse;">
             <thead>
                 <tr>
-                    <th  width="auto">
-                        <div id = "column-heading" class = "column_heading">
+                    <th  width="auto" style = "background: #DFEFFF;">
+                        <div id = "column-heading" class = "column_heading" >
                             Timesheet Entries
                         </div>
                     </th>
-                    <th  width="5%">
+                    <th  width="5%" style = "background: #DFEFFF;">
                         <!-- <button type="submit" id = "addEntryButton"  class="w3-button w3-green" onclick = "setFunctionMode('ADD')">+</button> -->
                     </th>
                 </tr>
             </thead>
-            <tbody id = "tsheet_entry_table_body">
+            <tbody id = "tsheet_entry_table_body" style = "background-color: #EFFFFF;">
                 <!-- ADD HERE ENTRY ROWS -->
             </tbody>
         </table>
@@ -328,25 +328,13 @@
             tdAttValues               = ["100%"];
             var tdEditButton         = formNewTag(rowEditButton, "td", tdAttributes, tdAttValues);
 
-            /* ------------ ORIGINAL START ------------
-            btnAttributes          = ["type",      "id",               "class",            
-                                            "onclick", "disabled"  ]
-            btnAttValues           = ["submit",    "editEntryButton","w3-button w3-teal",
-                                            "editEntry('EDIT" + entry_id_code + "', " + entry_id_number + ");" ]
-
-            var tagEditButton           = formNewTag(tdEditButton, "button", btnAttributes, btnAttValues)
-            tagEditButton.innerHTML     = "E"
-            ------------ ORIGINAL END------------*/
-            /** NED BUTTON START **/
-            attributesDel = ["type", "class", "id", "name", "onclick", "style"]
-            attValuesDel = ["submit", "dropbtn", "EDIT-BUTTON", "EDIT-BUTTON", "editEntry('EDIT" + entry_id_code + "', " + entry_id_number + ");"
-                                , "min-width:100%;"]
-            var tagEditButton = formNewTag(tdEditButton, "button", attributesDel, attValuesDel)
+            attributesEdit = ["type", "class", "id", "name", "onclick", "style"]
+            attValuesEdit = ["submit", "dropbtn", "EDIT-BUTTON", "EDIT-BUTTON", "editEntry('EDIT" + entry_id_code + "', " + entry_id_number + ");"
+                                , "min-width:100%; background-color: #DFDFFF;"]
+            var tagEditButton = formNewTag(tdEditButton, "button", attributesEdit, attValuesEdit)
             attributestagEditButton = ["class"]
             attValuestagEditButton = ["fa fa-edit"]
             var tagi2 = formNewTag(tagEditButton, "i", attributestagEditButton, attValuestagEditButton)
-
-            /** NED BUTTON END **/
 
             // ----- add delete button
             var rowDeleteButton         = tblButtonsTag.insertRow();
@@ -354,43 +342,13 @@
             tdAttValues               = ["100%"];
             var tdDelButton         = formNewTag(rowDeleteButton, "td", tdAttributes, tdAttValues);
 
-            /* ------------ ORIGINAL START ------------
-            btnAttributes          = ["type",      "id",               "class",            
-                                            "onclick", "disabled"  ]
-            btnAttValues           = ["submit",    "editEntryButton","w3-button w3-teal",
-                                            "editEntry('EDIT" + entry_id_code + "', " + entry_id_number + ");" ]
-
-            var tagDelButton           = formNewTag(tdDelButton, "button", btnAttributes, btnAttValues)
-            tagDelButton.innerHTML     = "-"
-            ------------ ORIGINAL END------------*/
-            /** NED BUTTON START **/
             attributesDel = ["type", "class", "id", "name", "onclick", "style"]
             attValuesDel = ["submit", "dropbtn", "DEL-BUTTON", "DEL-BUTTON", "deleteEntry('DELETE" + entry_id_code + "', " + entry_id_number + ");"
-                                , "min-width:100%;"]
+                                , "min-width:100%; background-color: #FFDFDF;"]
             var tagDelButton = formNewTag(tdDelButton, "button", attributesDel, attValuesDel)
             attributestagTdBtn3 = ["class"]
             attValuestagTdBtn3 = ["fa fa-trash"]
             var tagi2 = formNewTag(tagDelButton, "i", attributestagTdBtn3, attValuestagTdBtn3)
-
-            /** NED BUTTON END **/
-
-            /*-------- REF CODE --------------
-            // ADD DELETE BUTTON
-            attributesTd = ["valign", "width"]
-            attValuesTd = ["top", "5%"]
-            var tagTd3 = formTag(row, "td", attributesTd, attValuesTd)
-
-            btnDelIdName = "delbtn" + rowIndex
-
-            attributesDel = ["class", "id", "name", "onclick", "style"]
-            attValuesDel = ["dropbtn", btnDelIdName, btnDelIdName, "onDelBtnClicked(" + rowIndex + ");", "min-width:100%;"]
-            var tagTdBtn3 = formTag(tagTd3, "button", attributesDel, attValuesDel)
-            attributestagTdBtn3 = ["class"]
-            attValuestagTdBtn3 = ["fa fa-trash"]
-            var tagi2 = formTag(tagTdBtn3, "i", attributestagTdBtn3, attValuestagTdBtn3)
-
-*/
-
         }
 
         function addNPEntryDetails(tdEntry, entryDetails){
