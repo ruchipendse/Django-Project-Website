@@ -17,7 +17,7 @@ class Employee (models.Model):
 
 class Setup(models.Model):
     id_code = models.CharField(max_length = 20)
-    name = models.CharField(max_length = 100)
+    name = models.CharField(max_length = 42)
     desc = models.TextField()
     is_active   = models.BooleanField(default = True)
     # operations  = models.ManyToManyField('Operation', through = 'SetupOperationSequence')
@@ -40,7 +40,7 @@ class Holiday(models.Model):
 #-------------  NON PRODUCTION TASK ----------------
 class NonProdTask(models.Model):
     id_code                 = models.CharField(max_length = 15)
-    name                    = models.CharField(max_length = 100)
+    name                    = models.CharField(max_length = 40)
     desc                    = models.TextField(default = '')
     is_active               = models.BooleanField(default = True)
 
@@ -60,7 +60,7 @@ class OperatorSetup(models.Model):
 
 class Machine(models.Model):
     id_code         = models.CharField(max_length = 15)
-    name            = models.CharField(max_length = 100)
+    name            = models.CharField(max_length = 20)
     img             = models.ImageField(upload_to = 'machine_pics')
     desc            = models.TextField()
     is_active       = models.BooleanField(default = True)
@@ -81,7 +81,7 @@ class MachineSetup(models.Model):
 #-------------  PART ----------------
 class Part(models.Model):
     id_code = models.CharField(max_length = 15)
-    name = models.CharField(max_length = 100)
+    name = models.CharField(max_length = 20)
     img = models.ImageField(upload_to = 'machine_pics')
     desc = models.TextField()
     is_active = models.BooleanField(default = True)
