@@ -442,12 +442,16 @@ def addTimeEntryDetails(request):
                 )
                 tsEntry.save()
                 logger.info('Time entry saved')
-                #TODO: IF THIS IS FIRST ENTRY, ADD LUNCH BREAK ENTRY (12.30-13.00)
-                if (isFirstEntryAdded(employeeDateStatus)):
-                    end                     = datetime.strptime(tsEntry.employee_date_time_slot.timeEnd,"%H:%M")    
-                    if end <= OFFICE_LUNCH_START:
-                        # ITS VALID PRE LUNCH ENTRY, HENCE ADD LUNCH TIME
-                        addLunchBreak(employeeDateStatus)
+                # TODO: IF THIS IS FIRST ENTRY, ADD LUNCH BREAK ENTRY (12.30-13.00)
+                ######################################################################
+                # AT PRESENT ON REQUEST THIS FUNCTIONALITY IS BLOCKED AS THE LUNCH TIME
+                # DEPENDS UPON PLANT LOCATION
+                # if (isFirstEntryAdded(employeeDateStatus)):
+                #     end                     = datetime.strptime(tsEntry.employee_date_time_slot.timeEnd,"%H:%M")    
+                #     if end <= OFFICE_LUNCH_START:
+                        # # ITS VALID PRE LUNCH ENTRY, HENCE ADD LUNCH TIME
+                        # addLunchBreak(employeeDateStatus)
+                ######################################################################
                 logger.info('Production Time entry saved')
         except Exception as e:
             messages.info(request, 'Tme entry Failed')
@@ -494,9 +498,16 @@ def addNPTimeEntryDetails(request):
                     # employeeDate        = employeeDateStatus,
                 )
                 tsEntry.save()
-                #TODO: IF THIS IS FIRST ENTRY, ADD LUNCH BREAK ENTRY (12.30-13.00)
-                if (isFirstEntryAdded(employeeDateStatus)):
-                    addLunchBreak(employeeDateStatus)
+                # TODO: IF THIS IS FIRST ENTRY, ADD LUNCH BREAK ENTRY (12.30-13.00)
+                ######################################################################
+                # AT PRESENT ON REQUEST THIS FUNCTIONALITY IS BLOCKED AS THE LUNCH TIME
+                # DEPENDS UPON PLANT LOCATION
+                # if (isFirstEntryAdded(employeeDateStatus)):
+                #     end                     = datetime.strptime(tsEntry.employee_date_time_slot.timeEnd,"%H:%M")    
+                #     if end <= OFFICE_LUNCH_START:
+                        # # ITS VALID PRE LUNCH ENTRY, HENCE ADD LUNCH TIME
+                        # addLunchBreak(employeeDateStatus)
+                ######################################################################
                 logger.info('Non production Time entry saved')
         except Exception as e:
             messages.info(request, 'Non production Time entry saved Failed')
